@@ -24,18 +24,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
+import Build_gradle.Module
 import com.google.protobuf.gradle.protobuf
 import io.spine.internal.dependency.Protobuf
+import io.spine.internal.dependency.Spine
+import io.spine.internal.dependency.ErrorProne
+import io.spine.internal.gradle.javac.configureErrorProne
+import io.spine.internal.gradle.javac.configureJavac
+import io.spine.internal.gradle.kotlin.applyJvmToolchain
+import io.spine.internal.gradle.kotlin.setFreeCompilerArgs
 import io.spine.internal.gradle.standardToSpineSdk
+import org.gradle.api.Project
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+import org.gradle.kotlin.dsl.invoke
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
     standardSpineSdkRepositories()
 }
 
 plugins {
-    java
+    kotlin("jvm")
+    id("net.ltgt.errorprone")
+    id("detekt-code-analysis")
     id("com.google.protobuf")
-    id("io.spine.protodata") version "0.13.1"
+    id("io.spine.protodata") version "0.13.2" apply true
+    idea
 }
 
 repositories {
@@ -43,27 +58,123 @@ repositories {
     standardToSpineSdk()
 }
 
-// The section below illustrates the usage of ProtoData plugin.
-/*protoData {
-    plugins(
-        "io.spine.protodata.test.NoOpRenderer\$Plugin",
-        "io.spine.protodata.test.TestPlugin"
-    )
-}*/
-
 dependencies {
+    // Depend on Spine Base to grab the Proto options
+    // from `spine/options.proto`.
+    api(Spine.base)
+
     Protobuf.libs.forEach { implementation(it) }
 
-    // Copied from ProtoData tests.
-    //
-    // Use `protoData` type of dependency
-    // to pass something to the ProtoData's user's classpath.
-    //
-    // protoData("io.spine.protodata:protodata-test-env:+")
+    ErrorProne.apply {
+        errorprone(core)
+    }
 }
 
 protobuf {
     protoc {
-        artifact = io.spine.internal.dependency.Protobuf.compiler
+        artifact = Protobuf.compiler
+    }
+}
+
+object BuildSettings {
+    private const val JAVA_VERSION = 11
+
+    val javaVersion: JavaLanguageVersion = JavaLanguageVersion.of(JAVA_VERSION)
+}
+
+/**
+ * The alias for typed extensions functions related to modules of this project.
+ */
+typealias Module = Project
+
+project.run {
+    configureJava()
+    configureKotlin()
+    setupTests()
+    applyGeneratedDirectories()
+}
+
+fun Module.configureKotlin() {
+    kotlin {
+        explicitApi()
+        applyJvmToolchain(BuildSettings.javaVersion.asInt())
+    }
+
+    tasks.withType<KotlinCompile> {
+        setFreeCompilerArgs()
+        // https://stackoverflow.com/questions/38298695/gradle-disable-all-incremental-compilation-and-parallel-builds
+        incremental = false
+    }
+}
+
+fun Module.setupTests() {
+    tasks.test {
+        useJUnitPlatform()
+
+        testLogging {
+            events = setOf(TestLogEvent.PASSED, TestLogEvent.FAILED, TestLogEvent.SKIPPED)
+            showExceptions = true
+            showCauses = true
+        }
+    }
+}
+
+fun Module.configureJava() {
+    java {
+        toolchain.languageVersion.set(BuildSettings.javaVersion)
+    }
+    tasks {
+        withType<JavaCompile>().configureEach {
+            configureJavac()
+            configureErrorProne()
+            // https://stackoverflow.com/questions/38298695/gradle-disable-all-incremental-compilation-and-parallel-builds
+            options.isIncremental = false
+        }
+        withType<org.gradle.jvm.tasks.Jar>().configureEach {
+            duplicatesStrategy = DuplicatesStrategy.INCLUDE
+        }
+    }
+}
+
+/**
+ * Adds directories with the generated source code to source sets of the project and
+ * to IntelliJ IDEA module settings.
+ */
+fun Module.applyGeneratedDirectories() {
+
+    /* The name of the root directory with the generated code. */
+    val generatedDir = "${projectDir}/generated"
+
+    val generatedMain = "$generatedDir/main"
+    val generatedJava = "$generatedMain/java"
+    val generatedKotlin = "$generatedMain/kotlin"
+    val generatedGrpc = "$generatedMain/grpc"
+    val generatedSpine = "$generatedMain/spine"
+
+    val generatedTest = "$generatedDir/test"
+    val generatedTestJava = "$generatedTest/java"
+    val generatedTestKotlin = "$generatedTest/kotlin"
+    val generatedTestGrpc = "$generatedTest/grpc"
+    val generatedTestSpine = "$generatedTest/spine"
+
+    idea {
+        module {
+            generatedSourceDirs.addAll(
+                files(
+                    generatedJava,
+                    generatedKotlin,
+                    generatedGrpc,
+                    generatedSpine,
+                )
+            )
+            testSources.from(
+                generatedTestJava,
+                generatedTestKotlin,
+                generatedTestGrpc,
+                generatedTestSpine,
+            )
+            isDownloadJavadoc = true
+            isDownloadSources = true
+        }
     }
 }
