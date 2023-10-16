@@ -70,6 +70,18 @@ dependencies {
     }
 }
 
+// Uncomment the following section
+// to add ProtoData plugins
+
+/*
+protoData {
+    plugins(
+        "com.acme.MyProtoDataPlugin",
+        "com.bar.AnotherProtoDataPlugin"
+    )
+}
+*/
+
 protobuf {
     protoc {
         artifact = Protobuf.compiler
