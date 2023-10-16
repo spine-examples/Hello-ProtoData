@@ -71,7 +71,7 @@ dependencies {
 }
 
 // Uncomment the following section
-// to add ProtoData plugins
+// to add ProtoData plugins:
 
 /*
 protoData {
