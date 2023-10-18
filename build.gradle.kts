@@ -26,19 +26,18 @@
 
 
 import Build_gradle.Module
-import com.google.protobuf.gradle.protobuf
+import io.spine.internal.dependency.ErrorProne
+import io.spine.internal.dependency.ProtoData
 import io.spine.internal.dependency.Protobuf
 import io.spine.internal.dependency.Spine
-import io.spine.internal.dependency.ErrorProne
 import io.spine.internal.gradle.javac.configureErrorProne
 import io.spine.internal.gradle.javac.configureJavac
 import io.spine.internal.gradle.kotlin.applyJvmToolchain
 import io.spine.internal.gradle.kotlin.setFreeCompilerArgs
 import io.spine.internal.gradle.standardToSpineSdk
-import org.gradle.api.Project
 import org.gradle.api.tasks.testing.logging.TestLogEvent
-import org.gradle.kotlin.dsl.invoke
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 
 buildscript {
     standardSpineSdkRepositories()
@@ -62,6 +61,10 @@ dependencies {
     // Depend on Spine Base to grab the Proto options
     // from `spine/options.proto`.
     api(Spine.base)
+    // To use ProtoData code generation API.
+    api(ProtoData.compiler)
+
+    //protoData(project(":"))
 
     Protobuf.libs.forEach { implementation(it) }
 
@@ -70,17 +73,11 @@ dependencies {
     }
 }
 
-// Uncomment the following section
-// to add ProtoData plugins:
-
-/*
 protoData {
     plugins(
-        "com.acme.MyProtoDataPlugin",
-        "com.bar.AnotherProtoDataPlugin"
+        "io.spine.protodata.hello.CodeGenPlugin"
     )
 }
-*/
 
 protobuf {
     protoc {
