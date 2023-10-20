@@ -24,9 +24,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = "Hello-ProtoData"
+import io.spine.internal.dependency.ProtoData
+import io.spine.internal.gradle.standardToSpineSdk
 
-include(
-    "codegen-plugin",
-    "model"
-)
+plugins {
+    kotlin("jvm")
+    id("net.ltgt.errorprone")
+    id("detekt-code-analysis")
+    idea
+}
+
+repositories {
+    mavenLocal()
+    standardToSpineSdk()
+}
+
+dependencies {
+    // To use ProtoData code generation API.
+    api(ProtoData.compiler)
+}
