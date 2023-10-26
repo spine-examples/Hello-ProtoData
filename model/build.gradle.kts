@@ -24,10 +24,12 @@
  */
 
 dependencies {
+    // Add module with code generation plugin to ProtoData classpath.
     protoData(project(":codegen-plugin"))
 }
 
 protoData {
+    // Deploy the code generation plugin to ProtoData.
     plugins(
         "io.spine.protodata.hello.CodeGenPlugin"
     )

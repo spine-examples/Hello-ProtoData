@@ -55,6 +55,8 @@ plugins {
     idea
 }
 
+// It is assumed that every module in the project requires
+// a typical configuration.
 allprojects {
 
     repositories.standardToSpineSdk()
@@ -84,6 +86,7 @@ allprojects {
         }
     }
 
+    // Apply a typical configuration to every module.
     applyConfiguration()
 }
 
@@ -117,7 +120,11 @@ fun Module.setupTests() {
         useJUnitPlatform()
 
         testLogging {
-            events = setOf(TestLogEvent.PASSED, TestLogEvent.FAILED, TestLogEvent.SKIPPED)
+            events = setOf(
+                TestLogEvent.PASSED,
+                TestLogEvent.FAILED,
+                TestLogEvent.SKIPPED
+            )
             showExceptions = true
             showCauses = true
         }
@@ -142,8 +149,8 @@ fun Module.configureJava() {
 }
 
 /**
- * Adds directories with the generated source code to source sets of the project and
- * to IntelliJ IDEA module settings.
+ * Adds directories with the generated source code to source sets
+ * of the project and to IntelliJ IDEA module settings.
  */
 fun Module.applyGeneratedDirectories() {
 

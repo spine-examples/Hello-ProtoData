@@ -27,6 +27,6 @@
 import io.spine.internal.dependency.ProtoData
 
 dependencies {
-    // To use ProtoData code generation API.
+    // To use ProtoData API in code generation plugin.
     api(ProtoData.compiler)
 }
