@@ -25,21 +25,8 @@
  */
 
 import io.spine.internal.dependency.ProtoData
-import io.spine.internal.gradle.standardToSpineSdk
-
-plugins {
-    kotlin("jvm")
-    id("net.ltgt.errorprone")
-    id("detekt-code-analysis")
-    idea
-}
-
-repositories {
-    mavenLocal()
-    standardToSpineSdk()
-}
 
 dependencies {
-    // To use ProtoData code generation API.
+    // To use ProtoData API in code generation plugin.
     api(ProtoData.compiler)
 }
