@@ -98,7 +98,7 @@ typealias Module = Project
 fun Module.applyConfiguration() {
     configureJava()
     configureKotlin()
-    setupTests()
+    setUpTests()
     applyGeneratedDirectories()
 }
 
@@ -115,7 +115,7 @@ fun Module.configureKotlin() {
     }
 }
 
-fun Module.setupTests() {
+fun Module.setUpTests() {
     tasks.test {
         useJUnitPlatform()
 
