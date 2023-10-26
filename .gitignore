@@ -35,6 +35,7 @@ hs_err_pid*
 .idea/*.xml
 .idea/**/*.xml
 .idea/**/*.iml
+.idea/shelf/**
 !.idea/codeStyles
 !.idea/inspectionProfiles
 !.idea/copyright
