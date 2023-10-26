@@ -47,8 +47,8 @@ message Board {
 
   // The size of the board.
   //
-  // The board must have `size_size` number of cell rows,
-  // each having `size_side` number of columns,
+  // The board must have `side_size` number of cell rows,
+  // each having `side_size` number of columns,
   // effectively making the board "square".
   //
   int32 side_size = 3 [(required) = true, (min).value = "3"];
