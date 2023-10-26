@@ -24,9 +24,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = "Hello-ProtoData"
+import io.spine.internal.dependency.ProtoData
 
-include(
-    "codegen-plugin",
-    "model"
-)
+dependencies {
+    // To use ProtoData API in code generation plugin.
+    api(ProtoData.compiler)
+}

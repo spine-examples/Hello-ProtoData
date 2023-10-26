@@ -1,5 +1,4 @@
-/*
- * Copyright 2023, TeamDev. All rights reserved.
+/* * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,9 +23,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = "Hello-ProtoData"
+dependencies {
+    // Add module with code generation plugin to ProtoData classpath.
+    protoData(project(":codegen-plugin"))
+}
 
-include(
-    "codegen-plugin",
-    "model"
-)
+protoData {
+    // Deploy the code generation plugin to ProtoData.
+    plugins(
+        "io.spine.protodata.hello.CodeGenPlugin"
+    )
+}

@@ -24,9 +24,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = "Hello-ProtoData"
+package io.spine.protodata.hello
 
-include(
-    "codegen-plugin",
-    "model"
-)
+import io.spine.protodata.plugin.Plugin
+import io.spine.protodata.renderer.Renderer
+
+public class CodeGenPlugin : Plugin {
+    override fun renderers(): List<Renderer<*>> {
+        return emptyList()
+    }
+}

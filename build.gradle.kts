@@ -24,20 +24,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 import Build_gradle.Module
-import com.google.protobuf.gradle.protobuf
+import io.spine.internal.dependency.ErrorProne
 import io.spine.internal.dependency.Protobuf
 import io.spine.internal.dependency.Spine
-import io.spine.internal.dependency.ErrorProne
 import io.spine.internal.gradle.javac.configureErrorProne
 import io.spine.internal.gradle.javac.configureJavac
 import io.spine.internal.gradle.kotlin.applyJvmToolchain
 import io.spine.internal.gradle.kotlin.setFreeCompilerArgs
 import io.spine.internal.gradle.standardToSpineSdk
-import org.gradle.api.Project
 import org.gradle.api.tasks.testing.logging.TestLogEvent
-import org.gradle.kotlin.dsl.invoke
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
@@ -53,45 +49,45 @@ plugins {
     idea
 }
 
-repositories {
-    mavenLocal()
-    standardToSpineSdk()
-}
-
-dependencies {
-    // Depend on Spine Base to grab the Proto options
-    // from `spine/options.proto`.
-    api(Spine.base)
-
-    Protobuf.libs.forEach { implementation(it) }
-
-    ErrorProne.apply {
-        errorprone(core)
-    }
-}
-
-// Uncomment the following section
-// to add ProtoData plugins:
-
-/*
-protoData {
-    plugins(
-        "com.acme.MyProtoDataPlugin",
-        "com.bar.AnotherProtoDataPlugin"
-    )
-}
-*/
-
-protobuf {
-    protoc {
-        artifact = Protobuf.compiler
-    }
-}
-
 object BuildSettings {
     private const val JAVA_VERSION = 11
 
     val javaVersion: JavaLanguageVersion = JavaLanguageVersion.of(JAVA_VERSION)
+}
+
+// It is assumed that every module in the project requires
+// a typical configuration.
+allprojects {
+
+    repositories.standardToSpineSdk()
+
+    apply {
+        plugin("kotlin")
+        plugin("net.ltgt.errorprone")
+        plugin("detekt-code-analysis")
+        plugin("com.google.protobuf")
+        plugin("io.spine.protodata")
+        plugin("idea")
+    }
+
+    dependencies {
+        api(Spine.base)
+
+        Protobuf.libs.forEach { implementation(it) }
+
+        ErrorProne.apply {
+            errorprone(core)
+        }
+    }
+
+    protobuf {
+        protoc {
+            artifact = Protobuf.compiler
+        }
+    }
+
+    // Apply a typical configuration to every module.
+    applyConfiguration()
 }
 
 /**
@@ -99,10 +95,10 @@ object BuildSettings {
  */
 typealias Module = Project
 
-project.run {
+fun Module.applyConfiguration() {
     configureJava()
     configureKotlin()
-    setupTests()
+    setUpTests()
     applyGeneratedDirectories()
 }
 
@@ -119,12 +115,16 @@ fun Module.configureKotlin() {
     }
 }
 
-fun Module.setupTests() {
+fun Module.setUpTests() {
     tasks.test {
         useJUnitPlatform()
 
         testLogging {
-            events = setOf(TestLogEvent.PASSED, TestLogEvent.FAILED, TestLogEvent.SKIPPED)
+            events = setOf(
+                TestLogEvent.PASSED,
+                TestLogEvent.FAILED,
+                TestLogEvent.SKIPPED
+            )
             showExceptions = true
             showCauses = true
         }
@@ -149,8 +149,8 @@ fun Module.configureJava() {
 }
 
 /**
- * Adds directories with the generated source code to source sets of the project and
- * to IntelliJ IDEA module settings.
+ * Adds directories with the generated source code to source sets
+ * of the project and to IntelliJ IDEA module settings.
  */
 fun Module.applyGeneratedDirectories() {
 

@@ -10,7 +10,7 @@ This directory contains two live template groups:
 Live templates are not picked up by IDEA automatically. They should be added manually.
 In order to add these templates, perform the following steps:
 
-1. Copy `*.xml` files from this directory to `templates` directory in the IntelliJ IDEA 
+1. Copy `*.xml` files from this directory to `templates` directory in the IntelliJ IDEA
    [settings folder][settings_folder].
 2. Restart IntelliJ IDEA: `File -> Invalidate Caches -> Just restart`.
 3. Go to `Preferences -> Editor -> Live Templates`.
