@@ -36,12 +36,6 @@ import io.spine.internal.gradle.standardToSpineSdk
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-object BuildSettings {
-    private const val JAVA_VERSION = 11
-
-    val javaVersion: JavaLanguageVersion = JavaLanguageVersion.of(JAVA_VERSION)
-}
-
 buildscript {
     standardSpineSdkRepositories()
 }
@@ -53,6 +47,12 @@ plugins {
     id("com.google.protobuf")
     id("io.spine.protodata") version "0.13.2"
     idea
+}
+
+object BuildSettings {
+    private const val JAVA_VERSION = 11
+
+    val javaVersion: JavaLanguageVersion = JavaLanguageVersion.of(JAVA_VERSION)
 }
 
 // It is assumed that every module in the project requires
