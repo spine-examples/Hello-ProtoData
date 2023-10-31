@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package spine.protodata.hello;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.protodata.hello";
+option java_outer_classname = "SizeOptionViewProto";
+option java_multiple_files = true;
+
+import "spine/protodata/ast.proto";
+
+message SizeOptionView {
+  option (entity).kind = PROJECTION;
+
+  SizeOptionId id = 1;
+
+  string size_expression = 2;
+}
+
+message SizeOptionId {
+
+  spine.protodata.FilePath file = 1;
+
+  spine.protodata.TypeName type = 2;
+
+  spine.protodata.FieldName field = 3;
+}

@@ -38,6 +38,9 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
     standardSpineSdkRepositories()
+    dependencies {
+        classpath(io.spine.internal.dependency.Spine.McJava.pluginLib)
+    }
 }
 
 plugins {
@@ -45,7 +48,7 @@ plugins {
     id("net.ltgt.errorprone")
     id("detekt-code-analysis")
     id("com.google.protobuf")
-    id("io.spine.protodata") version "0.13.2"
+    id("io.spine.protodata") version "0.14.0"
     idea
 }
 
@@ -88,6 +91,12 @@ allprojects {
 
     // Apply a typical configuration to every module.
     applyConfiguration()
+}
+
+subprojects {
+    apply {
+        plugin("io.spine.mc-java")
+    }
 }
 
 /**

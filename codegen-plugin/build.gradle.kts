@@ -30,3 +30,11 @@ dependencies {
     // To use ProtoData API in code generation plugin.
     api(ProtoData.compiler)
 }
+
+modelCompiler {
+    java {
+        codegen {
+            validation { skipValidation() }
+        }
+    }
+}
