@@ -26,6 +26,13 @@
 dependencies {
     // Add module with code generation plugin to ProtoData classpath.
     protoData(project(":codegen-plugin"))
+
+    // To allow access to `ValidatingBuilder` from the generated Kotlin code.
+    implementation(io.spine.internal.dependency.Validation.runtime)
+}
+
+apply {
+    plugin("io.spine.protodata")
 }
 
 protoData {
@@ -33,4 +40,12 @@ protoData {
     plugins(
         "io.spine.protodata.hello.CodeGenPlugin"
     )
+}
+
+modelCompiler {
+    java {
+        codegen {
+            validation { skipValidation() }
+        }
+    }
 }
