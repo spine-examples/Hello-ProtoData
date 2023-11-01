@@ -26,11 +26,93 @@
 
 package io.spine.protodata.hello
 
+import io.spine.core.EventContext
+import io.spine.core.External
+import io.spine.core.Subscribe
+import io.spine.core.Where
+import io.spine.protobuf.AnyPacker
+import io.spine.protodata.event.FieldOptionDiscovered
 import io.spine.protodata.plugin.Plugin
+import io.spine.protodata.plugin.View
+import io.spine.protodata.plugin.ViewRepository
 import io.spine.protodata.renderer.Renderer
+import io.spine.protodata.renderer.SourceFileSet
+import io.spine.server.route.EventRoute
+import io.spine.server.route.EventRouting
+import io.spine.tools.code.Java
+import io.spine.tools.code.Kotlin
 
 public class CodeGenPlugin : Plugin {
+
     override fun renderers(): List<Renderer<*>> {
-        return emptyList()
+        return listOf(
+            KotlinRenderer(),
+            JavaRenderer()
+        )
+    }
+
+    override fun viewRepositories(): Set<ViewRepository<*, *, *>> {
+        return setOf(Repository())
+    }
+}
+
+public class SizeOptionView : View<SizeOptionProjectionId,
+        SizeOptionProjection,
+        SizeOptionProjection.Builder>() {
+    @Subscribe
+    internal fun on(
+        @External @Where(
+            field = "option.name",
+            equals = "size"
+        ) event: FieldOptionDiscovered
+    ) {
+        println("Size option discovered: " + event.option.value)
+        val value = AnyPacker.unpack(
+            event.option.value,
+            ArrayOfSizeOption::class.java
+        )
+        println("Size option expression: " + value.value)
+        builder().setSizeExpression(value.value)
+    }
+}
+
+private class Repository : ViewRepository<SizeOptionProjectionId,
+        SizeOptionView,
+        SizeOptionProjection>() {
+    override fun setupEventRouting(
+        routing: EventRouting<SizeOptionProjectionId>
+    ) {
+        super.setupEventRouting(routing)
+        println("Event routing: $routing")
+        routing.route(FieldOptionDiscovered::class.java)
+        { message: FieldOptionDiscovered, _: EventContext? ->
+            EventRoute.withId(
+                SizeOptionProjectionId.newBuilder()
+                    .setFile(message.file)
+                    .setType(message.type)
+                    .setField(message.field)
+                    .build()
+            )
+        }
+    }
+}
+
+private class KotlinRenderer : Renderer<Kotlin>(Kotlin.lang()) {
+    override fun render(sources: SourceFileSet) {
+        sources.forEach { sourceFile ->
+            run {
+                println("Rendering Kotlin file: " + sourceFile.relativePath)
+            }
+        }
+    }
+}
+
+private class JavaRenderer : Renderer<Java>(Java.lang()) {
+    override fun render(sources: SourceFileSet) {
+        sources.forEach { sourceFile ->
+            run {
+                println("Rendering Java file: " + sourceFile.relativePath)
+            }
+        }
     }
 }

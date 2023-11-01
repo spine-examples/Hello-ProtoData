@@ -1,5 +1,4 @@
-/*
- * Copyright 2023, TeamDev. All rights reserved.
+/* * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,14 +23,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.internal.dependency.ProtoData
-
 dependencies {
-    // To enable field options extension
-    api(project(":proto-extension"))
+    // To use @AutoService in options provider
+    implementation("com.google.auto.service:auto-service:1.1.1")
 
-    // To use ProtoData API in code generation plugin.
-    api(ProtoData.compiler)
+    // To allow access to `ValidatingBuilder` from the generated Kotlin code.
+    implementation(io.spine.internal.dependency.Validation.runtime)
 }
 
 modelCompiler {

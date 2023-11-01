@@ -36,6 +36,7 @@ option java_outer_classname = "TicTacToeProto";
 option java_package = "io.spine.protodata.hello";
 
 import "google/protobuf/descriptor.proto";
+import "spine/protodata/hello/options.proto";
 
 message Board {
 
@@ -69,37 +70,4 @@ message Cell {
     bool empty = 1;
     Mark mark = 2;
   }
-}
-
-extend google.protobuf.FieldOptions {
-
-  // See `ArrayOfSizeOption` for details.
-  //
-  // The field index is chosen based in `spine/options.proto`,
-  // taking the next available number in Spine's reserved range.
-  //
-  ArrayOfSizeOption size = 73855;
-}
-
-// A field option applicable to `repeated` fields,
-// telling that their size should be equal
-// to some expression, involving the values
-// of other fields of the same message.
-//
-// The `value` field supports basic math operations,
-// such as `+`, `-`, `*`, `/`.
-//
-// Example:
-//
-// message Foo {
-//
-//     int32 count = 1;
-//
-//     // There must be a number of elements
-//     // twice the `count`.
-//     repeated string value = 2 [(size) = "count * 2"];
-// }
-message ArrayOfSizeOption {
-
-  string value = 1 [(required) = true];
 }

@@ -24,6 +24,9 @@
  */
 
 dependencies {
+    // Enable field options extension
+    api(project(":proto-extension"))
+
     // Add module with code generation plugin to ProtoData classpath.
     protoData(project(":codegen-plugin"))
 
