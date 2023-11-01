@@ -38,6 +38,34 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
     standardSpineSdkRepositories()
+
+    @Suppress("RemoveRedundantQualifierName")
+    val spine = io.spine.internal.dependency.Spine
+    @Suppress("RemoveRedundantQualifierName")
+    val logging = io.spine.internal.dependency.Spine.Logging
+
+
+    // Force versions, as both ProtoData and Spine Model Compiler are under active development.
+    doForceVersions(configurations)
+    configurations {
+        all {
+            resolutionStrategy {
+                force(
+                    spine.base,
+                    logging.lib,
+                    logging.backend,
+                    logging.floggerApi,
+                    spine.toolBase,
+                    spine.server,
+                    spine.server,
+                    io.spine.internal.dependency.Validation.runtime,
+                    io.spine.internal.dependency.Validation.java,
+                    io.spine.internal.dependency.ProtoData.pluginLib
+                )
+            }
+        }
+    }
+
     dependencies {
         classpath(io.spine.internal.dependency.Spine.McJava.pluginLib)
     }
@@ -58,19 +86,24 @@ object BuildSettings {
     val javaVersion: JavaLanguageVersion = JavaLanguageVersion.of(JAVA_VERSION)
 }
 
-// It is assumed that every module in the project requires
-// a typical configuration.
+
 allprojects {
 
+    // Define the repositories universally for all modules, including the root.
     repositories.standardToSpineSdk()
+}
+
+// It is assumed that every module in the project requires
+// a typical configuration.
+subprojects {
 
     apply {
         plugin("kotlin")
         plugin("net.ltgt.errorprone")
         plugin("detekt-code-analysis")
         plugin("com.google.protobuf")
-        plugin("io.spine.protodata")
         plugin("idea")
+        plugin("io.spine.mc-java")
     }
 
     dependencies {
@@ -80,6 +113,30 @@ allprojects {
 
         ErrorProne.apply {
             errorprone(core)
+        }
+
+        // Force versions for compilation/runtime as well.
+        //
+        // Maybe, not all of them are required in this scope.
+        // This is to investigate later.
+        //
+        doForceVersions(configurations)
+        configurations {
+            all {
+                resolutionStrategy {
+                    force(
+                        Spine.base,
+                        Spine.Logging.lib,
+                        Spine.Logging.backend,
+                        Spine.Logging.floggerApi,
+                        Spine.toolBase,
+                        Spine.server,
+                        io.spine.internal.dependency.Validation.runtime,
+                        io.spine.internal.dependency.Validation.java,
+                        io.spine.internal.dependency.ProtoData.pluginLib
+                    )
+                }
+            }
         }
     }
 
@@ -91,12 +148,6 @@ allprojects {
 
     // Apply a typical configuration to every module.
     applyConfiguration()
-}
-
-subprojects {
-    apply {
-        plugin("io.spine.mc-java")
-    }
 }
 
 /**
