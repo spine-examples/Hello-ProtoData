@@ -59,12 +59,19 @@ public class CodeGenPlugin : Plugin {
 public class SizeOptionView : View<SizeOptionProjectionId,
         SizeOptionProjection,
         SizeOptionProjection.Builder>() {
+
+    private companion object FieldOptions {
+        const val NAME = "option.name"
+        const val VALUE = "size"
+    }
+
     @Subscribe
     internal fun on(
         @External @Where(
-            field = "option.name",
-            equals = "size"
-        ) event: FieldOptionDiscovered
+            field = NAME,
+            equals = VALUE
+        )
+        event: FieldOptionDiscovered
     ) {
         println("Size option discovered: " + event.option.value)
         val value = AnyPacker.unpack(

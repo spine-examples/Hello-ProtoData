@@ -32,7 +32,7 @@ import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
 option java_package = "io.spine.protodata.hello";
-option java_outer_classname = "SizeOptionProto";
+option java_outer_classname = "ArrayOfSizeOptionProto";
 option java_multiple_files = true;
 
 import "google/protobuf/descriptor.proto";
