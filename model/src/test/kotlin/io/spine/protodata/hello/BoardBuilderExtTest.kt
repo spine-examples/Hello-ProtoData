@@ -1,4 +1,5 @@
-/* * Copyright 2023, TeamDev. All rights reserved.
+/*
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,34 +24,43 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-dependencies {
-    // Enable field options extension
-    api(project(":proto-extension"))
+package io.spine.protodata.hello
 
-    // Add module with code generation plugin to ProtoData classpath.
-    protoData(project(":codegen-plugin"))
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
-    // To allow access to `ValidatingBuilder` from the generated Kotlin code.
-    implementation(io.spine.internal.dependency.Validation.runtime)
+class `Board builder extension should` {
 
-    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.0.0")
-}
+    @Test
+    fun `validate cell count`() {
 
-apply {
-    plugin("io.spine.protodata")
-}
+        Board.newBuilder()
+            .setSideSize(3)
 
-protoData {
-    // Deploy the code generation plugin to ProtoData.
-    plugins(
-        "io.spine.protodata.hello.CodeGenPlugin"
-    )
-}
+            .addCell(Cell.newBuilder())
+            .addCell(Cell.newBuilder())
+            .addCell(Cell.newBuilder())
 
-modelCompiler {
-    java {
-        codegen {
-            validation { skipValidation() }
+            .addCell(Cell.newBuilder())
+            .addCell(Cell.newBuilder())
+            .addCell(Cell.newBuilder())
+
+            .addCell(Cell.newBuilder())
+            .addCell(Cell.newBuilder())
+            .addCell(Cell.newBuilder())
+
+            .validateCellCount()
+    }
+
+    @Test
+    fun `fail if cell count does not match the validation expression`() {
+
+        assertThrows<IllegalStateException> {
+
+            Board.newBuilder()
+                .setSideSize(3)
+                .addCell(Cell.newBuilder())
+                .validateCellCount()
         }
     }
 }

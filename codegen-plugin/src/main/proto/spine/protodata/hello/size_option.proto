@@ -37,15 +37,15 @@ option java_multiple_files = true;
 
 import "spine/protodata/ast.proto";
 
-message SizeOptionProjection {
+message SizeOption {
   option (entity).kind = PROJECTION;
 
-  SizeOptionProjectionId id = 1;
+  SizeOptionId id = 1;
 
   string size_expression = 2;
 }
 
-message SizeOptionProjectionId {
+message SizeOptionId {
 
   spine.protodata.FilePath file = 1;
 

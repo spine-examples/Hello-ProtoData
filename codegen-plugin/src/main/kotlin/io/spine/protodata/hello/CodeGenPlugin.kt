@@ -23,7 +23,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package io.spine.protodata.hello
 
 import io.spine.core.EventContext
@@ -36,90 +35,62 @@ import io.spine.protodata.plugin.Plugin
 import io.spine.protodata.plugin.View
 import io.spine.protodata.plugin.ViewRepository
 import io.spine.protodata.renderer.Renderer
-import io.spine.protodata.renderer.SourceFileSet
 import io.spine.server.route.EventRoute
 import io.spine.server.route.EventRouting
-import io.spine.tools.code.Java
-import io.spine.tools.code.Kotlin
 
 public class CodeGenPlugin : Plugin {
 
     override fun renderers(): List<Renderer<*>> {
         return listOf(
-            KotlinRenderer(),
-            JavaRenderer()
+            ValidateSizeOptionRenderer()
         )
     }
 
     override fun viewRepositories(): Set<ViewRepository<*, *, *>> {
-        return setOf(Repository())
+        return setOf(SizeOptionViewRepository())
     }
 }
 
-public class SizeOptionView : View<SizeOptionProjectionId,
-        SizeOptionProjection,
-        SizeOptionProjection.Builder>() {
+public class SizeOptionView : View<SizeOptionId,
+        SizeOption,
+        SizeOption.Builder>() {
 
-    private companion object FieldOptions {
-        const val NAME = "option.name"
-        const val VALUE = "size"
+    private companion object WhereParams {
+        const val FIELD_NAME = "option.name"
+        const val FIELD_VALUE = "size"
     }
 
     @Subscribe
     internal fun on(
         @External @Where(
-            field = NAME,
-            equals = VALUE
+            field = FIELD_NAME,
+            equals = FIELD_VALUE
         )
         event: FieldOptionDiscovered
     ) {
-        println("Size option discovered: " + event.option.value)
         val value = AnyPacker.unpack(
             event.option.value,
             ArrayOfSizeOption::class.java
         )
-        println("Size option expression: " + value.value)
         builder().setSizeExpression(value.value)
     }
 }
 
-private class Repository : ViewRepository<SizeOptionProjectionId,
+private class SizeOptionViewRepository : ViewRepository<SizeOptionId,
         SizeOptionView,
-        SizeOptionProjection>() {
-    override fun setupEventRouting(
-        routing: EventRouting<SizeOptionProjectionId>
-    ) {
+        SizeOption>() {
+
+    override fun setupEventRouting(routing: EventRouting<SizeOptionId>) {
         super.setupEventRouting(routing)
-        println("Event routing: $routing")
         routing.route(FieldOptionDiscovered::class.java)
         { message: FieldOptionDiscovered, _: EventContext? ->
             EventRoute.withId(
-                SizeOptionProjectionId.newBuilder()
+                SizeOptionId.newBuilder()
                     .setFile(message.file)
                     .setType(message.type)
                     .setField(message.field)
                     .build()
             )
-        }
-    }
-}
-
-private class KotlinRenderer : Renderer<Kotlin>(Kotlin.lang()) {
-    override fun render(sources: SourceFileSet) {
-        sources.forEach { sourceFile ->
-            run {
-                println("Rendering Kotlin file: " + sourceFile.relativePath)
-            }
-        }
-    }
-}
-
-private class JavaRenderer : Renderer<Java>(Java.lang()) {
-    override fun render(sources: SourceFileSet) {
-        sources.forEach { sourceFile ->
-            run {
-                println("Rendering Java file: " + sourceFile.relativePath)
-            }
         }
     }
 }

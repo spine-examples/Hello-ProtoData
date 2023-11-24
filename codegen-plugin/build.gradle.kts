@@ -23,7 +23,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 import io.spine.internal.dependency.ProtoData
 
 dependencies {
@@ -32,6 +31,9 @@ dependencies {
 
     // To use ProtoData API in code generation plugin.
     api(ProtoData.compiler)
+
+    // Kotlin sources generator
+    api("com.squareup:kotlinpoet:1.15.1")
 }
 
 modelCompiler {
