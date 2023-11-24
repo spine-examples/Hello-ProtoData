@@ -23,36 +23,32 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package io.spine.protodata.hello
 
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
+import com.google.protobuf.StringValue
+import io.spine.protobuf.AnyPacker
+import io.spine.protodata.ProtobufSourceFile
 
-class `Board builder extension should` {
+internal fun ProtobufSourceFile.javaPackage(): String {
 
-    @Test
-    fun `validate cell count`() {
+    val optionName = "java_package"
 
-        val sideSize = 3
-        val builder = Board.newBuilder()
-            .setSideSize(sideSize)
-
-        repeat(sideSize * sideSize) {
-            builder.addCell(Cell.newBuilder())
-        }
-        builder.validateCellCount()
+    val option = file.optionList.find {
+        it.name == optionName
     }
+    check(option != null) { "Cannot find option '$optionName'" }
 
-    @Test
-    fun `fail if cell count does not match the validation expression`() {
+    return AnyPacker.unpack(
+        option.value,
+        StringValue::class.java
+    ).value
+}
 
-        assertThrows<IllegalStateException> {
+internal fun ProtobufSourceFile.fieldNames(typeName: String): Iterable<String> {
 
-            Board.newBuilder()
-                .setSideSize(3)
-                .addCell(Cell.newBuilder())
-                .validateCellCount()
-        }
+    val type = typeMap.values.find {
+        it.name.simpleName == typeName
     }
+    check(type != null) { "Cannot find type '$typeName' in $filePath" }
+    return type.fieldList.map { it.name.value }
 }

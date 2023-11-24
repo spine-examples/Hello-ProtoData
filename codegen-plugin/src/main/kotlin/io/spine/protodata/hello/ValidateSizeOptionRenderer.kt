@@ -25,11 +25,9 @@
  */
 package io.spine.protodata.hello
 
-import com.google.protobuf.StringValue
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
-import io.spine.protobuf.AnyPacker
 import io.spine.protodata.ProtobufSourceFile
 import io.spine.protodata.renderer.Renderer
 import io.spine.protodata.renderer.SourceFileSet
@@ -55,33 +53,33 @@ public class ValidateSizeOptionRenderer : Renderer<Kotlin>(Kotlin.lang()) {
         sizeOption: SizeOption,
         sources: SourceFileSet
     ) {
-        val protoFile = select<ProtobufSourceFile>().all().find {
-            it.file.path.value == sizeOption.id.file.value
+        val protobufSourceFile = select<ProtobufSourceFile>().all().find {
+            it.file.path.value == sizeOption.id.filePath.value
         }
-        check(protoFile != null) {
-            "Cannot find file: " + sizeOption.id.file.value
+        check(protobufSourceFile != null) {
+            "Cannot find 'ProtobufSourceFile' for " +
+                    sizeOption.id.filePath.value
         }
 
-        val className = sizeOption.id.type.simpleName
-        val fieldName = propertyName(sizeOption.id.field.value)
-        val packageName = javaPackageOption(protoFile)
-        val protoFieldNames = collectFieldNamesForType(className, protoFile)
-        val expression = buildExpression(
-            sizeOption.sizeExpression,
-            protoFieldNames
+        val packageName = protobufSourceFile.javaPackage()
+        val typeName = sizeOption.id.typeName.simpleName
+        val fieldName = sizeOption.id.fieldName.value.camelCase()
+        val validationExpression = buildExpression(
+            sizeOption.validationExpression,
+            protobufSourceFile.fieldNames(typeName)
         )
         val filePath = Path.of(
             packageName.replace('.', '/'),
-            className + "Ext.kt"
+            typeName + "Ext.kt"
         )
 
         sources.createFile(
             filePath,
             generateFileContent(
                 packageName,
-                className,
+                typeName,
                 fieldName,
-                expression
+                validationExpression
             )
         )
     }
@@ -95,13 +93,15 @@ private fun generateFileContent(
 ) = FileSpec.builder(ClassName(packageName, typeName))
     .indent("    ")
     .addFunction(
-        FunSpec.builder("validate" + fieldName.camelCase() + "Count")
+        FunSpec.builder("validate" + fieldName + "Count")
             .receiver(ClassName(packageName, typeName, "Builder"))
             .beginControlFlow(
-                "check(%LCount == %L)", fieldName, expression
+                "check(%LCount == %L)",
+                fieldName.propertyName(),
+                expression
             )
             .addStatement(
-                "\"'%L' count does not match the validation expression.\"",
+                "\"%L count does not match the validation expression.\"",
                 fieldName
             )
             .endControlFlow()
@@ -112,41 +112,12 @@ private fun generateFileContent(
 
 private fun buildExpression(
     expression: String,
-    protoFieldNames: List<String>
-): String {
-    var result = expression
-    protoFieldNames.forEach { result = result.replace(it, propertyName(it)) }
-    return result
-}
-
-private fun javaPackageOption(protoFile: ProtobufSourceFile): String {
-
-    val optionName = "java_package"
-
-    val option = protoFile.file.optionList.find {
-        it.name == optionName
+    snakeCaseFieldNames: Iterable<String>
+) = mutableListOf(expression)
+    .plus(snakeCaseFieldNames)
+    .reduce { result, snakeCaseName ->
+        result.replace(snakeCaseName, snakeCaseName.propertyName())
     }
-    check(option != null) { "Cannot find option: $optionName" }
 
-    return AnyPacker.unpack(
-        option.value,
-        StringValue::class.java
-    ).value
-}
-
-private fun collectFieldNamesForType(
-    simpleTypeName: String,
-    protoFile: ProtobufSourceFile
-): List<String> {
-
-    val type = protoFile.typeMap.values.find {
-        it.name.simpleName == simpleTypeName
-    }
-    check(type != null) {
-        "Cannot find type '$simpleTypeName' in $protoFile"
-    }
-    return type.fieldList.map { it.name.value }
-}
-
-private fun propertyName(protoFieldName: String) =
-    protoFieldName.camelCase().replaceFirstChar { it.lowercase() }
+private fun String.propertyName() =
+    camelCase().replaceFirstChar { it.lowercase() }

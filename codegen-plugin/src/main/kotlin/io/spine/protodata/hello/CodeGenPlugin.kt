@@ -72,7 +72,7 @@ public class SizeOptionView : View<SizeOptionId,
             event.option.value,
             ArrayOfSizeOption::class.java
         )
-        builder().setSizeExpression(value.value)
+        builder().setValidationExpression(value.value)
     }
 }
 
@@ -86,9 +86,9 @@ private class SizeOptionViewRepository : ViewRepository<SizeOptionId,
         { message: FieldOptionDiscovered, _: EventContext? ->
             EventRoute.withId(
                 SizeOptionId.newBuilder()
-                    .setFile(message.file)
-                    .setType(message.type)
-                    .setField(message.field)
+                    .setFilePath(message.file)
+                    .setTypeName(message.type)
+                    .setFieldName(message.field)
                     .build()
             )
         }

@@ -32,7 +32,7 @@ import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
 option java_package = "io.spine.protodata.hello";
-option java_outer_classname = "SizeOptionProjectionProto";
+option java_outer_classname = "SizeOptionProto";
 option java_multiple_files = true;
 
 import "spine/protodata/ast.proto";
@@ -42,14 +42,14 @@ message SizeOption {
 
   SizeOptionId id = 1;
 
-  string size_expression = 2;
+  string validation_expression = 2;
 }
 
 message SizeOptionId {
 
-  spine.protodata.FilePath file = 1;
+  spine.protodata.FilePath file_path = 1;
 
-  spine.protodata.TypeName type = 2;
+  spine.protodata.TypeName type_name = 2;
 
-  spine.protodata.FieldName field = 3;
+  spine.protodata.FieldName field_name = 3;
 }
