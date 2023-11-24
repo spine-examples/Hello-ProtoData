@@ -42,12 +42,12 @@ public class ValidateSizeOptionRenderer : Renderer<Kotlin>(Kotlin.lang()) {
 
     override fun render(sources: SourceFileSet) {
 
-        if (!sources.outputRoot.endsWith("kotlin")) {
-            return
-        }
+        // Generate code for kotlin output root only
+        if (sources.outputRoot.endsWith("kotlin")) {
 
-        select(SizeOption::class.java).all().forEach {
-            renderValidationCode(it, sources)
+            select(SizeOption::class.java).all().forEach {
+                renderValidationCode(it, sources)
+            }
         }
     }
 
@@ -65,18 +65,20 @@ public class ValidateSizeOptionRenderer : Renderer<Kotlin>(Kotlin.lang()) {
         val className = sizeOption.id.type.simpleName
         val fieldName = propertyName(sizeOption.id.field.value)
         val packageName = javaPackageOption(protoFile)
-        val fileName = className + "Ext.kt"
-        val fieldNames = collectFieldNamesForType(className, protoFile)
-        val expression = buildExpression(sizeOption.sizeExpression, fieldNames)
-        val generatedFilePath = Path.of(
-            packageName.replace('.', '/'), fileName
+        val protoFieldNames = collectFieldNamesForType(className, protoFile)
+        val expression = buildExpression(
+            sizeOption.sizeExpression,
+            protoFieldNames
+        )
+        val filePath = Path.of(
+            packageName.replace('.', '/'),
+            className + "Ext.kt"
         )
 
         sources.createFile(
-            generatedFilePath,
+            filePath,
             generateFileContent(
                 packageName,
-                fileName,
                 className,
                 fieldName,
                 expression
@@ -87,25 +89,20 @@ public class ValidateSizeOptionRenderer : Renderer<Kotlin>(Kotlin.lang()) {
 
 private fun generateFileContent(
     packageName: String,
-    fileName: String,
     typeName: String,
     fieldName: String,
     expression: String
-) = FileSpec.builder(packageName, fileName)
+) = FileSpec.builder(ClassName(packageName, typeName))
     .indent("    ")
     .addFunction(
         FunSpec.builder("validate" + fieldName.camelCase() + "Count")
-            .receiver(
-                ClassName(
-                    packageName, "$typeName.Builder"
-                )
-            )
+            .receiver(ClassName(packageName, typeName, "Builder"))
             .beginControlFlow(
-                "check(" + fieldName + "Count == $expression)"
+                "check(%LCount == %L)", fieldName, expression
             )
             .addStatement(
-                "\"'$fieldName' count " +
-                        "does not match the validation expression.\""
+                "\"'%L' count does not match the validation expression.\"",
+                fieldName
             )
             .endControlFlow()
             .build()
@@ -115,15 +112,12 @@ private fun generateFileContent(
 
 private fun buildExpression(
     expression: String,
-    fieldNames: List<String>
+    protoFieldNames: List<String>
 ): String {
     var result = expression
-    fieldNames.forEach { result = result.replace(it, propertyName(it)) }
+    protoFieldNames.forEach { result = result.replace(it, propertyName(it)) }
     return result
 }
-
-private fun propertyName(protoFieldName: String) =
-    protoFieldName.camelCase().replaceFirstChar { it.lowercase() }
 
 private fun javaPackageOption(protoFile: ProtobufSourceFile): String {
 
@@ -153,3 +147,6 @@ private fun collectFieldNamesForType(
     }
     return type.fieldList.map { it.name.value }
 }
+
+private fun propertyName(protoFieldName: String) =
+    protoFieldName.camelCase().replaceFirstChar { it.lowercase() }
