@@ -46,37 +46,49 @@ public class ValidateSizeOptionRenderer : Renderer<Kotlin>(Kotlin.lang()) {
         // Generate code for kotlin output root only
         if (sources.outputRoot.endsWith("kotlin")) {
 
-            select(SizeOption::class.java).all().forEach {
-                renderSizeOptionValidationCode(it, sources)
-            }
+            select(SizeOption::class.java).all()
+                .groupBy { it.id.typeName }.values
+                .forEach {
+                    renderSizeOptionValidationCode(it, sources)
+                }
         }
     }
 
     private fun renderSizeOptionValidationCode(
-        sizeOption: SizeOption,
+        sizeOptions: List<SizeOption>,
         sources: SourceFileSet
     ) {
-        val protobufSourceFile = findSourceFile(sizeOption)
+        check(sizeOptions.isNotEmpty()) { "Empty list of size options passed." }
 
+        val protobufSourceFile = findSourceFile(sizeOptions.first())
         val packageName = protobufSourceFile.javaPackage()
-        val shortClassName = sizeOption.id.typeName.simpleName
-        val fieldName = sizeOption.id.fieldName.value
-        val validationExpression = buildExpression(
-            sizeOption.validationExpression,
-            protobufSourceFile.fieldNames(shortClassName)
-        )
+        val shortClassName = sizeOptions.first().id.typeName.simpleName
+        val fullClassName = ClassName(packageName, shortClassName)
+        val fileBuilder = FileSpec.builder(fullClassName)
+            .indent("    ")
+
+        sizeOptions.forEach { sizeOption ->
+
+            val fieldName = sizeOption.id.fieldName.value.propertyName()
+            val validationExpression = buildExpression(
+                sizeOption.validationExpression,
+                protobufSourceFile.fieldNames(shortClassName)
+            )
+
+            generateValidationFunction(
+                fileBuilder,
+                fullClassName,
+                fieldName,
+                validationExpression
+            )
+        }
 
         sources.createFile(
             Path.of(
                 packageName.replace('.', '/'),
-                shortClassName + "Ext.kt"
+                shortClassName + "BuilderExt.kt"
             ),
-            generateBuilderExtension(
-                packageName,
-                shortClassName,
-                fieldName,
-                validationExpression
-            )
+            fileBuilder.build().toString()
         )
     }
 
@@ -92,32 +104,31 @@ public class ValidateSizeOptionRenderer : Renderer<Kotlin>(Kotlin.lang()) {
     }
 }
 
-private fun generateBuilderExtension(
-    packageName: String,
-    shortClassName: String,
+private fun generateValidationFunction(
+    builder: FileSpec.Builder,
+    className: ClassName,
     fieldName: String,
     validationExpression: String
-) = FileSpec.builder(ClassName(packageName, shortClassName))
-    .indent("    ")
-    .addFunction(
-        FunSpec.builder("validate" + fieldName.camelCase() + "Count")
-            .receiver(ClassName(packageName, shortClassName, "Builder"))
-            .addModifiers(KModifier.INTERNAL)
-            .addStatement("val expectedValue = $validationExpression")
-            .beginControlFlow(
-                "check(%LCount == expectedValue)",
-                fieldName.propertyName()
-            )
-            .addStatement(
-                "\"Invalid number of '%1L' elements. Expected \$expectedValue" +
-                        ", but actual \$%1LCount.\"",
-                fieldName.propertyName()
-            )
-            .endControlFlow()
-            .build()
-    )
-    .build()
-    .toString()
+) = builder.addFunction(
+    FunSpec.builder("validate" + fieldName.camelCase() + "Count")
+        .receiver(className.nestedClass("Builder"))
+        .addModifiers(KModifier.INTERNAL)
+        .addStatement("val expectedValue = $validationExpression")
+        .beginControlFlow(
+            "check(%LCount == expectedValue)",
+            fieldName
+        )
+        .addStatement(
+            "\"Invalid number of '%L' elements: \" +",
+            fieldName
+        )
+        .addStatement(
+            "\"expected \$expectedValue, but actual \$%LCount.\"",
+            fieldName
+        )
+        .endControlFlow()
+        .build()
+)
 
 private fun buildExpression(
     expression: String,
