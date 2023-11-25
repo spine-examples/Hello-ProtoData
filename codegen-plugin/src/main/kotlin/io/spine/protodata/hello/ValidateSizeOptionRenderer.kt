@@ -25,9 +25,12 @@
  */
 package io.spine.protodata.hello
 
+import com.google.protobuf.StringValue
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
+import com.squareup.kotlinpoet.KModifier
+import io.spine.protobuf.AnyPacker
 import io.spine.protodata.ProtobufSourceFile
 import io.spine.protodata.renderer.Renderer
 import io.spine.protodata.renderer.SourceFileSet
@@ -44,15 +47,40 @@ public class ValidateSizeOptionRenderer : Renderer<Kotlin>(Kotlin.lang()) {
         if (sources.outputRoot.endsWith("kotlin")) {
 
             select(SizeOption::class.java).all().forEach {
-                renderValidationCode(it, sources)
+                renderSizeOptionValidationCode(it, sources)
             }
         }
     }
 
-    private fun renderValidationCode(
+    private fun renderSizeOptionValidationCode(
         sizeOption: SizeOption,
         sources: SourceFileSet
     ) {
+        val protobufSourceFile = findSourceFile(sizeOption)
+
+        val packageName = protobufSourceFile.javaPackage()
+        val shortClassName = sizeOption.id.typeName.simpleName
+        val fieldName = sizeOption.id.fieldName.value
+        val validationExpression = buildExpression(
+            sizeOption.validationExpression,
+            protobufSourceFile.fieldNames(shortClassName)
+        )
+
+        sources.createFile(
+            Path.of(
+                packageName.replace('.', '/'),
+                shortClassName + "Ext.kt"
+            ),
+            generateBuilderExtension(
+                packageName,
+                shortClassName,
+                fieldName,
+                validationExpression
+            )
+        )
+    }
+
+    private fun findSourceFile(sizeOption: SizeOption): ProtobufSourceFile {
         val protobufSourceFile = select<ProtobufSourceFile>().all().find {
             it.file.path.value == sizeOption.id.filePath.value
         }
@@ -60,49 +88,30 @@ public class ValidateSizeOptionRenderer : Renderer<Kotlin>(Kotlin.lang()) {
             "Cannot find 'ProtobufSourceFile' for " +
                     sizeOption.id.filePath.value
         }
-
-        val packageName = protobufSourceFile.javaPackage()
-        val typeName = sizeOption.id.typeName.simpleName
-        val fieldName = sizeOption.id.fieldName.value.camelCase()
-        val validationExpression = buildExpression(
-            sizeOption.validationExpression,
-            protobufSourceFile.fieldNames(typeName)
-        )
-        val filePath = Path.of(
-            packageName.replace('.', '/'),
-            typeName + "Ext.kt"
-        )
-
-        sources.createFile(
-            filePath,
-            generateFileContent(
-                packageName,
-                typeName,
-                fieldName,
-                validationExpression
-            )
-        )
+        return protobufSourceFile
     }
 }
 
-private fun generateFileContent(
+private fun generateBuilderExtension(
     packageName: String,
-    typeName: String,
+    shortClassName: String,
     fieldName: String,
-    expression: String
-) = FileSpec.builder(ClassName(packageName, typeName))
+    validationExpression: String
+) = FileSpec.builder(ClassName(packageName, shortClassName))
     .indent("    ")
     .addFunction(
-        FunSpec.builder("validate" + fieldName + "Count")
-            .receiver(ClassName(packageName, typeName, "Builder"))
+        FunSpec.builder("validate" + fieldName.camelCase() + "Count")
+            .receiver(ClassName(packageName, shortClassName, "Builder"))
+            .addModifiers(KModifier.INTERNAL)
+            .addStatement("val expectedValue = $validationExpression")
             .beginControlFlow(
-                "check(%LCount == %L)",
-                fieldName.propertyName(),
-                expression
+                "check(%LCount == expectedValue)",
+                fieldName.propertyName()
             )
             .addStatement(
-                "\"%L count does not match the validation expression.\"",
-                fieldName
+                "\"Invalid number of '%1L' elements. Expected \$expectedValue" +
+                        ", but actual \$%1LCount.\"",
+                fieldName.propertyName()
             )
             .endControlFlow()
             .build()
@@ -121,3 +130,19 @@ private fun buildExpression(
 
 private fun String.propertyName() =
     camelCase().replaceFirstChar { it.lowercase() }
+
+private fun ProtobufSourceFile.javaPackage(): String {
+    val optionName = "java_package"
+
+    val option = file.optionList.find { it.name == optionName }
+    check(option != null) { "Cannot find option '$optionName'" }
+
+    return AnyPacker.unpack(option.value, StringValue::class.java).value
+}
+
+private fun ProtobufSourceFile.fieldNames(typeName: String): Iterable<String> {
+    val type = typeMap.values.find { it.name.simpleName == typeName }
+    check(type != null) { "Cannot find type '$typeName' in $filePath" }
+
+    return type.fieldList.map { it.name.value }
+}
