@@ -1,5 +1,5 @@
 /*
- * Copyright 2023, TeamDev. All rights reserved.
+ * Copyright 2022, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,21 +23,15 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.protodata.hello
 
-import io.spine.protodata.plugin.Plugin
-import io.spine.protodata.plugin.ViewRepository
-import io.spine.protodata.renderer.Renderer
+/**
+ *
+ */
 
-public class CodeGenPlugin : Plugin {
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.protodata.hello;
 
-    override fun renderers(): List<Renderer<*>> {
-        return listOf(
-            ValidateSizeOptionRenderer()
-        )
-    }
+import com.google.errorprone.annotations.CheckReturnValue;
 
-    override fun viewRepositories(): Set<ViewRepository<*, *, *>> {
-        return setOf(SizeOptionViewRepository())
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

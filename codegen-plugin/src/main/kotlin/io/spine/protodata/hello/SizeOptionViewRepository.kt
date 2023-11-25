@@ -25,19 +25,26 @@
  */
 package io.spine.protodata.hello
 
-import io.spine.protodata.plugin.Plugin
+import io.spine.core.EventContext
+import io.spine.protodata.event.FieldOptionDiscovered
 import io.spine.protodata.plugin.ViewRepository
-import io.spine.protodata.renderer.Renderer
+import io.spine.server.route.EventRoute
+import io.spine.server.route.EventRouting
 
-public class CodeGenPlugin : Plugin {
-
-    override fun renderers(): List<Renderer<*>> {
-        return listOf(
-            ValidateSizeOptionRenderer()
-        )
-    }
-
-    override fun viewRepositories(): Set<ViewRepository<*, *, *>> {
-        return setOf(SizeOptionViewRepository())
+internal class SizeOptionViewRepository : ViewRepository<SizeOptionId,
+        SizeOptionView,
+        SizeOption>() {
+    override fun setupEventRouting(routing: EventRouting<SizeOptionId>) {
+        super.setupEventRouting(routing)
+        routing.route(FieldOptionDiscovered::class.java)
+        { message: FieldOptionDiscovered, _: EventContext? ->
+            EventRoute.withId(
+                SizeOptionId.newBuilder()
+                    .setFilePath(message.file)
+                    .setTypeName(message.type)
+                    .setFieldName(message.field)
+                    .build()
+            )
+        }
     }
 }
