@@ -36,7 +36,7 @@ internal class SizeOptionView : View<SizeOptionId,
         SizeOption,
         SizeOption.Builder>() {
 
-    private companion object WhereParams {
+    private companion object FilterParams {
         const val FIELD_NAME = "option.name"
         const val FIELD_VALUE = "size"
     }
@@ -49,10 +49,10 @@ internal class SizeOptionView : View<SizeOptionId,
         )
         event: FieldOptionDiscovered
     ) {
-        val expression = AnyPacker.unpack(
+        val option = AnyPacker.unpack(
             event.option.value,
             ArrayOfSizeOption::class.java
         )
-        builder().setValidationExpression(expression.value)
+        builder().setValidationExpression(option.value)
     }
 }

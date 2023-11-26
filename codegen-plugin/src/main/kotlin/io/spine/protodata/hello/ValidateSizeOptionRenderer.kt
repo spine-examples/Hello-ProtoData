@@ -31,12 +31,16 @@ import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import io.spine.protobuf.AnyPacker
+import io.spine.protodata.Field
+import io.spine.protodata.MessageType
 import io.spine.protodata.ProtobufSourceFile
+import io.spine.protodata.isRepeated
 import io.spine.protodata.renderer.Renderer
 import io.spine.protodata.renderer.SourceFileSet
 import io.spine.server.query.select
 import io.spine.string.camelCase
 import io.spine.tools.code.Kotlin
+import io.spine.type.typeName
 import java.nio.file.Path
 
 public class ValidateSizeOptionRenderer : Renderer<Kotlin>(Kotlin.lang()) {
@@ -47,32 +51,35 @@ public class ValidateSizeOptionRenderer : Renderer<Kotlin>(Kotlin.lang()) {
         if (sources.outputRoot.endsWith("kotlin")) {
 
             select(SizeOption::class.java).all()
+                .onEach { checkFieldIsRepeated(it) }
                 .groupBy { it.id.typeName }.values
-                .forEach {
-                    renderSizeOptionValidationCode(it, sources)
+                .forEach() {
+                    renderValidationCode(it, sources)
                 }
         }
     }
 
-    private fun renderSizeOptionValidationCode(
-        sizeOptions: List<SizeOption>,
+    private fun renderValidationCode(
+        sizeOptionsWithinOneType: List<SizeOption>,
         sources: SourceFileSet
     ) {
-        check(sizeOptions.isNotEmpty()) { "Empty list of size options passed." }
+        check(sizeOptionsWithinOneType.isNotEmpty()) {
+            "Empty list of 'size' options passed."
+        }
 
-        val protobufSourceFile = findSourceFile(sizeOptions.first())
+        val protobufSourceFile = findSourceFile(sizeOptionsWithinOneType.first())
         val packageName = protobufSourceFile.javaPackage()
-        val shortClassName = sizeOptions.first().id.typeName.simpleName
-        val fullClassName = ClassName(packageName, shortClassName)
+        val className = sizeOptionsWithinOneType.first().id.typeName.simpleName
+        val fullClassName = ClassName(packageName, className)
         val fileBuilder = FileSpec.builder(fullClassName)
             .indent("    ")
 
-        sizeOptions.forEach { sizeOption ->
+        sizeOptionsWithinOneType.forEach { sizeOption ->
 
             val fieldName = sizeOption.id.fieldName.value.propertyName()
             val validationExpression = buildExpression(
                 sizeOption.validationExpression,
-                protobufSourceFile.fieldNames(shortClassName)
+                protobufSourceFile.fieldNames(className)
             )
 
             generateValidationFunction(
@@ -86,19 +93,31 @@ public class ValidateSizeOptionRenderer : Renderer<Kotlin>(Kotlin.lang()) {
         sources.createFile(
             Path.of(
                 packageName.replace('.', '/'),
-                shortClassName + "BuilderExt.kt"
+                className + "BuilderExt.kt"
             ),
             fileBuilder.build().toString()
         )
     }
 
+    private fun checkFieldIsRepeated(sizeOption: SizeOption) {
+
+        val sourceFile = findSourceFile(sizeOption)
+        val typeName = sizeOption.id.typeName.simpleName
+        val fieldName = sizeOption.id.fieldName.value
+
+        check(sourceFile.type(typeName).field(fieldName).isRepeated()) {
+            "'$typeName.$fieldName' is not repeated and therefore " +
+                    "cannot be validated with 'size' option."
+        }
+    }
+
     private fun findSourceFile(sizeOption: SizeOption): ProtobufSourceFile {
+        val filePath = sizeOption.id.filePath.value
         val protobufSourceFile = select<ProtobufSourceFile>().all().find {
-            it.file.path.value == sizeOption.id.filePath.value
+            it.file.path.value == filePath
         }
         check(protobufSourceFile != null) {
-            "Cannot find 'ProtobufSourceFile' for " +
-                    sizeOption.id.filePath.value
+            "Cannot find 'ProtobufSourceFile' for $filePath"
         }
         return protobufSourceFile
     }
@@ -151,9 +170,20 @@ private fun ProtobufSourceFile.javaPackage(): String {
     return AnyPacker.unpack(option.value, StringValue::class.java).value
 }
 
-private fun ProtobufSourceFile.fieldNames(typeName: String): Iterable<String> {
+private fun ProtobufSourceFile.type(typeName: String): MessageType {
     val type = typeMap.values.find { it.name.simpleName == typeName }
     check(type != null) { "Cannot find type '$typeName' in $filePath" }
+    return type
+}
 
-    return type.fieldList.map { it.name.value }
+private fun ProtobufSourceFile.fieldNames(typeName: String): Iterable<String> {
+    return type(typeName).fieldList.map { it.name.value }
+}
+
+private fun MessageType.field(fieldName: String): Field {
+    val field = fieldList.find { it.name.value == fieldName }
+    check(field != null) {
+        "Cannot find field '$fieldName' in type '${typeName.simpleName()}'."
+    }
+    return field
 }
