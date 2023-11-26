@@ -29,7 +29,7 @@ import io.spine.protodata.plugin.Plugin
 import io.spine.protodata.plugin.ViewRepository
 import io.spine.protodata.renderer.Renderer
 
-public class CodeGenPlugin : Plugin {
+public class ApplySizeOptionPlugin : Plugin {
 
     override fun renderers(): List<Renderer<*>> {
         return listOf(

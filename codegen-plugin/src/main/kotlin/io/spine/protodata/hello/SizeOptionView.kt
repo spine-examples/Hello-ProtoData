@@ -28,7 +28,7 @@ package io.spine.protodata.hello
 import io.spine.core.External
 import io.spine.core.Subscribe
 import io.spine.core.Where
-import io.spine.protobuf.AnyPacker
+import io.spine.protobuf.AnyPacker.unpack
 import io.spine.protodata.event.FieldOptionDiscovered
 import io.spine.protodata.plugin.View
 
@@ -49,10 +49,7 @@ internal class SizeOptionView : View<SizeOptionId,
         )
         event: FieldOptionDiscovered
     ) {
-        val option = AnyPacker.unpack(
-            event.option.value,
-            ArrayOfSizeOption::class.java
-        )
-        builder().setValidationExpression(option.value)
+        val option = unpack(event.option.value, ArrayOfSizeOption::class.java)
+        builder().setExpression(option.value)
     }
 }

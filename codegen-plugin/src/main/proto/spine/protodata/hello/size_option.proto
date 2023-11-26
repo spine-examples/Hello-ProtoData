@@ -42,7 +42,7 @@ message SizeOption {
 
   SizeOptionId id = 1;
 
-  string validation_expression = 2;
+  string expression = 2;
 }
 
 message SizeOptionId {

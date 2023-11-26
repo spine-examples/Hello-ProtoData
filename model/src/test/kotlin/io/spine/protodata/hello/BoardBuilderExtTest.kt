@@ -41,6 +41,7 @@ class `Board builder extension should` {
         repeat(sideSize * sideSize) {
             builder.addCell(Cell.newBuilder())
         }
+
         builder.validateCellCount()
     }
 
