@@ -37,14 +37,19 @@ option java_multiple_files = true;
 
 import "spine/protodata/ast.proto";
 
+// View on the `ArrayOfSizeOption`.
 message SizeOption {
   option (entity).kind = PROJECTION;
 
+  // ID of the option.
   SizeOptionId id = 1;
 
+  // Value of the option which is a validation expression
+  // for the size of a repeated field.
   string expression = 2;
 }
 
+// Triplet File+Type+Field unambiguously identifies the option.
 message SizeOptionId {
 
   spine.protodata.FilePath file_path = 1;

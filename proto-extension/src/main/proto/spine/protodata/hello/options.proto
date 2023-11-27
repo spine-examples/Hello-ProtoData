@@ -63,7 +63,7 @@ extend google.protobuf.FieldOptions {
 //
 //     // There must be a number of elements
 //     // twice the `count`.
-//     repeated string value = 2 [(size) = "count * 2"];
+//     repeated string value = 2 [(size),value = "count * 2"];
 // }
 message ArrayOfSizeOption {
 
