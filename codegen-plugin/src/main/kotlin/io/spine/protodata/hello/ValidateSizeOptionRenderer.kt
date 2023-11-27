@@ -32,6 +32,13 @@ import io.spine.protodata.renderer.SourceFileSet
 import io.spine.server.query.select
 import io.spine.tools.code.Kotlin
 
+/**
+ * ProtoData [Renderer] that renders message builder extension for types
+ * in which the `size` option is used.
+ *
+ * For example, if the `size` option is applied to `Board.cell` repeated field
+ * then `Board.Builder.validateCellCount()` function will be generated.
+ */
 public class ValidateSizeOptionRenderer : Renderer<Kotlin>(Kotlin.lang()) {
 
     override fun render(sources: SourceFileSet) {
@@ -42,6 +49,8 @@ public class ValidateSizeOptionRenderer : Renderer<Kotlin>(Kotlin.lang()) {
         }
 
         select(SizeOption::class.java).all()
+            // Separate all size options by pair File+Type, so we can
+            // generate one builder extension for options within one Type.
             .groupBy { sizeOption ->
                 sizeOption.id.filePath to sizeOption.id.typeName
             }.entries.forEach { mapEntry ->

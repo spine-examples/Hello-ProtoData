@@ -29,6 +29,10 @@ package io.spine.protodata.hello
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
+/**
+ * Tests the generated validation code for the `size` option
+ * that is applied to a repeated field.
+ */
 class `Board builder extension should` {
 
     @Test

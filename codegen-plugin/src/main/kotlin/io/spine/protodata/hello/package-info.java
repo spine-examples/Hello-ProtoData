@@ -25,9 +25,9 @@
  */
 
 /**
- *
+ * Provides ProtoData plugin that renders validation code
+ * for the `size` option which is applied to a repeated field.
  */
-
 @CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.protodata.hello;

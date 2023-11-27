@@ -41,6 +41,10 @@ import io.spine.string.camelCase
 import io.spine.type.typeName
 import java.nio.file.Path
 
+/**
+ * Generates builder extension with a separate validation function
+ * for every repeated field in which the `size` option is used.
+ */
 internal class BuilderExtensionGenerator(
     private val sourceFile: ProtobufSourceFile,
     private val typeName: TypeName,

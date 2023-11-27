@@ -31,6 +31,10 @@ import com.google.protobuf.ExtensionRegistry
 import io.spine.option.OptionsProvider
 import io.spine.protodata.hello.ArrayOfSizeOptionProto
 
+/**
+ * Registers ProtoBuf extension that enables `ArrayOfSizeOption` field option
+ * that may be applied to a repeated field in order to validate its size.
+ */
 @AutoService(OptionsProvider::class)
 public class ArrayOfSizeOptionProvider : OptionsProvider {
 

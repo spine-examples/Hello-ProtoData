@@ -31,6 +31,9 @@ import io.spine.protodata.plugin.ViewRepository
 import io.spine.server.route.EventRoute
 import io.spine.server.route.EventRouting
 
+/**
+ * The repository for [SizeOptionView].
+ */
 internal class SizeOptionViewRepository : ViewRepository<SizeOptionId,
         SizeOptionView,
         SizeOption>() {

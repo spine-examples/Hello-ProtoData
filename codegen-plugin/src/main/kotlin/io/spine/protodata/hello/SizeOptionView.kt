@@ -32,6 +32,9 @@ import io.spine.protobuf.AnyPacker.unpack
 import io.spine.protodata.event.FieldOptionDiscovered
 import io.spine.protodata.plugin.View
 
+/**
+ * Records the `size` options that are applied to repeated fields.
+ */
 internal class SizeOptionView : View<SizeOptionId,
         SizeOption,
         SizeOption.Builder>() {
