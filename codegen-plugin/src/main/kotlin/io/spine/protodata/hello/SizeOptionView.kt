@@ -33,12 +33,15 @@ import io.spine.protodata.event.FieldOptionDiscovered
 import io.spine.protodata.plugin.View
 
 /**
- * Records the `size` options that are applied to repeated fields.
+ * Records the [ArrayOfSizeOption] options that are applied to repeated fields.
  */
 internal class SizeOptionView : View<SizeOptionId,
         SizeOption,
         SizeOption.Builder>() {
 
+    /**
+     * Parameters to filter the `size` option among the other options.
+     */
     private companion object FilterParams {
         const val FIELD_NAME = "option.name"
         const val FIELD_VALUE = "size"

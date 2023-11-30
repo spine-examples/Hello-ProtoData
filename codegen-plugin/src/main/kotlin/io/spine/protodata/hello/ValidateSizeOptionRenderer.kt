@@ -33,16 +33,17 @@ import io.spine.server.query.select
 import io.spine.tools.code.Kotlin
 
 /**
- * ProtoData [Renderer] that renders message builder extension for types
- * in which the `size` option is used.
+ * ProtoData [Renderer] that generates message builder extension for types
+ * in which the [ArrayOfSizeOption] is used.
  *
- * For example, if the `size` option is applied to `Board.cell` repeated field
- * then `Board.Builder.validateCellCount()` function will be generated.
+ * For example, if the option is applied to `Board.cell` field then
+ * `Board.Builder.validateCellCount()` function will be generated.
+ *
+ * Applicable to [Kotlin] language only.
  */
 public class ValidateSizeOptionRenderer : Renderer<Kotlin>(Kotlin.lang()) {
 
     override fun render(sources: SourceFileSet) {
-
         // Generate code for Kotlin output root only
         if (!sources.outputRoot.endsWith("kotlin")) {
             return
@@ -68,12 +69,14 @@ public class ValidateSizeOptionRenderer : Renderer<Kotlin>(Kotlin.lang()) {
             }
     }
 
+    /**
+     * Returns the [ProtobufSourceFile] by the [FilePath] provided.
+     */
     private fun findSourceFile(filePath: FilePath): ProtobufSourceFile {
-
         val sourceFile = select<ProtobufSourceFile>().all().find {
             it.file.path == filePath
         }
-        check(sourceFile != null) {
+        checkNotNull(sourceFile) {
             "Cannot find 'ProtobufSourceFile' for ${filePath.value}"
         }
         return sourceFile

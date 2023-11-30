@@ -37,7 +37,6 @@ class `Board builder extension should` {
 
     @Test
     fun `validate cell count`() {
-
         val sideSize = 3
         val builder = Board.newBuilder()
             .setSideSize(sideSize)
@@ -51,9 +50,7 @@ class `Board builder extension should` {
 
     @Test
     fun `fail if cell count does not match the validation expression`() {
-
         assertThrows<IllegalStateException> {
-
             Board.newBuilder()
                 .setSideSize(3)
                 .addCell(Cell.newBuilder())

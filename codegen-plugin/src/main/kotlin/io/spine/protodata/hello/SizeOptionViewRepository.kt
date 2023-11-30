@@ -42,11 +42,11 @@ internal class SizeOptionViewRepository : ViewRepository<SizeOptionId,
         routing.route(FieldOptionDiscovered::class.java)
         { message: FieldOptionDiscovered, _: EventContext? ->
             EventRoute.withId(
-                SizeOptionId.newBuilder()
-                    .setFilePath(message.file)
-                    .setTypeName(message.type)
-                    .setFieldName(message.field)
-                    .build()
+                sizeOptionId {
+                    filePath = message.file
+                    typeName = message.type
+                    fieldName = message.field
+                }
             )
         }
     }

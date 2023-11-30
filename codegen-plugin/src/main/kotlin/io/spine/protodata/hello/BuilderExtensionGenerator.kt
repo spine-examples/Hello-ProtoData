@@ -42,7 +42,7 @@ import io.spine.type.typeName
 import java.nio.file.Path
 
 /**
- * Generates builder extension with a separate validation function
+ * Generates message builder extension with a separate validation function
  * for every repeated field in which the `size` option is used.
  */
 internal class BuilderExtensionGenerator(
@@ -54,6 +54,10 @@ internal class BuilderExtensionGenerator(
     private val javaPackage = sourceFile.javaPackage()
     private val simpleTypeName = typeName.simpleName
 
+    /**
+     * Returns a [Path] to the generated file
+     * that is relative to the source root.
+     */
     internal fun filePath(): Path {
         return Path.of(
             javaPackage.replace('.', '/'),
@@ -61,8 +65,10 @@ internal class BuilderExtensionGenerator(
         )
     }
 
+    /**
+     * Generates content of the file with builder extension declaration.
+     */
     internal fun fileContent(): String {
-
         val fullClassName = ClassName(javaPackage, simpleTypeName)
         val builder = FileSpec.builder(fullClassName)
             .indent("    ")
@@ -103,7 +109,6 @@ internal class BuilderExtensionGenerator(
     }
 
     private fun checkFieldIsRepeated(sizeOption: SizeOption) {
-
         val field = sourceFile
             .type(typeName)
             .field(sizeOption.id.fieldName)
@@ -129,30 +134,24 @@ private fun String.propertyName() =
 
 private fun ProtobufSourceFile.javaPackage(): String {
     val optionName = "java_package"
-
     val option = file.optionList.find { it.name == optionName }
-
-    check(option != null) {
+    checkNotNull(option) {
         "Cannot find option '$optionName' in file $filePath"
     }
     return unpack(option.value, StringValue::class.java).value
 }
 
 private fun ProtobufSourceFile.type(typeName: TypeName): MessageType {
-
     val type = typeMap.values.find { it.name == typeName }
-
-    check(type != null) {
+    checkNotNull(type) {
         "Cannot find type '$typeName' in $filePath"
     }
     return type
 }
 
 private fun MessageType.field(fieldName: FieldName): Field {
-
     val field = fieldList.find { it.name == fieldName }
-
-    check(field != null) {
+    checkNotNull(field) {
         "Cannot find field '${fieldName.value}' in type '${typeName.value}'."
     }
     return field
