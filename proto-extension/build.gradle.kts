@@ -1,5 +1,6 @@
-/*
- * Copyright 2023, TeamDev. All rights reserved.
+import io.spine.internal.dependency.AutoService
+
+/* * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,10 +25,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = "Hello-ProtoData"
+dependencies {
+    // To use @AutoService in options provider
+    implementation(AutoService.annotations)
 
-include(
-    "proto-extension",
-    "codegen-plugin",
-    "model"
-)
+    // To allow access to `ValidatingBuilder` from the generated Kotlin code.
+    implementation(io.spine.internal.dependency.Validation.runtime)
+}
+
+modelCompiler {
+    java {
+        codegen {
+            validation { skipValidation() }
+        }
+    }
+}

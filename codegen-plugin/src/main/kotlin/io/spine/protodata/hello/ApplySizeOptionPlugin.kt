@@ -23,14 +23,39 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package io.spine.protodata.hello
 
 import io.spine.protodata.plugin.Plugin
+import io.spine.protodata.plugin.ViewRepository
 import io.spine.protodata.renderer.Renderer
 
-public class CodeGenPlugin : Plugin {
+/**
+ * ProtoData [Plugin] that renders validation code for the [ArrayOfSizeOption]
+ * which is applied to a repeated field.
+ *
+ * Value of the option is an expression that may refer to other fields
+ * of the message type and supports basic math operations,
+ * such as `+`, `-`, `*`, `/`.
+ *
+ * Example of definition:
+ * ```
+ * message Board {
+ *     repeated Cell cell = 1 [(required) = true,
+ *         (size).value = "side_size * side_size"];
+ *
+ *     int32 side_size = 2 [(required) = true, (min).value = "3"];
+ * }
+ * ```
+ */
+public class ApplySizeOptionPlugin : Plugin {
+
     override fun renderers(): List<Renderer<*>> {
-        return emptyList()
+        return listOf(
+            ValidateSizeOptionRenderer()
+        )
+    }
+
+    override fun viewRepositories(): Set<ViewRepository<*, *, *>> {
+        return setOf(SizeOptionViewRepository())
     }
 }

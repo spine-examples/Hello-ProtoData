@@ -24,10 +24,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = "Hello-ProtoData"
+package spine.protodata.hello
 
-include(
-    "proto-extension",
-    "codegen-plugin",
-    "model"
-)
+import com.google.auto.service.AutoService
+import com.google.protobuf.ExtensionRegistry
+import io.spine.option.OptionsProvider
+import io.spine.protodata.hello.ArrayOfSizeOptionProto
+
+/**
+ * Registers Protobuf extension that enables `ArrayOfSizeOption` field option
+ * that may be applied to a repeated field in order to validate its size.
+ */
+@AutoService(OptionsProvider::class)
+public class ArrayOfSizeOptionProvider : OptionsProvider {
+
+    override fun registerIn(registry: ExtensionRegistry) {
+        ArrayOfSizeOptionProto.registerAllExtensions(registry)
+    }
+}

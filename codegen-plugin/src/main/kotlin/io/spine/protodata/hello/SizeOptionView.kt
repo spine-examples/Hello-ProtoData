@@ -23,11 +23,39 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package io.spine.protodata.hello
 
-rootProject.name = "Hello-ProtoData"
+import io.spine.core.External
+import io.spine.core.Subscribe
+import io.spine.core.Where
+import io.spine.protobuf.AnyPacker.unpack
+import io.spine.protodata.event.FieldOptionDiscovered
+import io.spine.protodata.plugin.View
 
-include(
-    "proto-extension",
-    "codegen-plugin",
-    "model"
-)
+/**
+ * Records the [ArrayOfSizeOption] options that are applied to repeated fields.
+ */
+internal class SizeOptionView : View<SizeOptionId,
+        SizeOption,
+        SizeOption.Builder>() {
+
+    /**
+     * Parameters to filter the `size` option among the other options.
+     */
+    private companion object FilterParams {
+        const val FIELD_NAME = "option.name"
+        const val FIELD_VALUE = "size"
+    }
+
+    @Subscribe
+    internal fun on(
+        @External @Where(
+            field = FIELD_NAME,
+            equals = FIELD_VALUE
+        )
+        event: FieldOptionDiscovered
+    ) {
+        val option = unpack(event.option.value, ArrayOfSizeOption::class.java)
+        builder().setExpression(option.value)
+    }
+}

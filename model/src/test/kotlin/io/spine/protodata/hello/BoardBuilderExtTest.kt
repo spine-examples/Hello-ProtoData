@@ -24,10 +24,37 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = "Hello-ProtoData"
+package io.spine.protodata.hello
 
-include(
-    "proto-extension",
-    "codegen-plugin",
-    "model"
-)
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
+
+/**
+ * Tests the generated validation code for the `size` option
+ * that is applied to a repeated field.
+ */
+class `Board builder extension should` {
+
+    @Test
+    fun `validate cell count`() {
+        val sideSize = 3
+        val builder = Board.newBuilder()
+            .setSideSize(sideSize)
+
+        repeat(sideSize * sideSize) {
+            builder.addCell(Cell.newBuilder())
+        }
+
+        builder.validateCellCount()
+    }
+
+    @Test
+    fun `fail if cell count does not match the validation expression`() {
+        assertThrows<IllegalStateException> {
+            Board.newBuilder()
+                .setSideSize(3)
+                .addCell(Cell.newBuilder())
+                .validateCellCount()
+        }
+    }
+}

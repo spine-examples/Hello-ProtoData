@@ -1,3 +1,5 @@
+import io.spine.internal.dependency.JUnit
+
 /* * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,13 +26,33 @@
  */
 
 dependencies {
+    // Enable field options extension
+    api(project(":proto-extension"))
+
     // Add module with code generation plugin to ProtoData classpath.
     protoData(project(":codegen-plugin"))
+
+    // To allow access to `ValidatingBuilder` from the generated Kotlin code.
+    implementation(io.spine.internal.dependency.Validation.runtime)
+
+    testImplementation(JUnit.runner)
+}
+
+apply {
+    plugin("io.spine.protodata")
 }
 
 protoData {
     // Deploy the code generation plugin to ProtoData.
     plugins(
-        "io.spine.protodata.hello.CodeGenPlugin"
+        "io.spine.protodata.hello.ApplySizeOptionPlugin"
     )
+}
+
+modelCompiler {
+    java {
+        codegen {
+            validation { skipValidation() }
+        }
+    }
 }

@@ -24,10 +24,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = "Hello-ProtoData"
+package io.spine.internal.dependency
 
-include(
-    "proto-extension",
-    "codegen-plugin",
-    "model"
-)
+/**
+ * The dependency on the Kotlin sources generator.
+ *
+ * [KotlinPoet Releases]](https://github.com/square/kotlinpoet/releases)
+ */
+object KotlinPoet {
+    private const val version = "1.15.2"
+
+    const val lib = "com.squareup:kotlinpoet:$version"
+}

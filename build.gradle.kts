@@ -38,6 +38,13 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
     standardSpineSdkRepositories()
+
+    // Force versions, as both ProtoData and Spine Model Compiler are under active development.
+    doForceVersions(configurations)
+
+    dependencies {
+        classpath(io.spine.internal.dependency.Spine.McJava.pluginLib)
+    }
 }
 
 plugins {
@@ -45,7 +52,7 @@ plugins {
     id("net.ltgt.errorprone")
     id("detekt-code-analysis")
     id("com.google.protobuf")
-    id("io.spine.protodata") version "0.13.2"
+    id("io.spine.protodata") version "0.14.0"
     idea
 }
 
@@ -55,19 +62,24 @@ object BuildSettings {
     val javaVersion: JavaLanguageVersion = JavaLanguageVersion.of(JAVA_VERSION)
 }
 
-// It is assumed that every module in the project requires
-// a typical configuration.
+
 allprojects {
 
+    // Define the repositories universally for all modules, including the root.
     repositories.standardToSpineSdk()
+}
+
+// It is assumed that every module in the project requires
+// a typical configuration.
+subprojects {
 
     apply {
         plugin("kotlin")
         plugin("net.ltgt.errorprone")
         plugin("detekt-code-analysis")
         plugin("com.google.protobuf")
-        plugin("io.spine.protodata")
         plugin("idea")
+        plugin("io.spine.mc-java")
     }
 
     dependencies {
@@ -78,6 +90,13 @@ allprojects {
         ErrorProne.apply {
             errorprone(core)
         }
+
+        // Force versions for compilation/runtime as well.
+        //
+        // Maybe, not all of them are required in this scope.
+        // This is to investigate later.
+        //
+        doForceVersions(configurations)
     }
 
     protobuf {

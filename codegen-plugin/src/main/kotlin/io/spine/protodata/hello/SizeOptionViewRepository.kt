@@ -23,11 +23,31 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package io.spine.protodata.hello
 
-rootProject.name = "Hello-ProtoData"
+import io.spine.core.EventContext
+import io.spine.protodata.event.FieldOptionDiscovered
+import io.spine.protodata.plugin.ViewRepository
+import io.spine.server.route.EventRoute
+import io.spine.server.route.EventRouting
 
-include(
-    "proto-extension",
-    "codegen-plugin",
-    "model"
-)
+/**
+ * The repository for [SizeOptionView].
+ */
+internal class SizeOptionViewRepository : ViewRepository<SizeOptionId,
+        SizeOptionView,
+        SizeOption>() {
+    override fun setupEventRouting(routing: EventRouting<SizeOptionId>) {
+        super.setupEventRouting(routing)
+        routing.route(FieldOptionDiscovered::class.java)
+        { message: FieldOptionDiscovered, _: EventContext? ->
+            EventRoute.withId(
+                sizeOptionId {
+                    filePath = message.file
+                    typeName = message.type
+                    fieldName = message.field
+                }
+            )
+        }
+    }
+}

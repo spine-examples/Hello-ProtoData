@@ -55,6 +55,7 @@ import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ConfigurationContainer
 import org.gradle.api.artifacts.ResolutionStrategy
+import org.gradle.kotlin.dsl.invoke
 
 /**
  * The function to be used in `buildscript` when a fully-qualified call must be made.
@@ -62,6 +63,27 @@ import org.gradle.api.artifacts.ResolutionStrategy
 @Suppress("unused")
 fun doForceVersions(configurations: ConfigurationContainer) {
     configurations.forceVersions()
+
+    val spine = io.spine.internal.dependency.Spine
+    val logging = io.spine.internal.dependency.Spine.Logging
+
+    configurations {
+        all {
+            resolutionStrategy {
+                force(
+                    spine.base,
+                    logging.lib,
+                    logging.backend,
+                    logging.floggerApi,
+                    spine.toolBase,
+                    spine.server,
+                    io.spine.internal.dependency.Validation.runtime,
+                    io.spine.internal.dependency.Validation.java,
+                    io.spine.internal.dependency.ProtoData.pluginLib
+                )
+            }
+        }
+    }
 }
 
 /**

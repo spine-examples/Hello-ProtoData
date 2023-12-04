@@ -24,10 +24,50 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = "Hello-ProtoData"
+syntax = "proto3";
 
-include(
-    "proto-extension",
-    "codegen-plugin",
-    "model"
-)
+package spine.protodata.hello;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.protodata.hello";
+option java_multiple_files = true;
+option java_outer_classname = "TicTacToeProto";
+option java_package = "io.spine.protodata.hello";
+
+import "google/protobuf/descriptor.proto";
+import "spine/protodata/hello/options.proto";
+
+message Board {
+
+  // The name of the board.
+  BoardName name = 1 [(required) = true, (validate) = true];
+
+  // Board cells.
+  repeated Cell cell = 2 [(required) = true, (size).value = "side_size * side_size"];
+
+  // The size of the board.
+  //
+  // The board must have `side_size` number of cell rows,
+  // each having `side_size` number of columns,
+  // effectively making the board "square".
+  //
+  int32 side_size = 3 [(required) = true, (min).value = "3"];
+}
+
+message BoardName {
+  string value = 1 [(required) = true];
+}
+
+enum Mark {
+  M_UNDEFINED = 0;
+  CROSS = 1;
+  CIRCLE = 2;
+}
+
+message Cell {
+  oneof value {
+    bool empty = 1;
+    Mark mark = 2;
+  }
+}

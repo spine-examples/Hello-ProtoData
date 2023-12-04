@@ -1,5 +1,5 @@
 /*
- * Copyright 2023, TeamDev. All rights reserved.
+ * Copyright 2022, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,10 +24,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = "Hello-ProtoData"
+/**
+ * Provides ProtoData plugin that renders validation code
+ * for the `size` option which is applied to a repeated field.
+ */
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.protodata.hello;
 
-include(
-    "proto-extension",
-    "codegen-plugin",
-    "model"
-)
+import com.google.errorprone.annotations.CheckReturnValue;
+
+import javax.annotation.ParametersAreNonnullByDefault;
