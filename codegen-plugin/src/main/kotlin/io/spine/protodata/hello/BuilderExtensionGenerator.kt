@@ -37,6 +37,7 @@ import io.spine.protodata.MessageType
 import io.spine.protodata.ProtobufSourceFile
 import io.spine.protodata.TypeName
 import io.spine.protodata.isRepeated
+import io.spine.string.Indent
 import io.spine.string.camelCase
 import io.spine.type.typeName
 import java.nio.file.Path
@@ -71,7 +72,7 @@ internal class BuilderExtensionGenerator(
     internal fun fileContent(): String {
         val fullClassName = ClassName(javaPackage, simpleTypeName)
         val builder = FileSpec.builder(fullClassName)
-            .indent("    ")
+            .indent(Indent.defaultJavaIndent.toString())
 
         sizeOptions.forEach { sizeOption ->
 
@@ -136,7 +137,7 @@ private fun ProtobufSourceFile.javaPackage(): String {
     val optionName = "java_package"
     val option = file.optionList.find { it.name == optionName }
     checkNotNull(option) {
-        "Cannot find option '$optionName' in file $filePath"
+        "Cannot find option '$optionName' in file $filePath."
     }
     return unpack(option.value, StringValue::class.java).value
 }
@@ -144,7 +145,7 @@ private fun ProtobufSourceFile.javaPackage(): String {
 private fun ProtobufSourceFile.type(typeName: TypeName): MessageType {
     val type = typeMap.values.find { it.name == typeName }
     checkNotNull(type) {
-        "Cannot find type '$typeName' in $filePath"
+        "Cannot find type '$typeName' in $filePath."
     }
     return type
 }

@@ -77,7 +77,7 @@ public class ValidateSizeOptionRenderer : Renderer<Kotlin>(Kotlin.lang()) {
             it.file.path == filePath
         }
         checkNotNull(sourceFile) {
-            "Cannot find 'ProtobufSourceFile' for ${filePath.value}"
+            "Cannot find 'ProtobufSourceFile' for ${filePath.value}."
         }
         return sourceFile
     }
