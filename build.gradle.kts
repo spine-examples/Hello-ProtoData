@@ -43,7 +43,7 @@ buildscript {
     doForceVersions(configurations)
 
     dependencies {
-        classpath(Spine.McJava.pluginLib)
+        classpath(io.spine.internal.dependency.Spine.McJava.pluginLib)
     }
 }
 

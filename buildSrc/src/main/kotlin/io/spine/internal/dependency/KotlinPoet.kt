@@ -23,23 +23,16 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-import io.spine.internal.dependency.KotlinPoet
-import io.spine.internal.dependency.ProtoData
 
-dependencies {
-    // To enable field options extension
-    api(project(":proto-extension"))
+package io.spine.internal.dependency
 
-    // To use ProtoData API in code generation plugin.
-    api(ProtoData.compiler)
+/**
+ * The dependency on the Kotlin sources generator.
+ *
+ * [KotlinPoet Releases]](https://github.com/square/kotlinpoet/releases)
+ */
+object KotlinPoet {
+    private const val version = "1.15.2"
 
-    api(KotlinPoet.lib)
-}
-
-modelCompiler {
-    java {
-        codegen {
-            validation { skipValidation() }
-        }
-    }
+    const val lib = "com.squareup:kotlinpoet:$version"
 }
