@@ -1,3 +1,5 @@
+import io.spine.internal.dependency.AutoService
+
 /* * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,7 +27,7 @@
 
 dependencies {
     // To use @AutoService in options provider
-    implementation("com.google.auto.service:auto-service:1.1.1")
+    implementation(AutoService.annotations)
 
     // To allow access to `ValidatingBuilder` from the generated Kotlin code.
     implementation(io.spine.internal.dependency.Validation.runtime)
