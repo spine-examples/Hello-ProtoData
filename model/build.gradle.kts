@@ -1,3 +1,5 @@
+import io.spine.internal.dependency.JUnit
+
 /* * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,7 +35,7 @@ dependencies {
     // To allow access to `ValidatingBuilder` from the generated Kotlin code.
     implementation(io.spine.internal.dependency.Validation.runtime)
 
-    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.0.0")
+    testImplementation(JUnit.runner)
 }
 
 apply {
