@@ -39,35 +39,11 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 buildscript {
     standardSpineSdkRepositories()
 
-    @Suppress("RemoveRedundantQualifierName")
-    val spine = io.spine.internal.dependency.Spine
-    @Suppress("RemoveRedundantQualifierName")
-    val logging = io.spine.internal.dependency.Spine.Logging
-
-
     // Force versions, as both ProtoData and Spine Model Compiler are under active development.
     doForceVersions(configurations)
-    configurations {
-        all {
-            resolutionStrategy {
-                force(
-                    spine.base,
-                    logging.lib,
-                    logging.backend,
-                    logging.floggerApi,
-                    spine.toolBase,
-                    spine.server,
-                    spine.server,
-                    io.spine.internal.dependency.Validation.runtime,
-                    io.spine.internal.dependency.Validation.java,
-                    io.spine.internal.dependency.ProtoData.pluginLib
-                )
-            }
-        }
-    }
 
     dependencies {
-        classpath(io.spine.internal.dependency.Spine.McJava.pluginLib)
+        classpath(Spine.McJava.pluginLib)
     }
 }
 
@@ -121,23 +97,6 @@ subprojects {
         // This is to investigate later.
         //
         doForceVersions(configurations)
-        configurations {
-            all {
-                resolutionStrategy {
-                    force(
-                        Spine.base,
-                        Spine.Logging.lib,
-                        Spine.Logging.backend,
-                        Spine.Logging.floggerApi,
-                        Spine.toolBase,
-                        Spine.server,
-                        io.spine.internal.dependency.Validation.runtime,
-                        io.spine.internal.dependency.Validation.java,
-                        io.spine.internal.dependency.ProtoData.pluginLib
-                    )
-                }
-            }
-        }
     }
 
     protobuf {
