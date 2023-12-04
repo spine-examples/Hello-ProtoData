@@ -1,4 +1,5 @@
 import io.spine.internal.dependency.AutoService
+import io.spine.internal.dependency.Validation
 
 /* * Copyright 2023, TeamDev. All rights reserved.
  *
@@ -30,7 +31,7 @@ dependencies {
     implementation(AutoService.annotations)
 
     // To allow access to `ValidatingBuilder` from the generated Kotlin code.
-    implementation(io.spine.internal.dependency.Validation.runtime)
+    implementation(Validation.runtime)
 }
 
 modelCompiler {
