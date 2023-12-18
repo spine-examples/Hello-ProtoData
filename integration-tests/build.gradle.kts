@@ -27,7 +27,7 @@ import io.spine.internal.dependency.JUnit
 import io.spine.internal.dependency.Validation
 
 dependencies {
-    // Enable field options extension
+    // Enable field options extension.
     api(project(":proto-extension"))
 
     // Add module with code generation plugin to ProtoData classpath.
