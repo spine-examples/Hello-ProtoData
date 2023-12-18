@@ -3,6 +3,7 @@ package spine.protodata.hello
 import io.spine.protodata.hello.Address
 import io.spine.protodata.hello.Contact
 import io.spine.protodata.hello.validateAddressCount
+import io.spine.protodata.hello.validateAddressLineCount
 import io.spine.protodata.hello.validateEmailCount
 import io.spine.protodata.hello.validatePhoneCount
 import org.junit.jupiter.api.Test
@@ -13,7 +14,7 @@ import org.junit.jupiter.api.Test
 class `Size option test should` {
 
     @Test
-    fun `check validation of several fields within one message type`() {
+    fun `check several options within the same message type and sub-type`() {
         val elementCount = 3
 
         val builder = Contact.newBuilder()
@@ -22,14 +23,11 @@ class `Size option test should` {
         repeat(elementCount) {
             builder
                 .addPhone("Phone$it")
-                .addAddress(
-                    Address.newBuilder()
-                        .setLine1("Line1$it")
-                        .setLine2("Line2$it")
-                        .setZipcode("Zipcode$it")
-                        .setCountry("Country$it")
-                )
                 .addEmail("Email$it")
+                .addAddress(
+                    buildAddress(it)
+                        .validateAddressLineCount()
+                )
         }
 
         builder
@@ -37,4 +35,19 @@ class `Size option test should` {
             .validateAddressCount()
             .validateEmailCount()
     }
+}
+
+private fun buildAddress(seed: Int): Address.Builder {
+    val numberOfLines = 2
+
+    val builder = Address.newBuilder()
+        .setNumberOfLines(numberOfLines)
+        .setZipcode("Zipcode$seed")
+        .setCountry("Country$seed")
+
+    repeat(numberOfLines) {
+        builder.addAddressLine("AddressLine$seed$it")
+    }
+
+    return builder
 }

@@ -40,7 +40,7 @@ import "spine/protodata/hello/options.proto";
 
 // Test message that contains several fields with `size` option applied.
 message Contact {
-  int32 element_count = 1 [(required) = true, (min).value = "2"];
+  int32 element_count = 1 [(required) = true, (min).value = "1"];
 
   repeated string phone = 2 [(required) = true, (size).value = "element_count"];
 
@@ -50,9 +50,9 @@ message Contact {
 }
 
 message Address {
-  string line1 = 1 [(required) = true];
+  int32 number_of_lines = 1 [(required) = true, (min).value = "2"];
 
-  string line2 = 2;
+  repeated string address_line = 2 [(required) = true, (size).value = "number_of_lines"];
 
   string zipcode = 3 [(required) = true];
 
