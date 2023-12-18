@@ -84,10 +84,12 @@ internal class BuilderExtensionGenerator(
                 sourceFile.type(typeName).fieldNames()
             )
             val functionName = "validate" + fieldName.camelCase() + "Count"
+            val builderClass = fullClassName.nestedClass("Builder")
 
             builder.addFunction(
                 FunSpec.builder(functionName)
-                    .receiver(fullClassName.nestedClass("Builder"))
+                    .returns(builderClass)
+                    .receiver(builderClass)
                     .addModifiers(KModifier.INTERNAL)
                     .addStatement("val expected = $expression")
                     .beginControlFlow(
@@ -103,6 +105,7 @@ internal class BuilderExtensionGenerator(
                         fieldName
                     )
                     .endControlFlow()
+                    .addStatement("return this")
                     .build()
             )
         }
