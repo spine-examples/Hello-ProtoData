@@ -38,7 +38,6 @@ option java_package = "io.spine.protodata.hello";
 import "google/protobuf/descriptor.proto";
 import "spine/protodata/hello/options.proto";
 
-// Test message that contains several fields with `size` option applied.
 message Contact {
   int32 element_count = 1 [(required) = true, (min).value = "1"];
 
