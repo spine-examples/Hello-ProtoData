@@ -51,7 +51,8 @@ message Contact {
 message Address {
   int32 number_of_lines = 1 [(required) = true, (min).value = "2"];
 
-  repeated string address_line = 2 [(required) = true, (size).value = "number_of_lines"];
+  repeated string address_line = 2 [(required) = true,
+    (size).value = "10 * number_of_lines / 5 / 2 + 10 - 2 * (3 + 2)"];
 
   string zipcode = 3 [(required) = true];
 
