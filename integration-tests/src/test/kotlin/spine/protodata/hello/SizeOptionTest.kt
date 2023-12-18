@@ -7,6 +7,7 @@ import io.spine.protodata.hello.validateAddressLineCount
 import io.spine.protodata.hello.validateEmailCount
 import io.spine.protodata.hello.validatePhoneCount
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 /**
  * Checks various use-cases on `size` option validation.
@@ -34,6 +35,34 @@ class `Size option test should` {
             .validatePhoneCount()
             .validateAddressCount()
             .validateEmailCount()
+    }
+
+    @Test
+    fun `fail if size of a repeated field is wrong`() {
+        val addressBuilder = Address.newBuilder()
+            .setZipcode("Zipcode")
+            .setCountry("Country")
+            .setNumberOfLines(2)
+            .addAddressLine("AddressLine")
+
+        val contactBuilder = Contact.newBuilder()
+            .setElementCount(2)
+            .addPhone("Phone")
+            .addEmail("Email")
+            .addAddress(addressBuilder)
+
+        assertThrows<IllegalStateException> {
+            addressBuilder.validateAddressLineCount()
+        }
+        assertThrows<IllegalStateException> {
+            contactBuilder.validatePhoneCount()
+        }
+        assertThrows<IllegalStateException> {
+            contactBuilder.validateAddressCount()
+        }
+        assertThrows<IllegalStateException> {
+            contactBuilder.validateEmailCount()
+        }
     }
 }
 
