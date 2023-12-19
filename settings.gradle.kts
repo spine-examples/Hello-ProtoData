@@ -29,5 +29,6 @@ rootProject.name = "Hello-ProtoData"
 include(
     "proto-extension",
     "codegen-plugin",
-    "model"
+    "model",
+    "integration-tests"
 )

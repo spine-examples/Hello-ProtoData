@@ -1,6 +1,3 @@
-import io.spine.internal.dependency.JUnit
-import io.spine.internal.dependency.Validation
-
 /* * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,6 +22,9 @@ import io.spine.internal.dependency.Validation
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+import io.spine.internal.dependency.JUnit
+import io.spine.internal.dependency.Validation
 
 dependencies {
     // Enable field options extension.
