@@ -8,9 +8,7 @@ import org.jboss.forge.roaster.Roaster
 import org.jboss.forge.roaster.model.source.JavaClassSource
 import org.jboss.forge.roaster.model.source.JavaSource
 import org.jboss.forge.roaster.model.source.MethodSource
-import java.util.*
 import java.util.regex.Pattern
-import kotlin.jvm.optionals.toSet
 
 /**
  * [InsertionPoint] that is the line just before `return` statement
@@ -27,12 +25,10 @@ public class BuilderBeforeReturnInsertionPoint : InsertionPoint {
 
     public override fun locate(text: Text): Set<TextCoordinates> {
         val messageClass = findMessageClass(text)
-
-        return findBuilderClass(messageClass)
-            .map { it.getMethod("build") }
-            .filter { Objects.nonNull(it) }
-            .map { lineBeforeReturn(it, text) }
-            .toSet()
+        val builderClass = findBuilderClass(messageClass)
+        val builderMethod = builderClass.getMethod("build")
+        val lineBeforeReturn = lineBeforeReturn(builderMethod, text)
+        return setOf(lineBeforeReturn)
     }
 
     private fun lineBeforeReturn(
@@ -59,19 +55,14 @@ public class BuilderBeforeReturnInsertionPoint : InsertionPoint {
 
     private fun findMessageClass(code: Text): JavaClassSource {
         val result = Roaster.parse(JavaSource::class.java, code.value)
-
         check(result.isClass) { "No message class found." }
-
         return result as JavaClassSource
     }
 
-    private fun findBuilderClass(
-        cls: JavaClassSource
-    ): Optional<JavaClassSource> {
+    private fun findBuilderClass(cls: JavaClassSource): JavaClassSource {
         val builder = cls.getNestedType("Builder")
-        if (builder == null || !builder.isClass) {
-            return Optional.empty()
-        }
-        return Optional.of(builder as JavaClassSource)
+        check(builder != null && builder.isClass)
+        { "No builder class found." }
+        return builder as JavaClassSource
     }
 }
