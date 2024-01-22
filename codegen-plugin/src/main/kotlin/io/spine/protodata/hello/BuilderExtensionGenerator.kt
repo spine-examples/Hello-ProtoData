@@ -49,7 +49,8 @@ import java.nio.file.Path
 internal class BuilderExtensionGenerator(
     private val sourceFile: ProtobufSourceFile,
     private val typeName: TypeName,
-    private val sizeOptions: Iterable<SizeOption>
+    private val sizeOptions: Iterable<SizeOption>,
+    private val javaSourceData: JavaSourceData
 
 ) {
     private val javaPackage = sourceFile.javaPackage()
@@ -70,6 +71,7 @@ internal class BuilderExtensionGenerator(
      * Generates content of the file with builder extension declaration.
      */
     internal fun fileContent(): String {
+
         val fullClassName = ClassName(javaPackage, simpleTypeName)
         val builder = FileSpec.builder(fullClassName)
             .indent(Indent.defaultJavaIndent.toString())
@@ -85,6 +87,13 @@ internal class BuilderExtensionGenerator(
             )
             val functionName = "validate" + fieldName.camelCase() + "Count"
             val builderClass = fullClassName.nestedClass("Builder")
+
+            val javaFileName = Path.of(
+                javaPackage.replace('.', '/'),
+                "$simpleTypeName.java"
+            ).toString()
+
+            javaSourceData.addMethod(javaFileName, functionName)
 
             builder.addFunction(
                 FunSpec.builder(functionName)

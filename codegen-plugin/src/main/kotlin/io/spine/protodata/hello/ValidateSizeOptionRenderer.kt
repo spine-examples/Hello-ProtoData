@@ -41,7 +41,9 @@ import io.spine.tools.code.Kotlin
  *
  * Applicable to [Kotlin] language only.
  */
-public class ValidateSizeOptionRenderer : Renderer<Kotlin>(Kotlin.lang()) {
+public class ValidateSizeOptionRenderer(
+    private val javaSourceData: JavaSourceData
+) : Renderer<Kotlin>(Kotlin.lang()) {
 
     override fun render(sources: SourceFileSet) {
         // Generate code for Kotlin output root only
@@ -59,7 +61,8 @@ public class ValidateSizeOptionRenderer : Renderer<Kotlin>(Kotlin.lang()) {
                 val generator = BuilderExtensionGenerator(
                     findSourceFile(mapEntry.key.first),
                     mapEntry.key.second,
-                    mapEntry.value
+                    mapEntry.value,
+                    javaSourceData
                 )
 
                 sources.createFile(

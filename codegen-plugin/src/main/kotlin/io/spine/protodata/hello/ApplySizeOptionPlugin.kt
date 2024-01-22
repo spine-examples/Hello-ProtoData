@@ -50,8 +50,13 @@ import io.spine.protodata.renderer.Renderer
 public class ApplySizeOptionPlugin : Plugin {
 
     override fun renderers(): List<Renderer<*>> {
+
+        val javaSourceData = JavaSourceData()
+
         return listOf(
-            ValidateSizeOptionRenderer()
+            ValidateSizeOptionRenderer(javaSourceData),
+            ValidationPrinter(),
+            ValidationRenderer(javaSourceData)
         )
     }
 
