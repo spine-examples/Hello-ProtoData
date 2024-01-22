@@ -42,7 +42,7 @@ import io.spine.tools.code.Kotlin
  * Applicable to [Kotlin] language only.
  */
 public class ValidateSizeOptionRenderer(
-    private val javaValidationMethods: JavaValidationMethods
+    private val builderValidationMethods: BuilderValidationMethods
 ) : Renderer<Kotlin>(Kotlin.lang()) {
 
     override fun render(sources: SourceFileSet) {
@@ -62,7 +62,7 @@ public class ValidateSizeOptionRenderer(
                     findSourceFile(mapEntry.key.first),
                     mapEntry.key.second,
                     mapEntry.value,
-                    javaValidationMethods
+                    builderValidationMethods
                 )
 
                 sources.createFile(

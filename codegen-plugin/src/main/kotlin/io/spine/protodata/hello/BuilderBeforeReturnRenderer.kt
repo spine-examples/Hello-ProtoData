@@ -5,8 +5,8 @@ import io.spine.protodata.renderer.SourceFile
 import io.spine.protodata.renderer.SourceFileSet
 import io.spine.tools.code.Java
 
-public class ValidationRenderer(
-    private val javaValidationMethods: JavaValidationMethods
+public class BuilderBeforeReturnRenderer(
+    private val builderValidationMethods: BuilderValidationMethods
 ) : Renderer<Java>(Java.lang()) {
 
     override fun render(sources: SourceFileSet) {
@@ -17,14 +17,16 @@ public class ValidationRenderer(
     }
 
     private fun insertBeforeBuild(sourceFile: SourceFile) {
-        val javaFile = sourceFile.relativePath.toString()
+        val fullJavaSourceFileName = sourceFile.relativePath.toString()
 
-        if (javaValidationMethods.contains(javaFile)) {
+        assert(builderValidationMethods.hasMethods(fullJavaSourceFileName))
 
-            val builder = sourceFile.at(BuilderBeforeReturnInsertionPoint())
-            javaValidationMethods.getMethods(javaFile).forEach {
+        val builder = sourceFile.at(BuilderBeforeReturnInsertionPoint())
+
+        builderValidationMethods
+            .methods(fullJavaSourceFileName)
+            .forEach {
                 builder.add(it)
             }
-        }
     }
 }

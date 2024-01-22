@@ -51,12 +51,13 @@ public class ApplySizeOptionPlugin : Plugin {
 
     override fun renderers(): List<Renderer<*>> {
 
-        val javaValidationMethods = JavaValidationMethods()
+        //
+        val builderValidationMethods = BuilderValidationMethods()
 
         return listOf(
-            ValidateSizeOptionRenderer(javaValidationMethods),
-            ValidationPrinter(),
-            ValidationRenderer(javaValidationMethods)
+            ValidateSizeOptionRenderer(builderValidationMethods),
+            BuilderBeforeReturnPrinter(),
+            BuilderBeforeReturnRenderer(builderValidationMethods)
         )
     }
 

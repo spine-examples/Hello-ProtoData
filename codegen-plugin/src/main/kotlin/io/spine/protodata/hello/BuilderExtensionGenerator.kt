@@ -50,7 +50,7 @@ internal class BuilderExtensionGenerator(
     private val sourceFile: ProtobufSourceFile,
     private val typeName: TypeName,
     private val sizeOptions: Iterable<SizeOption>,
-    private val javaValidationMethods: JavaValidationMethods
+    private val builderValidationMethods: BuilderValidationMethods
 
 ) {
     private val javaPackage = sourceFile.javaPackage()
@@ -96,7 +96,7 @@ internal class BuilderExtensionGenerator(
             val validatingMethod = "$javaPackage." + simpleTypeName +
                     "BuilderExtKt." + functionName + "(this);"
 
-            javaValidationMethods.addMethod(javaFileName, validatingMethod)
+            builderValidationMethods.linkMethod(javaFileName, validatingMethod)
 
             builder.addFunction(
                 FunSpec.builder(functionName)
