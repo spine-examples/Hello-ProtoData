@@ -2,10 +2,6 @@ package spine.protodata.hello
 
 import io.spine.protodata.hello.Address
 import io.spine.protodata.hello.Contact
-import io.spine.protodata.hello.validateAddressCount
-import io.spine.protodata.hello.validateAddressLineCount
-import io.spine.protodata.hello.validateEmailCount
-import io.spine.protodata.hello.validatePhoneCount
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
@@ -26,15 +22,11 @@ class `Size option test should` {
                 .addPhone("Phone$it")
                 .addEmail("Email$it")
                 .addAddress(
-                    buildAddress(it)
-                        .validateAddressLineCount()
+                    buildAddress(it).build()
                 )
         }
 
-        builder
-            .validatePhoneCount()
-            .validateAddressCount()
-            .validateEmailCount()
+        builder.build()
     }
 
     @Test
@@ -46,7 +38,7 @@ class `Size option test should` {
             .addAddressLine("AddressLine")
 
         assertThrows<IllegalStateException> {
-            addressBuilder.validateAddressLineCount()
+            addressBuilder.build()
         }
 
         val contactBuilder = Contact.newBuilder()
@@ -56,16 +48,6 @@ class `Size option test should` {
 
         assertThrows<IllegalStateException> {
             contactBuilder.addAddress(addressBuilder)
-        }
-
-        assertThrows<IllegalStateException> {
-            contactBuilder.validatePhoneCount()
-        }
-        assertThrows<IllegalStateException> {
-            contactBuilder.validateAddressCount()
-        }
-        assertThrows<IllegalStateException> {
-            contactBuilder.validateEmailCount()
         }
         assertThrows<IllegalStateException> {
             contactBuilder.build()
