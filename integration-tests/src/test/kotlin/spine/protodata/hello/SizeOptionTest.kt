@@ -45,15 +45,19 @@ class `Size option test should` {
             .setNumberOfLines(2)
             .addAddressLine("AddressLine")
 
+        assertThrows<IllegalStateException> {
+            addressBuilder.validateAddressLineCount()
+        }
+
         val contactBuilder = Contact.newBuilder()
             .setElementCount(2)
             .addPhone("Phone")
             .addEmail("Email")
-            .addAddress(addressBuilder)
 
         assertThrows<IllegalStateException> {
-            addressBuilder.validateAddressLineCount()
+            contactBuilder.addAddress(addressBuilder)
         }
+
         assertThrows<IllegalStateException> {
             contactBuilder.validatePhoneCount()
         }
@@ -62,6 +66,9 @@ class `Size option test should` {
         }
         assertThrows<IllegalStateException> {
             contactBuilder.validateEmailCount()
+        }
+        assertThrows<IllegalStateException> {
+            contactBuilder.build()
         }
     }
 }

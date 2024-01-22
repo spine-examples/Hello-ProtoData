@@ -50,7 +50,7 @@ internal class BuilderExtensionGenerator(
     private val sourceFile: ProtobufSourceFile,
     private val typeName: TypeName,
     private val sizeOptions: Iterable<SizeOption>,
-    private val javaSourceData: JavaSourceData
+    private val javaValidationMethods: JavaValidationMethods
 
 ) {
     private val javaPackage = sourceFile.javaPackage()
@@ -76,6 +76,11 @@ internal class BuilderExtensionGenerator(
         val builder = FileSpec.builder(fullClassName)
             .indent(Indent.defaultJavaIndent.toString())
 
+        val javaFileName = Path.of(
+            javaPackage.replace('.', '/'),
+            "$simpleTypeName.java"
+        ).toString()
+
         sizeOptions.forEach { sizeOption ->
 
             checkFieldIsRepeated(sizeOption)
@@ -88,12 +93,10 @@ internal class BuilderExtensionGenerator(
             val functionName = "validate" + fieldName.camelCase() + "Count"
             val builderClass = fullClassName.nestedClass("Builder")
 
-            val javaFileName = Path.of(
-                javaPackage.replace('.', '/'),
-                "$simpleTypeName.java"
-            ).toString()
+            val validatingMethod = "$javaPackage." + simpleTypeName +
+                    "BuilderExtKt." + functionName + "(this);"
 
-            javaSourceData.addMethod(javaFileName, functionName)
+            javaValidationMethods.addMethod(javaFileName, validatingMethod)
 
             builder.addFunction(
                 FunSpec.builder(functionName)

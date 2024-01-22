@@ -6,28 +6,25 @@ import io.spine.protodata.renderer.SourceFileSet
 import io.spine.tools.code.Java
 
 public class ValidationRenderer(
-    private val javaSourceData: JavaSourceData
+    private val javaValidationMethods: JavaValidationMethods
 ) : Renderer<Java>(Java.lang()) {
 
     override fun render(sources: SourceFileSet) {
         if (!sources.outputRoot.endsWith("java")) {
             return
         }
-        println("Java Renderer: " + sources.outputRoot)
-        sources.forEach {
-            if (javaSourceData.contains(it.relativePath.toString())) {
-                insertBeforeBuild(it)
-            }
-        }
+        sources.forEach(::insertBeforeBuild)
     }
 
     private fun insertBeforeBuild(sourceFile: SourceFile) {
-        println("Source file: " + sourceFile.relativePath)
+        val javaFile = sourceFile.relativePath.toString()
 
-        println("Before check")
+        if (javaValidationMethods.contains(javaFile)) {
 
-        sourceFile.at(BuildBeforeReturnInsertionPoint())
-            .withExtraIndentation(2)
-            .add("validate111()")
+            val builder = sourceFile.at(BuilderBeforeReturnInsertionPoint())
+            javaValidationMethods.getMethods(javaFile).forEach {
+                builder.add(it)
+            }
+        }
     }
 }
