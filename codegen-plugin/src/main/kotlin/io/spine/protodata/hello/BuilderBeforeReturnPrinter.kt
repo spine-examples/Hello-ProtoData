@@ -5,7 +5,7 @@ import io.spine.protodata.renderer.InsertionPointPrinter
 import io.spine.tools.code.Java
 
 /**
- * [InsertionPointPrinter] that prints the validation code
+ * [InsertionPointPrinter] that prints the `size` option validation code
  * in a `build` method of a message class builder.
  */
 public class BuilderBeforeReturnPrinter :

@@ -93,10 +93,10 @@ internal class BuilderExtensionGenerator(
             val functionName = "validate" + fieldName.camelCase() + "Count"
             val builderClass = fullClassName.nestedClass("Builder")
 
-            val validatingMethod = "$javaPackage." + simpleTypeName +
-                    "BuilderExtKt." + functionName + "(this);"
+            val validationMethod = "$javaPackage.$simpleTypeName" +
+                    "BuilderExtKt.$functionName(this);"
 
-            builderValidationMethods.linkMethod(javaFileName, validatingMethod)
+            builderValidationMethods.linkMethod(javaFileName, validationMethod)
 
             builder.addFunction(
                 FunSpec.builder(functionName)

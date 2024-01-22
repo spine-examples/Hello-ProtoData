@@ -5,6 +5,10 @@ import io.spine.protodata.renderer.SourceFile
 import io.spine.protodata.renderer.SourceFileSet
 import io.spine.tools.code.Java
 
+/**
+ * The code generation [Renderer] that renders validation methods calls
+ * in a message builder before `return` line of the class builder.
+ */
 public class BuilderBeforeReturnRenderer(
     private val builderValidationMethods: BuilderValidationMethods
 ) : Renderer<Java>(Java.lang()) {
@@ -13,15 +17,16 @@ public class BuilderBeforeReturnRenderer(
         if (!sources.outputRoot.endsWith("java")) {
             return
         }
-        sources.forEach(::insertBeforeBuild)
+        sources.forEach(::insertValidationMethodsInvocation)
     }
 
-    private fun insertBeforeBuild(sourceFile: SourceFile) {
+    private fun insertValidationMethodsInvocation(sourceFile: SourceFile) {
         val fullJavaSourceFileName = sourceFile.relativePath.toString()
 
         assert(builderValidationMethods.hasMethods(fullJavaSourceFileName))
 
         val builder = sourceFile.at(BuilderBeforeReturnInsertionPoint())
+            .withExtraIndentation(2)
 
         builderValidationMethods
             .methods(fullJavaSourceFileName)
