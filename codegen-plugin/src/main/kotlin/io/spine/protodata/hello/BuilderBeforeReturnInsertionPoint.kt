@@ -4,7 +4,9 @@ import io.spine.protodata.renderer.InsertionPoint
 import io.spine.text.Text
 import io.spine.text.TextCoordinates
 import io.spine.text.TextFactory
+import org.jboss.forge.roaster.Roaster
 import org.jboss.forge.roaster.model.source.JavaClassSource
+import org.jboss.forge.roaster.model.source.JavaSource
 import org.jboss.forge.roaster.model.source.MethodSource
 import java.util.*
 import java.util.regex.Pattern
@@ -15,8 +17,6 @@ import kotlin.jvm.optionals.toSet
  * in the `build` method of the message class builder.
  */
 public class BuilderBeforeReturnInsertionPoint : InsertionPoint {
-
-    private val parsedSources = ParsedSources()
 
     public override val label: String =
         BuilderBeforeReturnInsertionPoint::class.java.simpleName
@@ -43,8 +43,8 @@ public class BuilderBeforeReturnInsertionPoint : InsertionPoint {
             method.startPosition, method.endPosition
         )
         val returnIndex = returnLineIndex(methodCode)
-        val beforeReturnLineNumber = method.lineNumber + returnIndex - 1
-        return atLine(beforeReturnLineNumber)
+        val beforeReturnLine = method.lineNumber + returnIndex - 1
+        return atLine(beforeReturnLine)
     }
 
     private fun returnLineIndex(methodCode: String): Int {
@@ -58,7 +58,11 @@ public class BuilderBeforeReturnInsertionPoint : InsertionPoint {
     }
 
     private fun findMessageClass(code: Text): JavaClassSource {
-        return parsedSources[code] as JavaClassSource
+        val result = Roaster.parse(JavaSource::class.java, code.value)
+
+        check(result.isClass) { "No message class found." }
+
+        return result as JavaClassSource
     }
 
     private fun findBuilderClass(

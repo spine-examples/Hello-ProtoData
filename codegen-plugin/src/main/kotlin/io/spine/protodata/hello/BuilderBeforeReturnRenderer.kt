@@ -7,7 +7,7 @@ import io.spine.tools.code.Java
 
 /**
  * The code generation [Renderer] that renders validation methods calls
- * in a message builder before `return` line of the class builder.
+ * in a `build` method before `return` line of the message class builder.
  */
 public class BuilderBeforeReturnRenderer(
     private val builderValidationMethods: BuilderValidationMethods
