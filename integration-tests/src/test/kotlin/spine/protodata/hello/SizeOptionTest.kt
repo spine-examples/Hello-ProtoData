@@ -3,9 +3,9 @@ package spine.protodata.hello
 import io.spine.protodata.hello.Address
 import io.spine.protodata.hello.Contact
 import io.spine.protodata.hello.validateAddressCount
-import io.spine.protodata.hello.validateAddressLineCount
 import io.spine.protodata.hello.validateEmailCount
 import io.spine.protodata.hello.validatePhoneCount
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
@@ -14,67 +14,73 @@ import org.junit.jupiter.api.assertThrows
  */
 class `Size option test should` {
 
-    @Test
-    fun `check several options within the same message type and sub-type`() {
-        val elementCount = 3
+    @Nested
+    class ` validate several options within the same message` {
 
-        val builder = Contact.newBuilder()
-            .setElementCount(elementCount)
-
-        repeat(elementCount) {
-            builder
-                .addPhone("Phone$it")
-                .addEmail("Email$it")
-                .addAddress(
-                    buildAddress(it)
-                        .validateAddressLineCount()
-                        .build()
-                )
+        @Test
+        fun `with the generated methods`() {
+            buildContact()
+                .validateAddressCount()
+                .validateEmailCount()
+                .validatePhoneCount()
         }
 
+        @Test
+        fun `with the build method`() {
+            buildContact().build()
+        }
+    }
+
+    @Nested
+    class ` check that a validation error is raised` {
+
+        @Test
+        fun `by the generated methods`() {
+            val builder = buildInvalidContact()
+
+            assertThrows<IllegalStateException> {
+                builder.validatePhoneCount()
+            }
+            assertThrows<IllegalStateException> {
+                builder.validateAddressCount()
+            }
+            assertThrows<IllegalStateException> {
+                builder.validateEmailCount()
+            }
+        }
+
+        @Test
+        fun `by the build method`() {
+            assertThrows<IllegalStateException> {
+                buildInvalidContact().build()
+            }
+        }
+    }
+}
+
+private fun buildInvalidContact(): Contact.Builder {
+    return Contact.newBuilder()
+        .setElementCount(2)
+        .addPhone("Phone")
+        .addEmail("Email")
+        .addAddress(buildAddress(1))
+}
+
+private fun buildContact(): Contact.Builder {
+    val elementCount = 3
+
+    val builder = Contact.newBuilder()
+        .setElementCount(elementCount)
+
+    repeat(elementCount) {
         builder
-            .validatePhoneCount()
-            .validateAddressCount()
-            .validateEmailCount()
-            .build()
+            .addPhone("Phone$it")
+            .addEmail("Email$it")
+            .addAddress(
+                buildAddress(it)
+            )
     }
-
-    @Test
-    fun `fail if size of a repeated field is wrong`() {
-        val addressBuilder = Address.newBuilder()
-            .setZipcode("Zipcode")
-            .setCountry("Country")
-            .setNumberOfLines(2)
-            .addAddressLine("AddressLine")
-
-        assertThrows<IllegalStateException> {
-            addressBuilder.validateAddressLineCount()
-        }
-        assertThrows<IllegalStateException> {
-            addressBuilder.build()
-        }
-
-        val contactBuilder = Contact.newBuilder()
-            .setElementCount(2)
-            .addPhone("Phone")
-            .addEmail("Email")
-
-        assertThrows<IllegalStateException> {
-            contactBuilder.addAddress(addressBuilder)
-        }
-        assertThrows<IllegalStateException> {
-            contactBuilder.validatePhoneCount()
-        }
-        assertThrows<IllegalStateException> {
-            contactBuilder.validateAddressCount()
-        }
-        assertThrows<IllegalStateException> {
-            contactBuilder.validateEmailCount()
-        }
-        assertThrows<IllegalStateException> {
-            contactBuilder.build()
-        }
-    }
+    return builder
 }
 
 private fun buildAddress(seed: Int): Address.Builder {

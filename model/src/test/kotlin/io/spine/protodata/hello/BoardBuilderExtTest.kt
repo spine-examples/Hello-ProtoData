@@ -26,6 +26,7 @@
 
 package io.spine.protodata.hello
 
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
@@ -33,34 +34,49 @@ import org.junit.jupiter.api.assertThrows
  * Tests the generated validation code for the `size` option
  * that is applied to a repeated field.
  */
-class `Board builder extension should` {
+class `Board builder extension test should` {
 
-    @Test
-    fun `validate cell count`() {
-        val sideSize = 3
-        val builder = Board.newBuilder()
-            .setSideSize(sideSize)
+    @Nested
+    class ` validate cell count` {
 
-        repeat(sideSize * sideSize) {
-            builder.addCell(Cell.newBuilder())
+        @Test
+        fun `with the generated method`() {
+            buildBoard(true).validateCellCount()
         }
 
-        builder
-            .validateCellCount()
-            .build()
-    }
-
-    @Test
-    fun `fail if cell count does not match the validation expression`() {
-        val builder = Board.newBuilder()
-            .setSideSize(3)
-            .addCell(Cell.newBuilder())
-
-        assertThrows<IllegalStateException> {
-            builder.validateCellCount()
-        }
-        assertThrows<IllegalStateException> {
-            builder.build()
+        @Test
+        fun `with the build method`() {
+            buildBoard(true).build()
         }
     }
+
+    @Nested
+    class ` check that a validation error is raised` {
+
+        @Test
+        fun `by the generated method`() {
+            assertThrows<IllegalStateException> {
+                buildBoard(false).validateCellCount()
+            }
+        }
+
+        @Test
+        fun `by the build method`() {
+            assertThrows<IllegalStateException> {
+                buildBoard(false).build()
+            }
+        }
+    }
+}
+
+private fun buildBoard(isValid: Boolean): Board.Builder {
+    val sideSize = 3
+    val builder = Board.newBuilder()
+        .setSideSize(sideSize)
+
+    val cellCount = if (isValid) sideSize * sideSize else 1
+    repeat(cellCount) {
+        builder.addCell(Cell.newBuilder())
+    }
+    return builder
 }

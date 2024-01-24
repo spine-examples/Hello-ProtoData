@@ -12,7 +12,7 @@ import java.util.regex.Pattern
 
 /**
  * [InsertionPoint] that is the line just before `return` statement
- * in the `build` method of the message class builder.
+ * in the `build` method of a message class builder.
  */
 public class BuilderBeforeReturnInsertionPoint : InsertionPoint {
 
