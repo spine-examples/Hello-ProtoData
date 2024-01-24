@@ -63,7 +63,7 @@ internal class BuilderExtensionGenerator(
     internal fun filePath(): Path {
         return Path.of(
             javaPackage.replace('.', '/'),
-            simpleTypeName + "BuilderExt.kt"
+            simpleTypeName + "BuilderExts.kt"
         )
     }
 
@@ -94,7 +94,7 @@ internal class BuilderExtensionGenerator(
             val builderClass = fullClassName.nestedClass("Builder")
 
             val validationMethod = "$javaPackage.$simpleTypeName" +
-                    "BuilderExtKt.$functionName(this);"
+                    "BuilderExtsKt.$functionName(this);"
 
             builderValidationMethods.linkMethod(javaFileName, validationMethod)
 
