@@ -42,6 +42,10 @@ import io.spine.tools.code.Kotlin
  * Applicable to [Kotlin] language only.
  */
 public class ValidateSizeOptionRenderer(
+    /**
+     * A container for collecting generated validation methods, which should
+     * later be added to the `build` method of the message builder class.
+     */
     private val builderValidationMethods: BuilderValidationMethods
 ) : Renderer<Kotlin>(Kotlin.lang()) {
 

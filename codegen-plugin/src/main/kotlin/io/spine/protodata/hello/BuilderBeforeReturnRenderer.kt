@@ -7,9 +7,14 @@ import io.spine.tools.code.Java
 
 /**
  * The [Renderer] that inserts validation methods calls into the `build`
- * method of a message class builder just before the `return` statement.
+ * method of the message class builder, just before the `return` statement.
  */
 public class BuilderBeforeReturnRenderer(
+    /**
+     * A container with validation methods that are associated with
+     * Java source file and should be inserted into the `build` method
+     * of the message builder class.
+     */
     private val builderValidationMethods: BuilderValidationMethods
 ) : Renderer<Java>(Java.lang()) {
 
@@ -20,6 +25,10 @@ public class BuilderBeforeReturnRenderer(
         sources.forEach(::insertValidationMethodsInvocation)
     }
 
+    /**
+     * Inserts validation method calls into the `build` method
+     * of the message builder class.
+     */
     private fun insertValidationMethodsInvocation(sourceFile: SourceFile) {
         val fullJavaSourceFileName = sourceFile.relativePath.toString()
         assert(builderValidationMethods.hasMethods(fullJavaSourceFileName))
