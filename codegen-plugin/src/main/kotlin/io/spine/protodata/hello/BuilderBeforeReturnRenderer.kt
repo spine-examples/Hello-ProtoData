@@ -7,7 +7,7 @@ import io.spine.tools.code.Java
 
 /**
  * The [Renderer] that inserts validation methods calls into the `build`
- * method of the message class builder, just before the `return` statement.
+ * method of the message class builder.
  */
 public class BuilderBeforeReturnRenderer(
     /**

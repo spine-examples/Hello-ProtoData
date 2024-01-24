@@ -51,7 +51,6 @@ internal class BuilderExtensionGenerator(
     private val typeName: TypeName,
     private val sizeOptions: Iterable<SizeOption>,
     private val builderValidationMethods: BuilderValidationMethods
-
 ) {
     private val javaPackage = sourceFile.javaPackage()
     private val simpleTypeName = typeName.simpleName
