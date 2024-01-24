@@ -23,6 +23,12 @@ public class BuilderBeforeReturnInsertionPoint : InsertionPoint {
         "\\s*return .+;.*", Pattern.UNICODE_CASE or Pattern.DOTALL
     )
 
+    /**
+     * Returns the position of the line just before the `return` statement
+     * of the `build` method of the message builder class. The builder class
+     * is the nested within the message class. The message class is parsed
+     * from the given text.
+     */
     public override fun locate(text: Text): Set<TextCoordinates> {
         val messageClass = parseMessageClass(text)
         val builderClass = loadBuilderClass(messageClass)
