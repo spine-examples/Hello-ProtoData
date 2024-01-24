@@ -30,13 +30,13 @@ public class BuilderBeforeReturnRenderer(
      * of the message builder class.
      */
     private fun insertValidationMethodsInvocation(sourceFile: SourceFile) {
-        val fullJavaSourceFileName = sourceFile.relativePath.toString()
-        assert(builderValidationMethods.hasMethods(fullJavaSourceFileName))
+        val sourceFilePath = sourceFile.relativePath
+        assert(builderValidationMethods.hasMethods(sourceFilePath))
 
         val builder = sourceFile.at(BuilderBeforeReturnInsertionPoint())
             .withExtraIndentation(2)
 
-        builderValidationMethods.methods(fullJavaSourceFileName)
+        builderValidationMethods.methods(sourceFilePath)
             .forEach(builder::add)
     }
 }

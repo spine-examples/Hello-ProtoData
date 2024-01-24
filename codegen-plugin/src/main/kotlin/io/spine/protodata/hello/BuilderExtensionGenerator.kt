@@ -76,10 +76,10 @@ internal class BuilderExtensionGenerator(
         val builder = FileSpec.builder(fullClassName)
             .indent(Indent.defaultJavaIndent.toString())
 
-        val javaFileName = Path.of(
+        val javaSourceFilePath = Path.of(
             javaPackage.replace('.', '/'),
             "$simpleTypeName.java"
-        ).toString()
+        )
 
         sizeOptions.forEach { sizeOption ->
 
@@ -93,10 +93,13 @@ internal class BuilderExtensionGenerator(
             val functionName = "validate" + fieldName.camelCase() + "Count"
             val builderClass = fullClassName.nestedClass("Builder")
 
-            val validationMethod = "$javaPackage.$simpleTypeName" +
-                    "BuilderExtsKt.$functionName(this);"
+            val typeNameForJavaCall = simpleTypeName + "BuilderExtsKt"
+            val validationMethodCall = "$javaPackage." +
+                    "$typeNameForJavaCall.$functionName(this);"
 
-            builderValidationMethods.linkMethod(javaFileName, validationMethod)
+            builderValidationMethods.linkMethod(
+                javaSourceFilePath, validationMethodCall
+            )
 
             builder.addFunction(
                 FunSpec.builder(functionName)
