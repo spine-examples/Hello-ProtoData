@@ -22,7 +22,9 @@ public class BuilderBeforeReturnRenderer(
         if (!sources.outputRoot.endsWith("java")) {
             return
         }
-        sources.forEach(::insertValidationMethodsInvocation)
+        sources.filter {
+            builderValidationMethods.hasMethods(it.relativePath)
+        }.forEach(::insertValidationMethodsInvocation)
     }
 
     /**
@@ -30,13 +32,10 @@ public class BuilderBeforeReturnRenderer(
      * of the message builder class.
      */
     private fun insertValidationMethodsInvocation(sourceFile: SourceFile) {
-        val sourceFilePath = sourceFile.relativePath
-        assert(builderValidationMethods.hasMethods(sourceFilePath))
-
         val builder = sourceFile.at(BuilderBeforeReturnInsertionPoint())
             .withExtraIndentation(2)
 
-        builderValidationMethods.methods(sourceFilePath)
+        builderValidationMethods.methods(sourceFile.relativePath)
             .forEach(builder::add)
     }
 }
