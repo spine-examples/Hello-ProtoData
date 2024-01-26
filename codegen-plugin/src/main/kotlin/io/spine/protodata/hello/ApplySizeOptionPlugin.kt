@@ -50,8 +50,14 @@ import io.spine.protodata.renderer.Renderer
 public class ApplySizeOptionPlugin : Plugin {
 
     override fun renderers(): List<Renderer<*>> {
+        // A container for collecting generated validation methods, which should
+        // later be added to the `build` method of the message builder class.
+        val builderValidationMethods = BuilderValidationMethods()
+
         return listOf(
-            ValidateSizeOptionRenderer()
+            ValidateSizeOptionRenderer(builderValidationMethods),
+            BuilderBeforeReturnPrinter(),
+            BuilderBeforeReturnRenderer(builderValidationMethods)
         )
     }
 

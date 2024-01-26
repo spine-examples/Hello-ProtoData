@@ -49,8 +49,8 @@ import java.nio.file.Path
 internal class BuilderExtensionGenerator(
     private val sourceFile: ProtobufSourceFile,
     private val typeName: TypeName,
-    private val sizeOptions: Iterable<SizeOption>
-
+    private val sizeOptions: Iterable<SizeOption>,
+    private val builderValidationMethods: BuilderValidationMethods
 ) {
     private val javaPackage = sourceFile.javaPackage()
     private val simpleTypeName = typeName.simpleName
@@ -62,7 +62,7 @@ internal class BuilderExtensionGenerator(
     internal fun filePath(): Path {
         return Path.of(
             javaPackage.replace('.', '/'),
-            simpleTypeName + "BuilderExt.kt"
+            simpleTypeName + "BuilderExts.kt"
         )
     }
 
@@ -70,9 +70,15 @@ internal class BuilderExtensionGenerator(
      * Generates content of the file with builder extension declaration.
      */
     internal fun fileContent(): String {
+
         val fullClassName = ClassName(javaPackage, simpleTypeName)
         val builder = FileSpec.builder(fullClassName)
             .indent(Indent.defaultJavaIndent.toString())
+
+        val javaSourceFilePath = Path.of(
+            javaPackage.replace('.', '/'),
+            "$simpleTypeName.java"
+        )
 
         sizeOptions.forEach { sizeOption ->
 
@@ -85,6 +91,14 @@ internal class BuilderExtensionGenerator(
             )
             val functionName = "validate" + fieldName.camelCase() + "Count"
             val builderClass = fullClassName.nestedClass("Builder")
+
+            val typeNameForJavaStaticCall = simpleTypeName + "BuilderExtsKt"
+            val javaValidationMethodCall =
+                "$javaPackage.$typeNameForJavaStaticCall.$functionName(this);"
+
+            builderValidationMethods.linkMethod(
+                javaSourceFilePath, javaValidationMethodCall
+            )
 
             builder.addFunction(
                 FunSpec.builder(functionName)
