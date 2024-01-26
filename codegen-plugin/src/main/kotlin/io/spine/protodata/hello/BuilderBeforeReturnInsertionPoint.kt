@@ -25,9 +25,17 @@ public class BuilderBeforeReturnInsertionPoint : InsertionPoint {
 
     /**
      * Returns the position of the line just before the `return` statement
-     * of the `build` method of the message builder class. The builder class
-     * is the nested within the message class. The message class is parsed
-     * from the given text.
+     * of the `build` method of the message builder class.
+     *
+     * The position is being searched within the given [text],
+     * taking into account the following:
+     *
+     *  - The builder class is the nested within class of some `Message`.
+     *  - The class of `Message` is the only top-level class in the passed
+     *  [text].
+     *
+     * This implementation assumes that Proto file has its `java_multiple_files`
+     * option set to `true`.
      */
     public override fun locate(text: Text): Set<TextCoordinates> {
         val messageClass = parseMessageClass(text)
