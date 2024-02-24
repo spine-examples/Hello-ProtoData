@@ -53,8 +53,6 @@ buildscript {
 
 plugins {
     kotlin("jvm")
-    id("net.ltgt.errorprone")
-    id("detekt-code-analysis")
     id("com.google.protobuf")
     id("io.spine.protodata") version "0.14.0"
     idea
@@ -79,8 +77,6 @@ subprojects {
 
     apply {
         plugin("kotlin")
-        plugin("net.ltgt.errorprone")
-        plugin("detekt-code-analysis")
         plugin("com.google.protobuf")
         plugin("idea")
         plugin("io.spine.mc-java")
@@ -90,10 +86,6 @@ subprojects {
         api(Spine.base)
 
         Protobuf.libs.forEach { implementation(it) }
-
-        ErrorProne.apply {
-            errorprone(core)
-        }
 
         // Force versions for compilation/runtime as well.
         //
@@ -161,7 +153,6 @@ fun Module.configureJava() {
     tasks {
         withType<JavaCompile>().configureEach {
             configureJavac()
-            configureErrorProne()
             // https://stackoverflow.com/questions/38298695/gradle-disable-all-incremental-compilation-and-parallel-builds
             options.isIncremental = false
         }

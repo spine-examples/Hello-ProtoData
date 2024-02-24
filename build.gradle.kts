@@ -32,6 +32,9 @@ import io.spine.internal.gradle.javac.configureErrorProne
 import io.spine.internal.gradle.javac.configureJavac
 import io.spine.internal.gradle.kotlin.applyJvmToolchain
 import io.spine.internal.gradle.kotlin.setFreeCompilerArgs
+import io.spine.internal.gradle.publish.PublishingRepos
+import io.spine.internal.gradle.publish.SpinePublishing
+import io.spine.internal.gradle.publish.spinePublishing
 import io.spine.internal.gradle.standardToSpineSdk
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -62,9 +65,7 @@ object BuildSettings {
     val javaVersion: JavaLanguageVersion = JavaLanguageVersion.of(JAVA_VERSION)
 }
 
-
 allprojects {
-
     // Define the repositories universally for all modules, including the root.
     repositories.standardToSpineSdk()
 }
@@ -208,4 +209,34 @@ fun Module.applyGeneratedDirectories() {
             isDownloadSources = true
         }
     }
+}
+
+spinePublishing {
+    modules = subprojects.map { it.name }
+        // Do not publish the validation codegen module as it is deprecated in favor of
+        // ProtoData-based code generation of the Validation library.
+        // The module is still kept for the sake of historical reference.
+        .filter { !it.contains("mc-java-validation") }
+        .toSet()
+    destinations = PublishingRepos.run {
+        setOf(
+            cloudRepo,
+            cloudArtifactRegistry,
+            gitHub("mc-java"),
+        )
+    }
+}
+
+/**
+ * Collect `publishToMavenLocal` tasks for all subprojects that are specified for
+ * publishing in the root project.
+ */
+val publishedModules: Set<String> = extensions.getByType<SpinePublishing>().modules
+
+val localPublish by tasks.registering {
+    val pubTasks = publishedModules.map { p ->
+        val subProject = project(p)
+        subProject.tasks["publishToMavenLocal"]
+    }
+    dependsOn(pubTasks)
 }
