@@ -1,5 +1,5 @@
 /*
- * Copyright 2024, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,3 +23,23 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+package io.spine.internal.dependency
+
+/**
+ * The dependency to some modules of the `Hello-ProtoData` project
+ * to reference it from the integration tests which are running
+ * in a separate Gradle process.
+ */
+@Suppress("unused")
+object HelloProtoData {
+
+    private const val project = "Hello-ProtoData"
+    private const val version = "unspecified"
+
+    // Size option extension module.
+    const val extension = "${project}:spine-proto-extension:${version}"
+
+    // Code generation plugin module.
+    const val plugin = "${project}:spine-codegen-plugin:${version}"
+}
