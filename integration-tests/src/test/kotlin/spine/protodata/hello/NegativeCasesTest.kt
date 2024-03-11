@@ -55,7 +55,7 @@ class NegativeCasesTest {
                 //.enableRunnerDebug()
                 .create()
             (project.runner as DefaultGradleRunner).withJvmArguments(
-                "-Xmx8g", "-XX:MaxMetaspaceSize=1024m", "-XX:+HeapDumpOnOutOfMemoryError"
+                "-Xmx8g", "-XX:MaxMetaspaceSize=2048m", "-XX:+HeapDumpOnOutOfMemoryError"
             )
             moduleDir = projectDir.toPath() / RESOURCE_SUB_DIR
             project.executeTask(McJavaTaskName.launchProtoData)
