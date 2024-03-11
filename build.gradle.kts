@@ -24,6 +24,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+@file:Suppress("RemoveRedundantQualifierName")
+
 import Build_gradle.Module
 import io.spine.internal.dependency.ErrorProne
 import io.spine.internal.dependency.Protobuf
@@ -32,7 +34,6 @@ import io.spine.internal.gradle.javac.configureErrorProne
 import io.spine.internal.gradle.javac.configureJavac
 import io.spine.internal.gradle.kotlin.applyJvmToolchain
 import io.spine.internal.gradle.kotlin.setFreeCompilerArgs
-import io.spine.internal.gradle.publish.PublishingRepos
 import io.spine.internal.gradle.publish.SpinePublishing
 import io.spine.internal.gradle.publish.spinePublishing
 import io.spine.internal.gradle.standardToSpineSdk
@@ -66,6 +67,10 @@ object BuildSettings {
 }
 
 allprojects {
+    apply(from = "$rootDir/version.gradle.kts")
+    group = "io.spine.hello-protodata"
+    version = extra["helloProtoDataVersion"]!!
+
     // Define the repositories universally for all modules, including the root.
     repositories.standardToSpineSdk()
 }
@@ -211,27 +216,26 @@ fun Module.applyGeneratedDirectories() {
     }
 }
 
+/**
+ * Publishes the modules that are required by integration tests.
+ */
 spinePublishing {
     modules = subprojects.map { it.name }
-        // Do not publish the validation codegen module as it is deprecated in favor of
-        // ProtoData-based code generation of the Validation library.
-        // The module is still kept for the sake of historical reference.
-        .filter { !it.contains("mc-java-validation") }
+        .filter {
+            it.contains("proto-extension")
+                    || it.contains("codegen-plugin")
+        }
         .toSet()
-    destinations = PublishingRepos.run {
-        setOf(
-            cloudRepo,
-            cloudArtifactRegistry,
-            gitHub("mc-java"),
-        )
-    }
+    artifactPrefix = "hello-"
 }
 
 /**
  * Collect `publishToMavenLocal` tasks for all subprojects that are specified for
  * publishing in the root project.
  */
-val publishedModules: Set<String> = extensions.getByType<SpinePublishing>().modules
+val publishedModules: Set<String> = extensions
+    .getByType<SpinePublishing>()
+    .modules
 
 val localPublish by tasks.registering {
     val pubTasks = publishedModules.map { p ->

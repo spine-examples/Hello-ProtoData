@@ -30,16 +30,19 @@ package io.spine.internal.dependency
  * The dependency to some modules of the `Hello-ProtoData` project
  * to reference it from the integration tests which are running
  * in a separate Gradle process.
+ *
+ * The value of the version should be the same as it is defined
+ * in the `version.gradle.kts`.
  */
 @Suppress("unused")
 object HelloProtoData {
 
-    private const val project = "Hello-ProtoData"
-    private const val version = "unspecified"
+    private const val group = "io.spine.hello-protodata"
+    private const val version = "0.1"
 
     // Size option extension module.
-    const val extension = "${project}:spine-proto-extension:${version}"
+    const val extension = "${group}:hello-proto-extension:${version}"
 
     // Code generation plugin module.
-    const val plugin = "${project}:spine-codegen-plugin:${version}"
+    const val plugin = "${group}:hello-codegen-plugin:${version}"
 }

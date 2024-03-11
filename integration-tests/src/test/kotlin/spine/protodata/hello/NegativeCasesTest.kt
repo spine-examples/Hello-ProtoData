@@ -49,13 +49,11 @@ class NegativeCasesTest {
             project = GradleProject.setupAt(projectDir)
                 .fromResources(RESOURCE_DIR)
                 .copyBuildSrc()
-                /* Uncomment the following line to be able to debug the build.
-                   Remember to turn off so that tests run faster, AND Windows build does not
-                   fail with the error on Windows Registry unavailability. */
-                //.enableRunnerDebug()
                 .create()
             (project.runner as DefaultGradleRunner).withJvmArguments(
-                "-Xmx4g", "-XX:MaxMetaspaceSize=512m", "-XX:+HeapDumpOnOutOfMemoryError"
+                "-Xmx4g",
+                "-XX:MaxMetaspaceSize=512m",
+                "-XX:+HeapDumpOnOutOfMemoryError"
             )
             moduleDir = projectDir.toPath() / RESOURCE_SUB_DIR
             project.executeTask(McJavaTaskName.launchProtoData)

@@ -23,3 +23,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+/**
+ * The version of the `Hello-ProtoData` to publish.
+ *
+ * This version also used by integration tests, so if you chage the version,
+ * please also update it in the [io.spine.internal.dependency.HelloProtoData].
+ */
+val helloProtoDataVersion: String by extra("0.1")
