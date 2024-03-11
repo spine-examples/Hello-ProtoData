@@ -20,4 +20,4 @@ jobs:
 
       - name: Build project and run tests
         shell: bash
-        run: ./gradlew build --stacktrace -Xmx10g -XX:MaxMetaspaceSize=2048m
+        run: ./gradlew build --stacktrace -Xmx10g -Xms2g
