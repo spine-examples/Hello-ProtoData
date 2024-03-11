@@ -32,6 +32,7 @@ import io.spine.internal.gradle.javac.configureErrorProne
 import io.spine.internal.gradle.javac.configureJavac
 import io.spine.internal.gradle.kotlin.applyJvmToolchain
 import io.spine.internal.gradle.kotlin.setFreeCompilerArgs
+import io.spine.internal.gradle.publish.PublishingRepos
 import io.spine.internal.gradle.publish.SpinePublishing
 import io.spine.internal.gradle.publish.spinePublishing
 import io.spine.internal.gradle.standardToSpineSdk
@@ -211,6 +212,19 @@ fun Module.applyGeneratedDirectories() {
 }
 
 spinePublishing {
+    modules = subprojects.map { it.name }
+        // Do not publish the validation codegen module as it is deprecated in favor of
+        // ProtoData-based code generation of the Validation library.
+        // The module is still kept for the sake of historical reference.
+        .filter { !it.contains("mc-java-validation") }
+        .toSet()
+    destinations = PublishingRepos.run {
+        setOf(
+            cloudRepo,
+            cloudArtifactRegistry,
+            gitHub("mc-java"),
+        )
+    }
 }
 
 /**

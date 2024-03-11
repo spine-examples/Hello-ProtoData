@@ -54,6 +54,8 @@ public class ApplySizeOptionPlugin : Plugin {
         // later be added to the `build` method of the message builder class.
         val builderValidationMethods = BuilderValidationMethods()
 
+        println("")
+
         return listOf(
             ValidateSizeOptionRenderer(builderValidationMethods),
             BuilderBeforeReturnPrinter(),

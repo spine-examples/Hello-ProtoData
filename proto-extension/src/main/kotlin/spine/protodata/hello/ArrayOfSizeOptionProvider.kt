@@ -39,6 +39,9 @@ import io.spine.protodata.hello.ArrayOfSizeOptionProto
 public class ArrayOfSizeOptionProvider : OptionsProvider {
 
     override fun registerIn(registry: ExtensionRegistry) {
+
+        println("")
+
         ArrayOfSizeOptionProto.registerAllExtensions(registry)
     }
 }
