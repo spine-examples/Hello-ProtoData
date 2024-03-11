@@ -34,10 +34,10 @@ repositories {
 
 dependencies {
     // Enable field options extension.
-    implementation(HelloProtoData.extension)
+    api(HelloProtoData.extension)
 
     // Add module with code generation plugin to ProtoData classpath.
-    implementation(HelloProtoData.plugin)
+    protoData(HelloProtoData.plugin)
 
     // To allow access to `ValidatingBuilder` from the generated Kotlin code.
     implementation(Validation.runtime)
