@@ -23,29 +23,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-import io.spine.internal.dependency.KotlinPoet
-import io.spine.internal.dependency.ProtoData
-import io.spine.internal.gradle.javadoc.JavadocConfig
 
-dependencies {
-    // To enable field options extension
-    api(project(":proto-extension"))
+syntax = "proto3";
 
-    // To use ProtoData API in code generation plugin.
-    api(ProtoData.compiler)
+package spine.protodata.hello;
 
-    api(KotlinPoet.lib)
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.protodata.hello";
+option java_outer_classname = "EchoProto";
+option java_multiple_files = true;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/any.proto";
+import "spine/protodata/hello/options.proto";
+
+message Echo {
+
+    google.protobuf.Timestamp when = 1;
+
+    repeated string message = 2 [(size).value = ""];
+
+    google.protobuf.StringValue extra_message = 3;
+
+    google.protobuf.Any arg = 4;
 }
-
-modelCompiler {
-    java {
-        codegen {
-            validation { skipValidation() }
-        }
-    }
-}
-
-/**
- * To avoid warnings on generated sources.
- */
-JavadocConfig.applyTo(project)

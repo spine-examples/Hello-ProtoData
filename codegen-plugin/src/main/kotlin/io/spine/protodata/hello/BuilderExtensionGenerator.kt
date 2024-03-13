@@ -82,7 +82,12 @@ internal class BuilderExtensionGenerator(
 
         sizeOptions.forEach { sizeOption ->
 
-            checkFieldIsRepeated(sizeOption)
+            val field = sourceFile
+                .type(typeName)
+                .field(sizeOption.id.fieldName)
+
+            checkFieldIsRepeated(field)
+            checkExpressionIsNotEmpty(sizeOption.expression, field)
 
             val fieldName = sizeOption.id.fieldName.value.propertyName()
             val expression = buildExpression(
@@ -126,14 +131,17 @@ internal class BuilderExtensionGenerator(
         return builder.build().toString()
     }
 
-    private fun checkFieldIsRepeated(sizeOption: SizeOption) {
-        val field = sourceFile
-            .type(typeName)
-            .field(sizeOption.id.fieldName)
-
+    private fun checkFieldIsRepeated(field: Field) {
         check(field.isRepeated()) {
-            "Field '$simpleTypeName.${field.name.value}' is not repeated" +
-                    " and therefore cannot be validated with 'size' option."
+            "Field `$simpleTypeName.${field.name.value}` is not repeated" +
+                    " and therefore cannot be validated with `size` option."
+        }
+    }
+
+    private fun checkExpressionIsNotEmpty(expression: String, field: Field) {
+        check(expression.trim().isNotBlank()) {
+            "Value of `size` option for field " +
+                    "`$simpleTypeName.${field.name.value}` is not set."
         }
     }
 }

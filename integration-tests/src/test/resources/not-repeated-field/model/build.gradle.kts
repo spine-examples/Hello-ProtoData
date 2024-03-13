@@ -1,5 +1,4 @@
-/*
- * Copyright 2023, TeamDev. All rights reserved.
+/* * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,18 +22,38 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-import io.spine.internal.dependency.KotlinPoet
-import io.spine.internal.dependency.ProtoData
-import io.spine.internal.gradle.javadoc.JavadocConfig
+
+import io.spine.internal.dependency.JUnit
+import io.spine.internal.dependency.Spine
+import io.spine.internal.dependency.Validation
+import io.spine.internal.dependency.HelloProtoData
+
+repositories {
+    mavenLocal()
+}
 
 dependencies {
-    // To enable field options extension
-    api(project(":proto-extension"))
+    // Enable field options extension.
+    api(HelloProtoData.extension)
 
-    // To use ProtoData API in code generation plugin.
-    api(ProtoData.compiler)
+    // Add module with code generation plugin to ProtoData classpath.
+    protoData(HelloProtoData.plugin)
 
-    api(KotlinPoet.lib)
+    // To allow access to `ValidatingBuilder` from the generated Kotlin code.
+    implementation(Validation.runtime)
+
+    testImplementation(JUnit.runner)
+}
+
+apply {
+    plugin("io.spine.protodata")
+}
+
+protoData {
+    // Deploy the code generation plugin to ProtoData.
+    plugins(
+        "io.spine.protodata.hello.ApplySizeOptionPlugin"
+    )
 }
 
 modelCompiler {
@@ -44,8 +63,3 @@ modelCompiler {
         }
     }
 }
-
-/**
- * To avoid warnings on generated sources.
- */
-JavadocConfig.applyTo(project)

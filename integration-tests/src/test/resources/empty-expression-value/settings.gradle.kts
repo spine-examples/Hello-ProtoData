@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-rootProject.name = "size-option-plugin-test"
+rootProject.name = "empty-expression-value"
 
 include(
     "model"

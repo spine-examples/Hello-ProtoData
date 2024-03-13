@@ -39,15 +39,19 @@ import java.io.StringWriter
 import java.nio.file.Path
 import kotlin.io.path.div
 
-class NegativeCasesTest {
+/**
+ * Verifies the case when `size` option plugin should fail build
+ * because option value is not set.
+ */
+class `MissingSizeOptionValueTest should` {
 
     companion object {
-        private const val RESOURCE_DIR = "size-option-plugin-test"
+        private const val RESOURCE_DIR = "empty-expression-value"
         private const val RESOURCE_SUB_DIR = "model"
 
         private lateinit var moduleDir: Path
         lateinit var project: GradleProject
-        lateinit var buildException: Exception
+        lateinit var buildException: UnexpectedBuildFailure
         val buildStderr: StringWriter = StringWriter()
 
         @BeforeAll
@@ -77,7 +81,7 @@ class NegativeCasesTest {
     }
 
     @Test
-    fun `fail if 'size' option is applied to a not repeated field`() {
+    fun ` fail if 'size' option value is not set`() {
         assertNotNull(
             buildException,
             "Build is finished without exception."
@@ -86,10 +90,10 @@ class NegativeCasesTest {
         assertTrue(
             buildStderr.toString().contains(
                 "java.lang.IllegalStateException: " +
-                        "Field 'Echo.message' is not repeated and therefore " +
-                        "cannot be validated with 'size' option."
+                        "Value of `size` option for field " +
+                        "`Echo.message` is not set."
             ),
-            "Required exception message not found."
+            "Required exception was not thrown."
         )
     }
 }

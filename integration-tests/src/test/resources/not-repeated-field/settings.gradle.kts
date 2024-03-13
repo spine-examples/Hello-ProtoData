@@ -1,5 +1,5 @@
 /*
- * Copyright 2023, TeamDev. All rights reserved.
+ * Copyright 2024, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,29 +23,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-import io.spine.internal.dependency.KotlinPoet
-import io.spine.internal.dependency.ProtoData
-import io.spine.internal.gradle.javadoc.JavadocConfig
 
-dependencies {
-    // To enable field options extension
-    api(project(":proto-extension"))
+rootProject.name = "not-repeated-field"
 
-    // To use ProtoData API in code generation plugin.
-    api(ProtoData.compiler)
-
-    api(KotlinPoet.lib)
-}
-
-modelCompiler {
-    java {
-        codegen {
-            validation { skipValidation() }
-        }
-    }
-}
-
-/**
- * To avoid warnings on generated sources.
- */
-JavadocConfig.applyTo(project)
+include(
+    "model"
+)
