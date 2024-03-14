@@ -37,7 +37,7 @@ import org.junit.jupiter.api.assertThrows
 class `Board builder extension test should` {
 
     @Nested
-    class ` validate cell count` {
+    inner class ` validate cell count` {
 
         @Test
         fun `with the generated method`() {
@@ -51,7 +51,7 @@ class `Board builder extension test should` {
     }
 
     @Nested
-    class ` check that a validation error is raised` {
+    inner class ` check that a validation error is raised` {
 
         @Test
         fun `by the generated method`() {

@@ -40,7 +40,7 @@ import org.junit.jupiter.api.assertThrows
 class `Size option test should` {
 
     @Nested
-    class ` validate several options within the same message` {
+    inner class ` validate several options within the same message` {
 
         @Test
         fun `with the generated methods`() {
@@ -57,7 +57,7 @@ class `Size option test should` {
     }
 
     @Nested
-    class ` check that a validation error is raised` {
+    inner class ` check that a validation error is raised` {
 
         @Test
         fun `by the generated methods`() {
