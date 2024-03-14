@@ -35,7 +35,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
 /**
- * Checks various use-cases on `size` option validation.
+ * Checks various test-cases on `size` option validation.
  */
 class `Size option test should` {
 
