@@ -37,7 +37,14 @@ import java.io.File
 import java.io.StringWriter
 
 /**
- * Checks for various cases where the `size` option is used incorrectly.
+ * Checks various cases where the `size` option is used incorrectly.
+ *
+ * The every test-case configures and runs the build of the test project
+ * in a separate Gradle process because any negative case raises
+ * the appropriate error and fails the build.
+ *
+ * Test-case is accepted when the specific error message is found in stderr
+ * stream of the failed build process.
  */
 class `NegativeCasesTest should` {
 
@@ -58,7 +65,9 @@ class `NegativeCasesTest should` {
     }
 
     @Test
-    fun ` fail if 'size' option value is not set`(@TempDir projectDir: File) {
+    fun ` fail if 'size' option value is not set`(
+        @TempDir projectDir: File
+    ) {
 
         val expectedExceptionMessage = "Value of `size` option " +
                 "for field `Echo.message` is not set."

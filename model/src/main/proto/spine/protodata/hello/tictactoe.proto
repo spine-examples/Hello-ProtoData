@@ -38,6 +38,13 @@ option java_package = "io.spine.protodata.hello";
 import "google/protobuf/descriptor.proto";
 import "spine/protodata/hello/options.proto";
 
+// A board for TicTacToe game.
+//
+// A board may have any size but minimum 3-by-3.
+// The field `side_size` defines the size of the board's side and
+// the number of cells is checked with the `size` option so that
+// this number always equals the "side_size * side_size" value.
+//
 message Board {
 
   // The name of the board.
