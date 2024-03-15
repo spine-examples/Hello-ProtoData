@@ -2,13 +2,13 @@
 An example on code generation with ProtoData.
 
 This example demonstrates how to define a new Protobuf option and
-generate the appropriate code in response to this option
+generate the validation code in response to this option
 using ProtoData API.
 
 ### Custom Protobuf Option
 
 Below is example on Protobuf message definition 
-with custom `size` option used for validating 
+with custom `size` option that is used for validating 
 the size of a repeated field.
 
 ```protobuf
@@ -113,7 +113,7 @@ See the `proto-extension` subproject for details.
 ### Code Generation
 
 There is `ApplySizeOptionPlugin` that implemented in order to generate 
-the validation code for `size` option.
+the validation code for the `size` option.
 The plugin can be deployed during the build process 
 and uses ProtoData API to extend the code generation for Protobuf messages.
 
@@ -137,7 +137,7 @@ protoData {
     )
 }
 ```
-Also, dependencies on `proto-extension` and `codegen-plugin`
+Also, the dependencies on `proto-extension` and `codegen-plugin`
 subprojects should be added:
 ```kotlin
 dependencies {
@@ -151,9 +151,11 @@ dependencies {
 
 The negative test-cases are implemented in a specific way.
 
-Such tests configure and run the build of the test project
-in a separate Gradle process because any negative case raises
+Such tests configure and run the build of a test project
+in a separate Gradle process because every negative case raises
 the appropriate error and fails the build.
 
-The negative test-case is accepted when the specific error message 
+A negative test-case is accepted when the specific error message 
 is found in the stderr stream of the failed build process.
+
+See the `integration-tests` subproject for details.
