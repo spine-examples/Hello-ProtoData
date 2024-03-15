@@ -55,7 +55,7 @@ message Cell {
 ```
 See the `model` subproject for details.
 
-### How to Define Custom Option
+### How to Define a Custom Option
 
 Below is a definition of Protobuf extension that can be found in `options.proto`:
 ```protobuf
@@ -120,7 +120,7 @@ and uses ProtoData API to extend the code generation for Protobuf messages.
 The plugin generates extensions for message builder classes 
 with validation methods for every field with `size` option applied.
 
-Also, the `build()` method of the message builder class is extended 
+Also, the `build()` method of a message builder class is extended 
 to call these methods.
 
 See the `codegen-plugin` subproject for details.
@@ -128,7 +128,7 @@ See the `codegen-plugin` subproject for details.
 ### Plugin Deployment
 
 The following configuration should be applied in the Gradle configuration 
-of a subproject that wants to use `size` option:
+of a subproject to use the `size` option:
 ```kotlin
 protoData {
     // Deploy the code generation plugin to ProtoData.
