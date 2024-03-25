@@ -24,29 +24,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-syntax = "proto3";
-
+/**
+ * Contains integration tests for the `size` option that is applied to
+ * a repeated field.
+ */
+@CheckReturnValue
+@ParametersAreNonnullByDefault
 package spine.protodata.hello;
 
-import "spine/options.proto";
+import com.google.errorprone.annotations.CheckReturnValue;
 
-option (type_url_prefix) = "type.spine.io";
-option java_package = "io.spine.protodata.hello";
-option java_outer_classname = "EchoProto";
-option java_multiple_files = true;
-
-import "google/protobuf/timestamp.proto";
-import "google/protobuf/wrappers.proto";
-import "google/protobuf/any.proto";
-import "spine/protodata/hello/options.proto";
-
-message Echo {
-
-    google.protobuf.Timestamp when = 1;
-
-    string message = 2 [(size).value = "5"];
-
-    google.protobuf.StringValue extra_message = 3;
-
-    google.protobuf.Any arg = 4;
-}
+import javax.annotation.ParametersAreNonnullByDefault;
