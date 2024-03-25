@@ -74,7 +74,7 @@ fun doForceVersions(configurations: ConfigurationContainer) {
                     spine.base,
                     logging.lib,
                     logging.backend,
-                    logging.lib,
+                    logging.floggerApi,
                     spine.toolBase,
                     spine.server,
                     io.spine.internal.dependency.Validation.runtime,
