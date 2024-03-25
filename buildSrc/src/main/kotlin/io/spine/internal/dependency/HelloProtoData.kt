@@ -38,7 +38,7 @@ package io.spine.internal.dependency
 object HelloProtoData {
 
     private const val group = "io.spine.hello-protodata"
-    private const val version = "0.1"
+    private const val version = "0.13.1"
 
     // Size option extension module.
     const val extension = "${group}:hello-proto-extension:${version}"
