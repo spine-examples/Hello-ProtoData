@@ -34,6 +34,7 @@ dependencies {
     // To use ProtoData API in code generation plugin.
     api(ProtoData.compiler)
 
+    // To generate Kotlin sources.
     api(KotlinPoet.lib)
 }
 

@@ -25,7 +25,6 @@
 
 import io.spine.internal.dependency.JUnit
 import io.spine.internal.dependency.Spine
-import io.spine.internal.dependency.Validation
 
 dependencies {
     // Enable field options extension.
@@ -33,9 +32,6 @@ dependencies {
 
     // Add module with code generation plugin to ProtoData classpath.
     protoData(project(":codegen-plugin"))
-
-    // To allow access to `ValidatingBuilder` from the generated Kotlin code.
-    implementation(Validation.runtime)
 
     testImplementation(JUnit.runner)
 

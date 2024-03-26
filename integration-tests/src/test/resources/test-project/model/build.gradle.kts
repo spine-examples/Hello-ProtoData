@@ -39,9 +39,6 @@ dependencies {
     // Add module with code generation plugin to ProtoData classpath.
     protoData(HelloProtoData.plugin)
 
-    // To allow access to `ValidatingBuilder` from the generated Kotlin code.
-    implementation(Validation.runtime)
-
     testImplementation(JUnit.runner)
 }
 

@@ -25,10 +25,8 @@
  */
 
 import Build_gradle.Module
-import io.spine.internal.dependency.ErrorProne
 import io.spine.internal.dependency.Protobuf
 import io.spine.internal.dependency.Spine
-import io.spine.internal.gradle.javac.configureErrorProne
 import io.spine.internal.gradle.javac.configureJavac
 import io.spine.internal.gradle.kotlin.applyJvmToolchain
 import io.spine.internal.gradle.kotlin.setFreeCompilerArgs
@@ -55,7 +53,6 @@ plugins {
     kotlin("jvm")
     id("com.google.protobuf")
     id("io.spine.protodata") version "0.14.0"
-    idea
 }
 
 object BuildSettings {
@@ -78,7 +75,6 @@ subprojects {
     apply {
         plugin("kotlin")
         plugin("com.google.protobuf")
-        plugin("idea")
         plugin("io.spine.mc-java")
     }
 
@@ -114,7 +110,6 @@ fun Module.applyConfiguration() {
     configureJava()
     configureKotlin()
     setUpTests()
-    applyGeneratedDirectories()
 }
 
 fun Module.configureKotlin() {
@@ -125,8 +120,6 @@ fun Module.configureKotlin() {
 
     tasks.withType<KotlinCompile> {
         setFreeCompilerArgs()
-        // https://stackoverflow.com/questions/38298695/gradle-disable-all-incremental-compilation-and-parallel-builds
-        incremental = false
     }
 }
 
@@ -153,54 +146,9 @@ fun Module.configureJava() {
     tasks {
         withType<JavaCompile>().configureEach {
             configureJavac()
-            // https://stackoverflow.com/questions/38298695/gradle-disable-all-incremental-compilation-and-parallel-builds
-            options.isIncremental = false
         }
         withType<org.gradle.jvm.tasks.Jar>().configureEach {
             duplicatesStrategy = DuplicatesStrategy.INCLUDE
-        }
-    }
-}
-
-/**
- * Adds directories with the generated source code to source sets
- * of the project and to IntelliJ IDEA module settings.
- */
-fun Module.applyGeneratedDirectories() {
-
-    /* The name of the root directory with the generated code. */
-    val generatedDir = "${projectDir}/generated"
-
-    val generatedMain = "$generatedDir/main"
-    val generatedJava = "$generatedMain/java"
-    val generatedKotlin = "$generatedMain/kotlin"
-    val generatedGrpc = "$generatedMain/grpc"
-    val generatedSpine = "$generatedMain/spine"
-
-    val generatedTest = "$generatedDir/test"
-    val generatedTestJava = "$generatedTest/java"
-    val generatedTestKotlin = "$generatedTest/kotlin"
-    val generatedTestGrpc = "$generatedTest/grpc"
-    val generatedTestSpine = "$generatedTest/spine"
-
-    idea {
-        module {
-            generatedSourceDirs.addAll(
-                files(
-                    generatedJava,
-                    generatedKotlin,
-                    generatedGrpc,
-                    generatedSpine,
-                )
-            )
-            testSources.from(
-                generatedTestJava,
-                generatedTestKotlin,
-                generatedTestGrpc,
-                generatedTestSpine,
-            )
-            isDownloadJavadoc = true
-            isDownloadSources = true
         }
     }
 }
