@@ -26,19 +26,19 @@
 
 syntax = "proto3";
 
-package spine.protodata.hello;
+package spine.examples.protodata.hello;
 
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
-option java_package = "io.spine.protodata.hello";
+option java_package = "io.spine.examples.protodata.hello";
 option java_outer_classname = "EchoProto";
 option java_multiple_files = true;
 
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
 import "google/protobuf/any.proto";
-import "spine/protodata/hello/options.proto";
+import "spine/examples/protodata/hello/options.proto";
 
 message Echo {
 

@@ -1,4 +1,5 @@
-/* * Copyright 2024, TeamDev. All rights reserved.
+/*
+ * Copyright 2024, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,38 +23,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package io.spine.examples.protodata.hello
 
-import io.spine.internal.dependency.JUnit
-import io.spine.internal.dependency.Validation
+import io.spine.protodata.renderer.InsertionPoint
+import io.spine.protodata.renderer.InsertionPointPrinter
+import io.spine.tools.code.Java
 
-dependencies {
-    // Enable field options extension.
-    api(project(":proto-extension"))
+/**
+ * [InsertionPointPrinter] that prints the `size` option validation code
+ * in the `build` method of the message class builder.
+ */
+public class BuilderBeforeReturnPrinter :
+    InsertionPointPrinter<Java>(Java.lang()) {
 
-    // Add module with code generation plugin to ProtoData classpath.
-    protoData(project(":codegen-plugin"))
-
-    // To allow access to `ValidatingBuilder` from the generated Kotlin code.
-    implementation(Validation.runtime)
-
-    testImplementation(JUnit.runner)
-}
-
-apply {
-    plugin("io.spine.protodata")
-}
-
-protoData {
-    // Deploy the code generation plugin to ProtoData.
-    plugins(
-        "io.spine.examples.protodata.hello.ApplySizeOptionPlugin"
-    )
-}
-
-modelCompiler {
-    java {
-        codegen {
-            validation { skipValidation() }
-        }
+    override fun supportedInsertionPoints(): Set<InsertionPoint> {
+        return setOf(BuilderBeforeReturnInsertionPoint())
     }
 }

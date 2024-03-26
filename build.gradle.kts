@@ -68,7 +68,7 @@ object BuildSettings {
 
 allprojects {
     apply(from = "$rootDir/version.gradle.kts")
-    group = "io.spine.hello-protodata"
+    group = "io.spine.examples"
     version = extra["helloProtoDataVersion"]!!
 
     // Define the repositories universally for all modules, including the root.
@@ -226,7 +226,7 @@ spinePublishing {
                     || it.contains("codegen-plugin")
         }
         .toSet()
-    artifactPrefix = "hello-"
+    artifactPrefix = "hello-protodata-"
 }
 
 /**

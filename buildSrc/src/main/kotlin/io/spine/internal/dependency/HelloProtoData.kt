@@ -37,12 +37,12 @@ package io.spine.internal.dependency
 @Suppress("unused")
 object HelloProtoData {
 
-    private const val group = "io.spine.hello-protodata"
+    private const val group = "io.spine.examples"
     private const val version = "0.13.1"
 
     // Size option extension module.
-    const val extension = "${group}:hello-proto-extension:${version}"
+    const val extension = "${group}:hello-protodata-proto-extension:${version}"
 
     // Code generation plugin module.
-    const val plugin = "${group}:hello-codegen-plugin:${version}"
+    const val plugin = "${group}:hello-protodata-codegen-plugin:${version}"
 }

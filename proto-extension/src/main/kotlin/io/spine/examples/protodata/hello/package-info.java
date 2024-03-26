@@ -1,4 +1,5 @@
-/* * Copyright 2024, TeamDev. All rights reserved.
+/*
+ * Copyright 2024, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,37 +24,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.internal.dependency.JUnit
-import io.spine.internal.dependency.Validation
+/**
+ * Provides Protobuf extension that enables `ArrayOfSizeOption` field option
+ * that may be applied to a repeated field in order to validate its size.
+ */
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.examples.protodata.hello;
 
-dependencies {
-    // Enable field options extension.
-    api(project(":proto-extension"))
+import com.google.errorprone.annotations.CheckReturnValue;
 
-    // Add module with code generation plugin to ProtoData classpath.
-    protoData(project(":codegen-plugin"))
-
-    // To allow access to `ValidatingBuilder` from the generated Kotlin code.
-    implementation(Validation.runtime)
-
-    testImplementation(JUnit.runner)
-}
-
-apply {
-    plugin("io.spine.protodata")
-}
-
-protoData {
-    // Deploy the code generation plugin to ProtoData.
-    plugins(
-        "io.spine.examples.protodata.hello.ApplySizeOptionPlugin"
-    )
-}
-
-modelCompiler {
-    java {
-        codegen {
-            validation { skipValidation() }
-        }
-    }
-}
+import javax.annotation.ParametersAreNonnullByDefault;

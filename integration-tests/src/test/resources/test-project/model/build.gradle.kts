@@ -52,7 +52,7 @@ apply {
 protoData {
     // Deploy the code generation plugin to ProtoData.
     plugins(
-        "io.spine.protodata.hello.ApplySizeOptionPlugin"
+        "io.spine.examples.protodata.hello.ApplySizeOptionPlugin"
     )
 }
 

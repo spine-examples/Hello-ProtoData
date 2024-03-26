@@ -30,23 +30,51 @@ package spine.examples.protodata.hello;
 
 import "spine/options.proto";
 
-option (type_url_prefix) = "type.spine.io";
-option java_package = "io.spine.examples.protodata.hello";
-option java_outer_classname = "EchoProto";
+option (type_url_prefix) = "type.protodata.hello";
 option java_multiple_files = true;
+option java_outer_classname = "TicTacToeProto";
+option java_package = "io.spine.examples.protodata.hello";
 
-import "google/protobuf/timestamp.proto";
-import "google/protobuf/wrappers.proto";
-import "google/protobuf/any.proto";
+import "google/protobuf/descriptor.proto";
 import "spine/examples/protodata/hello/options.proto";
 
-message Echo {
+// A board for TicTacToe game.
+//
+// A board may have any size but minimum 3-by-3.
+// The field `side_size` defines the size of the board's side and
+// the number of cells is checked with the `size` option so that
+// this number always equals the "side_size * side_size" value.
+//
+message Board {
 
-    google.protobuf.Timestamp when = 1;
+  // The name of the board.
+  BoardName name = 1 [(required) = true, (validate) = true];
 
-    string message = 2 [(size).value = "5"];
+  // Board cells.
+  repeated Cell cell = 2 [(required) = true, (size).value = "side_size * side_size"];
 
-    google.protobuf.StringValue extra_message = 3;
+  // The size of the board.
+  //
+  // The board must have `side_size` number of cell rows,
+  // each having `side_size` number of columns,
+  // effectively making the board "square".
+  //
+  int32 side_size = 3 [(required) = true, (min).value = "3"];
+}
 
-    google.protobuf.Any arg = 4;
+message BoardName {
+  string value = 1 [(required) = true];
+}
+
+enum Mark {
+  M_UNDEFINED = 0;
+  CROSS = 1;
+  CIRCLE = 2;
+}
+
+message Cell {
+  oneof value {
+    bool empty = 1;
+    Mark mark = 2;
+  }
 }

@@ -1,4 +1,5 @@
-/* * Copyright 2024, TeamDev. All rights reserved.
+/*
+ * Copyright 2024, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,37 +24,37 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.internal.dependency.JUnit
-import io.spine.internal.dependency.Validation
+syntax = "proto3";
 
-dependencies {
-    // Enable field options extension.
-    api(project(":proto-extension"))
+package spine.examples.protodata.hello;
 
-    // Add module with code generation plugin to ProtoData classpath.
-    protoData(project(":codegen-plugin"))
+import "spine/options.proto";
 
-    // To allow access to `ValidatingBuilder` from the generated Kotlin code.
-    implementation(Validation.runtime)
+option (type_url_prefix) = "type.protodata.hello";
+option java_multiple_files = true;
+option java_outer_classname = "ContactProto";
+option java_package = "io.spine.examples.protodata.hello";
 
-    testImplementation(JUnit.runner)
+import "google/protobuf/descriptor.proto";
+import "spine/examples/protodata/hello/options.proto";
+
+message Contact {
+  int32 element_count = 1 [(required) = true, (min).value = "1"];
+
+  repeated string phone = 2 [(required) = true, (size).value = "element_count"];
+
+  repeated Address address = 3 [(required) = true, (size).value = "element_count"];
+
+  repeated string email = 4 [(required) = true, (size).value = "element_count"];
 }
 
-apply {
-    plugin("io.spine.protodata")
-}
+message Address {
+  int32 number_of_lines = 1 [(required) = true, (min).value = "2"];
 
-protoData {
-    // Deploy the code generation plugin to ProtoData.
-    plugins(
-        "io.spine.examples.protodata.hello.ApplySizeOptionPlugin"
-    )
-}
+  repeated string address_line = 2 [(required) = true,
+    (size).value = "10 * number_of_lines / 5 / 2 + 10 - 2 * (3 + 2)"];
 
-modelCompiler {
-    java {
-        codegen {
-            validation { skipValidation() }
-        }
-    }
+  string zipcode = 3 [(required) = true];
+
+  string country = 4 [(required) = true];
 }
