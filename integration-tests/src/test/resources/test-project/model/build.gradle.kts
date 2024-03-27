@@ -47,7 +47,7 @@ apply {
 }
 
 protoData {
-    // Deploy the code generation plugin to ProtoData.
+    // Run ProtoData with the `size` option plugin enabled.
     plugins(
         "io.spine.examples.protodata.hello.ApplySizeOptionPlugin"
     )

@@ -133,7 +133,7 @@ internal class BuilderExtensionGenerator(
 
     private fun checkFieldIsRepeated(field: Field) {
         check(field.isRepeated()) {
-            "Field `$simpleTypeName.${field.name.value}` is not repeated" +
+            "Field `$simpleTypeName.${field.name.value}` is non-repeated" +
                     " and therefore cannot be validated with `size` option."
         }
     }

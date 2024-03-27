@@ -65,7 +65,7 @@ class `NegativeCasesTest should` {
     }
 
     @Test
-    fun ` fail if 'size' option value is not set`(
+    fun `fail if 'size' option value is not set`(
         @TempDir projectDir: File
     ) {
 
@@ -80,11 +80,11 @@ class `NegativeCasesTest should` {
     }
 
     @Test
-    fun ` fail if 'size' option is applied to not repeated field`(
+    fun `fail if 'size' option is applied to non-repeated field`(
         @TempDir projectDir: File
     ) {
 
-        val expectedExceptionMessage = "Field `Echo.message` is not repeated " +
+        val expectedExceptionMessage = "Field `Echo.message` is non-repeated " +
                 "and therefore cannot be validated with `size` option."
 
         assertBuildFailed(
@@ -111,15 +111,15 @@ class `NegativeCasesTest should` {
 
         try {
             project.executeTask(McJavaTaskName.launchProtoData)
-            fail("Build should be failed.")
+            fail("The build is unexpectedly successful.")
         } catch (_: UnexpectedBuildFailure) {
         }
 
-        File("stderr.log").writeText(stderr.toString())
+        //File("stderr.log").writeText(stderr.toString())
 
         assertTrue(
             stderr.toString().contains(expectedExceptionMessage),
-            "Required exception not found."
+            "The expected exception was not thrown."
         )
     }
 

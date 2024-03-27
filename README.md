@@ -131,7 +131,7 @@ The following configuration should be applied in the Gradle configuration
 of a subproject to use the `size` option:
 ```kotlin
 protoData {
-    // Deploy the code generation plugin to ProtoData.
+    // Run ProtoData with the `size` option plugin enabled.
     plugins(
         "io.spine.protodata.hello.ApplySizeOptionPlugin"
     )
