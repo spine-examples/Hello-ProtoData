@@ -44,6 +44,8 @@ message Echo {
 
     google.protobuf.Timestamp when = 1;
 
+    // Value for the `size` option is not set.
+    // This should cause the build to fail with the corresponding exception.
     repeated string message = 2 [(size).value = ""];
 
     google.protobuf.StringValue extra_message = 3;

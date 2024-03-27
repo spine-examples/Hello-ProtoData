@@ -51,17 +51,17 @@ class `NegativeCasesTest should` {
     companion object {
         private const val TEST_PROJECT_DIR: String = "test-project"
 
-        private const val PROTO_MODEL_DIR: String = "model/src/main/proto/"
+        private const val PROTO_MODEL_FILE: String =
+            "model/src/main/proto/echo.proto"
 
-        private const val PROTO_SOURCE_FILE: String = "echo.proto"
+        private const val TEST_CASES_DIR: String =
+            "src/test/resources/negative-cases/"
 
-        private const val TEST_CASES_DIR: String = "src/test/resources/cases/"
+        private const val EMPTY_EXPRESSION_VALUE_PROTO: String =
+            TEST_CASES_DIR + "empty_expression_value.proto"
 
-        private const val EMPTY_EXPRESSION_VALUE_DIR: String = TEST_CASES_DIR +
-                "empty-expression-value"
-
-        private const val NOT_REPEATED_FIELD_DIR: String = TEST_CASES_DIR +
-                "not-repeated-field"
+        private const val NON_REPEATED_FIELD_PROTO: String =
+            TEST_CASES_DIR + "non_repeated_field.proto"
     }
 
     @Test
@@ -74,7 +74,7 @@ class `NegativeCasesTest should` {
 
         assertBuildFailed(
             projectDir,
-            File(EMPTY_EXPRESSION_VALUE_DIR),
+            File(EMPTY_EXPRESSION_VALUE_PROTO),
             expectedExceptionMessage
         )
     }
@@ -89,14 +89,14 @@ class `NegativeCasesTest should` {
 
         assertBuildFailed(
             projectDir,
-            File(NOT_REPEATED_FIELD_DIR),
+            File(NON_REPEATED_FIELD_PROTO),
             expectedExceptionMessage
         )
     }
 
     private fun assertBuildFailed(
         projectDir: File,
-        protoSourceDir: File,
+        protoSourceFile: File,
         expectedExceptionMessage: String
     ) {
 
@@ -105,7 +105,7 @@ class `NegativeCasesTest should` {
             .copyBuildSrc()
             .create()
 
-        copyProtoModel(protoSourceDir, projectDir)
+        protoSourceFile.copyTo(File(projectDir, PROTO_MODEL_FILE), true)
 
         val stderr = configureProjectRunner(project)
 
@@ -133,14 +133,5 @@ class `NegativeCasesTest should` {
             )
             .forwardStdError(stderr)
         return stderr
-    }
-
-    private fun copyProtoModel(protoSourceDir: File, projectDir: File) {
-        val protoSourceFile = File(protoSourceDir, PROTO_SOURCE_FILE)
-        val protoDestinationFile = File(
-            File(projectDir, PROTO_MODEL_DIR),
-            PROTO_SOURCE_FILE
-        )
-        protoSourceFile.copyTo(protoDestinationFile, true)
     }
 }

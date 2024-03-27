@@ -44,6 +44,8 @@ message Echo {
 
     google.protobuf.Timestamp when = 1;
 
+    // The `size` option is applied to non-repeated field.
+    // This should cause the build to fail with the corresponding exception.
     string message = 2 [(size).value = "5"];
 
     google.protobuf.StringValue extra_message = 3;
