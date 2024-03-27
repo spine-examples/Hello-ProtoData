@@ -31,28 +31,29 @@ import org.gradle.testkit.runner.UnexpectedBuildFailure
 import org.gradle.testkit.runner.internal.DefaultGradleRunner
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Assertions.fail
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
 import java.io.StringWriter
 
 /**
- * Checks various cases where the `size` option is used incorrectly.
+ * Checks for various cases where the `size` option is used.
  *
- * The every test-case configures and runs the build of the test project
- * in a separate Gradle process because any negative case raises
- * the appropriate error and fails the build.
- *
- * Test-case is accepted when the specific error message is found in stderr
+ * Some tests check the cases when `size` option is used incorrectly.
+ * In such cases the test configures and runs the build of the test project
+ * in a separate Gradle process because it should be failed.
+ * Such a test is accepted when the specific error message is found in stderr
  * stream of the failed build process.
  */
-class `NegativeCasesTest should` {
+class `ApplySizeOptionPlugin should` {
 
     companion object {
         private const val TEST_PROJECT_DIR: String = "test-project"
 
         private const val PROTO_MODEL_FILE: String =
-            "model/src/main/proto/echo.proto"
+            "model/src/main/proto/size_option_test.proto"
 
         private const val TEST_CASES_DIR: String =
             "src/test/resources/negative-cases/"
@@ -64,13 +65,50 @@ class `NegativeCasesTest should` {
             TEST_CASES_DIR + "non_repeated_field.proto"
     }
 
+    @Nested
+    inner class `support several 'size' options within the same message` {
+
+        @Test
+        fun `by generating a separate validation method for every field`() {
+            createValidContactBuilder()
+                .validateAddressCount()
+                .validateEmailCount()
+                .validatePhoneCount()
+
+            val invalidContactBuilder = createInvalidContactBuilder()
+            assertThrows<IllegalStateException> {
+                invalidContactBuilder
+                    .validatePhoneCount()
+            }
+            assertThrows<IllegalStateException> {
+                invalidContactBuilder
+                    .validateAddressCount()
+            }
+            assertThrows<IllegalStateException> {
+                invalidContactBuilder
+                    .validateEmailCount()
+            }
+        }
+
+        @Test
+        fun `by calling field validation methods inside 'build()' method`() {
+            createValidContactBuilder()
+                .build()
+
+            assertThrows<IllegalStateException> {
+                createInvalidContactBuilder()
+                    .build()
+            }
+        }
+    }
+
     @Test
-    fun `fail if 'size' option value is not set`(
+    fun `fail the build if 'size' option value is not set`(
         @TempDir projectDir: File
     ) {
 
         val expectedExceptionMessage = "Value of `size` option " +
-                "for field `Echo.message` is not set."
+                "for field `SizeOptionTest.empty_expression_field` is not set."
 
         assertBuildFailed(
             projectDir,
@@ -80,11 +118,12 @@ class `NegativeCasesTest should` {
     }
 
     @Test
-    fun `fail if 'size' option is applied to non-repeated field`(
+    fun `fail the build if 'size' option is applied to non-repeated field`(
         @TempDir projectDir: File
     ) {
 
-        val expectedExceptionMessage = "Field `Echo.message` is non-repeated " +
+        val expectedExceptionMessage = "Field " +
+                "`SizeOptionTest.non_repeated_field` is non-repeated " +
                 "and therefore cannot be validated with `size` option."
 
         assertBuildFailed(
@@ -107,7 +146,14 @@ class `NegativeCasesTest should` {
 
         protoSourceFile.copyTo(File(projectDir, PROTO_MODEL_FILE), true)
 
-        val stderr = configureProjectRunner(project)
+        val stderr = StringWriter()
+        (project.runner as DefaultGradleRunner)
+            .withJvmArguments(
+                "-Xmx4g",
+                "-XX:MaxMetaspaceSize=512m",
+                "-XX:+HeapDumpOnOutOfMemoryError"
+            )
+            .forwardStdError(stderr)
 
         try {
             project.executeTask(McJavaTaskName.launchProtoData)
@@ -122,16 +168,44 @@ class `NegativeCasesTest should` {
             "The expected exception was not thrown."
         )
     }
+}
 
-    private fun configureProjectRunner(project: GradleProject): StringWriter {
-        val stderr = StringWriter()
-        (project.runner as DefaultGradleRunner)
-            .withJvmArguments(
-                "-Xmx4g",
-                "-XX:MaxMetaspaceSize=512m",
-                "-XX:+HeapDumpOnOutOfMemoryError"
+private fun createInvalidContactBuilder(): Contact.Builder {
+    return Contact.newBuilder()
+        .setElementCount(2)
+        .addPhone("Phone")
+        .addEmail("Email")
+        .addAddress(createAddressBuilder(1))
+}
+
+private fun createValidContactBuilder(): Contact.Builder {
+    val elementCount = 3
+
+    val builder = Contact.newBuilder()
+        .setElementCount(elementCount)
+
+    repeat(elementCount) {
+        builder
+            .addPhone("Phone$it")
+            .addEmail("Email$it")
+            .addAddress(
+                createAddressBuilder(it)
             )
-            .forwardStdError(stderr)
-        return stderr
     }
+    return builder
+}
+
+private fun createAddressBuilder(seed: Int): Address.Builder {
+    val numberOfLines = 2
+
+    val builder = Address.newBuilder()
+        .setNumberOfLines(numberOfLines)
+        .setZipcode("Zipcode$seed")
+        .setCountry("Country$seed")
+
+    repeat(numberOfLines) {
+        builder.addAddressLine("AddressLine$seed$it")
+    }
+
+    return builder
 }

@@ -32,23 +32,14 @@ import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
 option java_package = "io.spine.examples.protodata.hello";
-option java_outer_classname = "EchoProto";
+option java_outer_classname = "SizeOptionTestProto";
 option java_multiple_files = true;
 
-import "google/protobuf/timestamp.proto";
-import "google/protobuf/wrappers.proto";
-import "google/protobuf/any.proto";
 import "spine/examples/protodata/hello/options.proto";
 
-message Echo {
-
-    google.protobuf.Timestamp when = 1;
+message SizeOptionTest {
 
     // Value for the `size` option is not set.
     // This should cause the build to fail with the corresponding exception.
-    repeated string message = 2 [(size).value = ""];
-
-    google.protobuf.StringValue extra_message = 3;
-
-    google.protobuf.Any arg = 4;
+    repeated string empty_expression_field = 2 [(size).value = ""];
 }

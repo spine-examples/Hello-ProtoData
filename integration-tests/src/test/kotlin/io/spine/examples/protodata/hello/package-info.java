@@ -25,8 +25,8 @@
  */
 
 /**
- * Contains integration tests for the `size` option that is applied to
- * a repeated field.
+ * Contains integration tests for ApplySizeOptionPlugin that generates
+ * validation code for `size` option applied to a repeated field.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault
