@@ -26,50 +26,39 @@
 
 package io.spine.examples.protodata.hello
 
-import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
 /**
- * Tests the generated validation code for the `size` option
- * that is applied to a repeated field.
+ * Checks the generated validation code for the `size` option
+ * that is applied to `Board.cell` field.
  */
-class `Board builder extension test should` {
+class `SizeOptionPlugin should` {
 
-    @Nested
-    inner class `validate cell count` {
+    @Test
+    fun `generate custom validation method for the field`() {
+        createBoardBuilder(true)
+            .validateCellCount()
 
-        @Test
-        fun `with the generated method`() {
-            buildBoard(true).validateCellCount()
-        }
-
-        @Test
-        fun `with the build method`() {
-            buildBoard(true).build()
+        assertThrows<IllegalStateException> {
+            createBoardBuilder(false)
+                .validateCellCount()
         }
     }
 
-    @Nested
-    inner class `check that a validation error is raised` {
+    @Test
+    fun `integrate validation code into 'build()' method`() {
+        createBoardBuilder(true)
+            .build()
 
-        @Test
-        fun `by the generated method`() {
-            assertThrows<IllegalStateException> {
-                buildBoard(false).validateCellCount()
-            }
-        }
-
-        @Test
-        fun `by the build method`() {
-            assertThrows<IllegalStateException> {
-                buildBoard(false).build()
-            }
+        assertThrows<IllegalStateException> {
+            createBoardBuilder(false)
+                .build()
         }
     }
 }
 
-private fun buildBoard(isValid: Boolean): Board.Builder {
+private fun createBoardBuilder(isValid: Boolean): Board.Builder {
     val sideSize = 3
     val builder = Board.newBuilder()
         .setSideSize(sideSize)

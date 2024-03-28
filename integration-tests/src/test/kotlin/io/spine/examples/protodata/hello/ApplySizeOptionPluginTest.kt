@@ -144,8 +144,6 @@ class `ApplySizeOptionPlugin should` {
             .copyBuildSrc()
             .create()
 
-        protoSourceFile.copyTo(File(projectDir, PROTO_MODEL_FILE), true)
-
         val stderr = StringWriter()
         (project.runner as DefaultGradleRunner)
             .withJvmArguments(
@@ -155,12 +153,15 @@ class `ApplySizeOptionPlugin should` {
             )
             .forwardStdError(stderr)
 
+        protoSourceFile.copyTo(File(projectDir, PROTO_MODEL_FILE), true)
+
         try {
             project.executeTask(McJavaTaskName.launchProtoData)
             fail("The build is unexpectedly successful.")
         } catch (_: UnexpectedBuildFailure) {
         }
 
+        // Uncomment the line below to see the content of stderr stream.
         //File("stderr.log").writeText(stderr.toString())
 
         assertTrue(
