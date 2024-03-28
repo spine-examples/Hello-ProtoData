@@ -23,9 +23,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+import io.spine.internal.dependency.HelloProtoData
 import io.spine.internal.dependency.KotlinPoet
 import io.spine.internal.dependency.ProtoData
-import io.spine.internal.gradle.javadoc.JavadocConfig
+
+plugins {
+    `maven-publish`
+}
 
 dependencies {
     // To enable field options extension
@@ -46,7 +50,11 @@ modelCompiler {
     }
 }
 
-/**
- * To avoid warnings on generated sources.
- */
-JavadocConfig.applyTo(project)
+publishing {
+    publications {
+        create<MavenPublication>("mavenJava") {
+            from(components["java"])
+            artifactId = HelloProtoData.CodegenPlugin.artifactId
+        }
+    }
+}

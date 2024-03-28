@@ -63,6 +63,11 @@ modelCompiler {
  * Tests use the artifacts published to `mavenLocal`,
  * so we need to publish them all first.
  */
-tasks.test {
-    dependsOn(rootProject.tasks.named("localPublish"))
+tasks.named("test") {
+    dependsOn(
+        project(":proto-extension")
+            .tasks.named("publishToMavenLocal"),
+        project(":codegen-plugin")
+            .tasks.named("publishToMavenLocal")
+    )
 }

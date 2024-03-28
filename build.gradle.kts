@@ -28,14 +28,13 @@
 
 import Build_gradle.Module
 import io.spine.internal.dependency.ErrorProne
+import io.spine.internal.dependency.HelloProtoData
 import io.spine.internal.dependency.Protobuf
 import io.spine.internal.dependency.Spine
 import io.spine.internal.gradle.javac.configureErrorProne
 import io.spine.internal.gradle.javac.configureJavac
 import io.spine.internal.gradle.kotlin.applyJvmToolchain
 import io.spine.internal.gradle.kotlin.setFreeCompilerArgs
-import io.spine.internal.gradle.publish.SpinePublishing
-import io.spine.internal.gradle.publish.spinePublishing
 import io.spine.internal.gradle.standardToSpineSdk
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -68,8 +67,8 @@ object BuildSettings {
 
 allprojects {
     apply(from = "$rootDir/version.gradle.kts")
-    group = "io.spine.examples"
     version = extra["helloProtoDataVersion"]!!
+    group = HelloProtoData.group
 
     // Define the repositories universally for all modules, including the root.
     repositories.standardToSpineSdk()
@@ -210,33 +209,4 @@ fun Module.applyGeneratedDirectories() {
             isDownloadSources = true
         }
     }
-}
-
-/**
- * Publishes the modules that are required by integration tests.
- */
-spinePublishing {
-    modules = subprojects.map { it.name }
-        .filter {
-            it.contains("proto-extension")
-                    || it.contains("codegen-plugin")
-        }
-        .toSet()
-    artifactPrefix = "hello-protodata-"
-}
-
-/**
- * Collect `publishToMavenLocal` tasks for all subprojects that are specified for
- * publishing in the root project.
- */
-val publishedModules: Set<String> = extensions
-    .getByType<SpinePublishing>()
-    .modules
-
-val localPublish by tasks.registering {
-    val pubTasks = publishedModules.map { p ->
-        val subProject = project(p)
-        subProject.tasks["publishToMavenLocal"]
-    }
-    dependsOn(pubTasks)
 }

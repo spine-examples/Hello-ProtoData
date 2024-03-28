@@ -24,7 +24,12 @@
  */
 
 import io.spine.internal.dependency.AutoService
+import io.spine.internal.dependency.HelloProtoData
 import io.spine.internal.dependency.Validation
+
+plugins {
+    `maven-publish`
+}
 
 dependencies {
     // To use @AutoService in options provider
@@ -38,6 +43,15 @@ modelCompiler {
     java {
         codegen {
             validation { skipValidation() }
+        }
+    }
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("mavenJava") {
+            from(components["java"])
+            artifactId = HelloProtoData.ProtoExtension.artifactId
         }
     }
 }

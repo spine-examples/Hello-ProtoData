@@ -34,10 +34,10 @@ repositories {
 
 dependencies {
     // Enable field options extension.
-    api(HelloProtoData.extension)
+    api(HelloProtoData.ProtoExtension.lib)
 
     // Add module with code generation plugin to ProtoData classpath.
-    protoData(HelloProtoData.plugin)
+    protoData(HelloProtoData.CodegenPlugin.lib)
 
     testImplementation(JUnit.runner)
 }
