@@ -1,7 +1,4 @@
-import io.spine.internal.dependency.AutoService
-import io.spine.internal.dependency.Validation
-
-/* * Copyright 2023, TeamDev. All rights reserved.
+/* * Copyright 2024, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +23,14 @@ import io.spine.internal.dependency.Validation
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import io.spine.internal.dependency.AutoService
+import io.spine.internal.dependency.HelloProtoData
+import io.spine.internal.dependency.Validation
+
+plugins {
+    `maven-publish`
+}
+
 dependencies {
     // To use @AutoService in options provider
     implementation(AutoService.annotations)
@@ -38,6 +43,15 @@ modelCompiler {
     java {
         codegen {
             validation { skipValidation() }
+        }
+    }
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("mavenJava") {
+            from(components["java"])
+            artifactId = HelloProtoData.ProtoExtension.artifactId
         }
     }
 }
