@@ -24,7 +24,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.internal.dependency.AnimalSniffer
 import io.spine.internal.dependency.Asm
 import io.spine.internal.dependency.AutoCommon
 import io.spine.internal.dependency.AutoService
@@ -32,7 +31,6 @@ import io.spine.internal.dependency.AutoValue
 import io.spine.internal.dependency.CheckerFramework
 import io.spine.internal.dependency.CommonsCli
 import io.spine.internal.dependency.CommonsLogging
-import io.spine.internal.dependency.Dokka
 import io.spine.internal.dependency.ErrorProne
 import io.spine.internal.dependency.FindBugs
 import io.spine.internal.dependency.Flogger
@@ -45,9 +43,7 @@ import io.spine.internal.dependency.Jackson
 import io.spine.internal.dependency.JavaDiffUtils
 import io.spine.internal.dependency.Kotest
 import io.spine.internal.dependency.Kotlin
-import io.spine.internal.dependency.Okio
 import io.spine.internal.dependency.OpenTest4J
-import io.spine.internal.dependency.Plexus
 import io.spine.internal.dependency.Protobuf
 import io.spine.internal.dependency.Slf4J
 import io.spine.internal.dependency.Truth
@@ -104,11 +100,9 @@ fun NamedDomainObjectContainer<Configuration>.forceVersions() {
 private fun ResolutionStrategy.forceProductionDependencies() {
     @Suppress("DEPRECATION") // Force SLF4J version.
     force(
-        AnimalSniffer.lib,
         AutoCommon.lib,
         AutoService.annotations,
         CheckerFramework.annotations,
-        Dokka.BasePlugin.lib,
         ErrorProne.annotations,
         ErrorProne.core,
         FindBugs.annotations,
@@ -162,9 +156,7 @@ private fun ResolutionStrategy.forceTransitiveDependencies() {
         Jackson.moduleKotlin,
         JavaDiffUtils.lib,
         Kotlin.jetbrainsAnnotations,
-        Okio.lib,
-        OpenTest4J.lib,
-        Plexus.utils,
+        OpenTest4J.lib
     )
 }
 
