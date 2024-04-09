@@ -161,10 +161,6 @@ class `ApplySizeOptionPlugin should` {
         } catch (_: UnexpectedBuildFailure) {
         }
 
-        // Uncomment the lines below to see the content of stderr stream.
-        //File(protoSourceFile.name + "_stderr.log")
-        //.writeText(stderr.toString())
-
         assertTrue(
             stderr.toString().contains(expectedExceptionMessage),
             "The expected exception was not thrown."
