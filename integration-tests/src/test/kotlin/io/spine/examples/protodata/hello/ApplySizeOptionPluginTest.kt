@@ -53,7 +53,7 @@ class `ApplySizeOptionPlugin should` {
         private const val TEST_PROJECT_DIR: String = "test-project"
 
         private const val PROTO_MODEL_FILE: String =
-            "model/src/main/proto/size_option_test.proto"
+            "model/src/main/proto/size_option_test_msg.proto"
 
         private const val TEST_CASES_DIR: String =
             "src/test/resources/negative-cases/"
@@ -107,8 +107,8 @@ class `ApplySizeOptionPlugin should` {
         @TempDir projectDir: File
     ) {
 
-        val expectedExceptionMessage = "Value of `size` option " +
-                "for field `SizeOptionTest.empty_expression_field` is not set."
+        val expectedExceptionMessage = "Value of `size` option for " +
+                "field `SizeOptionTestMsg.empty_expression_field` is not set."
 
         assertBuildFailed(
             projectDir,
@@ -123,7 +123,7 @@ class `ApplySizeOptionPlugin should` {
     ) {
 
         val expectedExceptionMessage = "Field " +
-                "`SizeOptionTest.non_repeated_field` is non-repeated " +
+                "`SizeOptionTestMsg.non_repeated_field` is non-repeated " +
                 "and therefore cannot be validated with `size` option."
 
         assertBuildFailed(

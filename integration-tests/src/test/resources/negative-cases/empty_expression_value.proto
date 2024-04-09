@@ -32,14 +32,14 @@ import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
 option java_package = "io.spine.examples.protodata.hello";
-option java_outer_classname = "SizeOptionTestProto";
+option java_outer_classname = "SizeOptionTestMsgProto";
 option java_multiple_files = true;
 
 import "spine/examples/protodata/hello/options.proto";
 
-message SizeOptionTest {
+message SizeOptionTestMsg {
 
     // Value for the `size` option is not set.
     // This should cause the build to fail with the corresponding exception.
-    repeated string empty_expression_field = 2 [(size).value = ""];
+    repeated string empty_expression_field = 1 [(size).value = ""];
 }
