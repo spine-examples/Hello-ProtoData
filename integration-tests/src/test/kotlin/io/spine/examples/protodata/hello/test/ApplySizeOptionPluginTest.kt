@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.examples.protodata.hello
+package io.spine.examples.protodata.hello.test
 
 import io.spine.tools.gradle.testing.GradleProject
 import io.spine.tools.mc.java.gradle.McJavaTaskName

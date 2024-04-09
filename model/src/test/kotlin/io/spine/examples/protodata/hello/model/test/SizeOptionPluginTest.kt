@@ -23,31 +23,52 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.examples.protodata.hello
 
-import io.spine.core.EventContext
-import io.spine.protodata.event.FieldOptionDiscovered
-import io.spine.protodata.plugin.ViewRepository
-import io.spine.server.route.EventRoute
-import io.spine.server.route.EventRouting
+package io.spine.examples.protodata.hello.model.test
+
+import io.spine.examples.protodata.hello.model.Board
+import io.spine.examples.protodata.hello.model.Cell
+import io.spine.examples.protodata.hello.model.validateCellCount
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 /**
- * The repository for [SizeOptionView].
+ * Checks the generated validation code for the `size` option
+ * that is applied to `Board.cell` field.
  */
-internal class SizeOptionViewRepository : ViewRepository<SizeOptionId,
-        SizeOptionView,
-        SizeOption>() {
-    override fun setupEventRouting(routing: EventRouting<SizeOptionId>) {
-        super.setupEventRouting(routing)
-        routing.route(FieldOptionDiscovered::class.java)
-        { message: FieldOptionDiscovered, _: EventContext? ->
-            EventRoute.withId(
-                sizeOptionId {
-                    filePath = message.file
-                    typeName = message.type
-                    fieldName = message.field
-                }
-            )
+class `SizeOptionPlugin should` {
+
+    @Test
+    fun `generate custom validation method for the field`() {
+        createBoardBuilder(true)
+            .validateCellCount()
+
+        assertThrows<IllegalStateException> {
+            createBoardBuilder(false)
+                .validateCellCount()
         }
     }
+
+    @Test
+    fun `integrate validation code into 'build()' method`() {
+        createBoardBuilder(true)
+            .build()
+
+        assertThrows<IllegalStateException> {
+            createBoardBuilder(false)
+                .build()
+        }
+    }
+}
+
+private fun createBoardBuilder(isValid: Boolean): Board.Builder {
+    val sideSize = 3
+    val builder = Board.newBuilder()
+        .setSideSize(sideSize)
+
+    val cellCount = if (isValid) sideSize * sideSize else 1
+    repeat(cellCount) {
+        builder.addCell(Cell.newBuilder())
+    }
+    return builder
 }

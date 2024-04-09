@@ -49,7 +49,7 @@ apply {
 protoData {
     // Run ProtoData with the `size` option plugin enabled.
     plugins(
-        "io.spine.examples.protodata.hello.ApplySizeOptionPlugin"
+        "io.spine.examples.protodata.hello.plugin.ApplySizeOptionPlugin"
     )
 }
 

@@ -23,20 +23,21 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.examples.protodata.hello
 
-import io.spine.protodata.renderer.InsertionPoint
-import io.spine.protodata.renderer.InsertionPointPrinter
-import io.spine.tools.code.Java
+package io.spine.examples.protodata.hello.option
+
+import com.google.auto.service.AutoService
+import com.google.protobuf.ExtensionRegistry
+import io.spine.option.OptionsProvider
 
 /**
- * [InsertionPointPrinter] that prints the `size` option validation code
- * in the `build` method of the message class builder.
+ * Registers Protobuf extension that enables `ArrayOfSizeOption` field option
+ * that may be applied to a repeated field in order to validate its size.
  */
-public class BuilderBeforeReturnPrinter :
-    InsertionPointPrinter<Java>(Java.lang()) {
+@AutoService(OptionsProvider::class)
+public class ArrayOfSizeOptionProvider : OptionsProvider {
 
-    override fun supportedInsertionPoints(): Set<InsertionPoint> {
-        return setOf(BuilderBeforeReturnInsertionPoint())
+    override fun registerIn(registry: ExtensionRegistry) {
+        ArrayOfSizeOptionProto.registerAllExtensions(registry)
     }
 }

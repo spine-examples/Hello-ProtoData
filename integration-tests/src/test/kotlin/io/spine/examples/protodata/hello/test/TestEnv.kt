@@ -23,39 +23,55 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.examples.protodata.hello
-
-import io.spine.core.External
-import io.spine.core.Subscribe
-import io.spine.core.Where
-import io.spine.protobuf.AnyPacker.unpack
-import io.spine.protodata.event.FieldOptionDiscovered
-import io.spine.protodata.plugin.View
+package io.spine.examples.protodata.hello.test
 
 /**
- * Records the [ArrayOfSizeOption] options that are applied to repeated fields.
+ * Creates a [Contact.Builder] and fills it with some test data
+ * in a not valid state.
  */
-internal class SizeOptionView : View<SizeOptionId,
-        SizeOption,
-        SizeOption.Builder>() {
+fun createInvalidContactBuilder(): Contact.Builder {
+    return Contact.newBuilder()
+        .setElementCount(2)
+        .addPhone("Phone")
+        .addEmail("Email")
+        .addAddress(createAddressBuilder(1))
+}
 
-    /**
-     * Parameters to filter the `size` option among the other options.
-     */
-    private companion object FilterParams {
-        const val FIELD_NAME = "option.name"
-        const val FIELD_VALUE = "size"
+/**
+ * Creates a [Contact.Builder] and fills it with some test data
+ * in a valid state.
+ */
+fun createValidContactBuilder(): Contact.Builder {
+    val elementCount = 3
+
+    val builder = Contact.newBuilder()
+        .setElementCount(elementCount)
+
+    repeat(elementCount) {
+        builder
+            .addPhone("Phone$it")
+            .addEmail("Email$it")
+            .addAddress(
+                createAddressBuilder(it)
+            )
+    }
+    return builder
+}
+
+/**
+ * Creates a [Address.Builder] and fills it with some test data.
+ */
+fun createAddressBuilder(seed: Int): Address.Builder {
+    val numberOfLines = 2
+
+    val builder = Address.newBuilder()
+        .setNumberOfLines(numberOfLines)
+        .setZipcode("Zipcode$seed")
+        .setCountry("Country$seed")
+
+    repeat(numberOfLines) {
+        builder.addAddressLine("AddressLine$seed$it")
     }
 
-    @Subscribe
-    internal fun on(
-        @External @Where(
-            field = FIELD_NAME,
-            equals = FIELD_VALUE
-        )
-        event: FieldOptionDiscovered
-    ) {
-        val option = unpack(event.option.value, ArrayOfSizeOption::class.java)
-        builder().setExpression(option.value)
-    }
+    return builder
 }

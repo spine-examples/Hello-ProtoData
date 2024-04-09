@@ -23,8 +23,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.examples.protodata.hello
+package io.spine.examples.protodata.hello.plugin
 
+import io.spine.examples.protodata.hello.option.ArrayOfSizeOption
 import io.spine.protodata.FilePath
 import io.spine.protodata.ProtobufSourceFile
 import io.spine.protodata.renderer.Renderer

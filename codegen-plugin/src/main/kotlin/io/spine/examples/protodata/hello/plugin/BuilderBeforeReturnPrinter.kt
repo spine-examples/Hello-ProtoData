@@ -23,15 +23,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package io.spine.examples.protodata.hello.plugin
+
+import io.spine.protodata.renderer.InsertionPoint
+import io.spine.protodata.renderer.InsertionPointPrinter
+import io.spine.tools.code.Java
 
 /**
- * Contains integration tests for ApplySizeOptionPlugin that generates
- * validation code for `size` option applied to a repeated field.
+ * [InsertionPointPrinter] that prints the `size` option validation code
+ * in the `build` method of the message class builder.
  */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.examples.protodata.hello;
+public class BuilderBeforeReturnPrinter :
+    InsertionPointPrinter<Java>(Java.lang()) {
 
-import com.google.errorprone.annotations.CheckReturnValue;
-
-import javax.annotation.ParametersAreNonnullByDefault;
+    override fun supportedInsertionPoints(): Set<InsertionPoint> {
+        return setOf(BuilderBeforeReturnInsertionPoint())
+    }
+}

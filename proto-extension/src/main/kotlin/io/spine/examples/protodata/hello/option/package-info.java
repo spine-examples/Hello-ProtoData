@@ -23,55 +23,15 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.examples.protodata.hello
 
 /**
- * Creates a [Contact.Builder] and fills it with some test data
- * in a not valid state.
+ * Provides Protobuf extension that enables `ArrayOfSizeOption` field option
+ * that may be applied to a repeated field in order to validate its size.
  */
-fun createInvalidContactBuilder(): Contact.Builder {
-    return Contact.newBuilder()
-        .setElementCount(2)
-        .addPhone("Phone")
-        .addEmail("Email")
-        .addAddress(createAddressBuilder(1))
-}
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.examples.protodata.hello.option;
 
-/**
- * Creates a [Contact.Builder] and fills it with some test data
- * in a valid state.
- */
-fun createValidContactBuilder(): Contact.Builder {
-    val elementCount = 3
+import com.google.errorprone.annotations.CheckReturnValue;
 
-    val builder = Contact.newBuilder()
-        .setElementCount(elementCount)
-
-    repeat(elementCount) {
-        builder
-            .addPhone("Phone$it")
-            .addEmail("Email$it")
-            .addAddress(
-                createAddressBuilder(it)
-            )
-    }
-    return builder
-}
-
-/**
- * Creates a [Address.Builder] and fills it with some test data.
- */
-fun createAddressBuilder(seed: Int): Address.Builder {
-    val numberOfLines = 2
-
-    val builder = Address.newBuilder()
-        .setNumberOfLines(numberOfLines)
-        .setZipcode("Zipcode$seed")
-        .setCountry("Country$seed")
-
-    repeat(numberOfLines) {
-        builder.addAddressLine("AddressLine$seed$it")
-    }
-
-    return builder
-}
+import javax.annotation.ParametersAreNonnullByDefault;

@@ -26,55 +26,36 @@
 
 syntax = "proto3";
 
-package spine.examples.protodata.hello;
+package spine.examples.protodata.hello.test;
 
 import "spine/options.proto";
 
+
 option (type_url_prefix) = "type.protodata.hello";
 option java_multiple_files = true;
-option java_outer_classname = "TicTacToeProto";
-option java_package = "io.spine.examples.protodata.hello";
+option java_outer_classname = "ContactProto";
+option java_package = "io.spine.examples.protodata.hello.test";
 
 import "google/protobuf/descriptor.proto";
-import "spine/examples/protodata/hello/options.proto";
+import "spine/examples/protodata/hello/option/options.proto";
 
-// A board for TicTacToe game.
-//
-// A board may have any size but minimum 3-by-3.
-// The field `side_size` defines the size of the board's side and
-// the number of cells is checked with the `size` option so that
-// this number always equals the "side_size * side_size" value.
-//
-message Board {
+message Contact {
+  int32 element_count = 1 [(required) = true, (min).value = "1"];
 
-  // The name of the board.
-  BoardName name = 1 [(required) = true, (validate) = true];
+  repeated string phone = 2 [(required) = true, (size).value = "element_count"];
 
-  // Board cells.
-  repeated Cell cell = 2 [(required) = true, (size).value = "side_size * side_size"];
+  repeated Address address = 3 [(required) = true, (size).value = "element_count"];
 
-  // The size of the board.
-  //
-  // The board must have `side_size` number of cell rows,
-  // each having `side_size` number of columns,
-  // effectively making the board "square".
-  //
-  int32 side_size = 3 [(required) = true, (min).value = "3"];
+  repeated string email = 4 [(required) = true, (size).value = "element_count"];
 }
 
-message BoardName {
-  string value = 1 [(required) = true];
-}
+message Address {
+  int32 number_of_lines = 1 [(required) = true, (min).value = "2"];
 
-enum Mark {
-  M_UNDEFINED = 0;
-  CROSS = 1;
-  CIRCLE = 2;
-}
+  repeated string address_line = 2 [(required) = true,
+    (size).value = "10 * number_of_lines / 5 / 2 + 10 - 2 * (3 + 2)"];
 
-message Cell {
-  oneof value {
-    bool empty = 1;
-    Mark mark = 2;
-  }
+  string zipcode = 3 [(required) = true];
+
+  string country = 4 [(required) = true];
 }

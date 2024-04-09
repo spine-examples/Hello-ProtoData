@@ -25,11 +25,11 @@
  */
 /**
  * Contains tests that check the code generation for
- * {@link io.spine.examples.protodata.hello.ArrayOfSizeOption}.
+ * {@link io.spine.examples.protodata.hello.option.ArrayOfSizeOption}.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.examples.protodata.hello;
+package io.spine.examples.protodata.hello.model.test;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 

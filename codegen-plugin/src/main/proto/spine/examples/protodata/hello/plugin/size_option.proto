@@ -24,48 +24,37 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.examples.protodata.hello
+syntax = "proto3";
 
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
+package spine.examples.protodata.hello.plugin;
 
-/**
- * Checks the generated validation code for the `size` option
- * that is applied to `Board.cell` field.
- */
-class `SizeOptionPlugin should` {
+import "spine/options.proto";
 
-    @Test
-    fun `generate custom validation method for the field`() {
-        createBoardBuilder(true)
-            .validateCellCount()
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.examples.protodata.hello.plugin";
+option java_outer_classname = "SizeOptionProto";
+option java_multiple_files = true;
 
-        assertThrows<IllegalStateException> {
-            createBoardBuilder(false)
-                .validateCellCount()
-        }
-    }
+import "spine/protodata/ast.proto";
 
-    @Test
-    fun `integrate validation code into 'build()' method`() {
-        createBoardBuilder(true)
-            .build()
+// View on the `ArrayOfSizeOption`.
+message SizeOption {
+  option (entity).kind = PROJECTION;
 
-        assertThrows<IllegalStateException> {
-            createBoardBuilder(false)
-                .build()
-        }
-    }
+  // ID of the option.
+  SizeOptionId id = 1;
+
+  // Value of the option which is a validation expression
+  // for the size of a repeated field.
+  string expression = 2;
 }
 
-private fun createBoardBuilder(isValid: Boolean): Board.Builder {
-    val sideSize = 3
-    val builder = Board.newBuilder()
-        .setSideSize(sideSize)
+// Triplet File+Type+Field unambiguously identifies the option.
+message SizeOptionId {
 
-    val cellCount = if (isValid) sideSize * sideSize else 1
-    repeat(cellCount) {
-        builder.addCell(Cell.newBuilder())
-    }
-    return builder
+  spine.protodata.FilePath file_path = 1;
+
+  spine.protodata.TypeName type_name = 2;
+
+  spine.protodata.FieldName field_name = 3;
 }

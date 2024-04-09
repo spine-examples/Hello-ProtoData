@@ -23,15 +23,40 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package io.spine.examples.protodata.hello.plugin
+
+import io.spine.core.External
+import io.spine.core.Subscribe
+import io.spine.core.Where
+import io.spine.examples.protodata.hello.option.ArrayOfSizeOption
+import io.spine.protobuf.AnyPacker.unpack
+import io.spine.protodata.event.FieldOptionDiscovered
+import io.spine.protodata.plugin.View
 
 /**
- * Provides ProtoData plugin that renders validation code
- * for the `size` option which is applied to a repeated field.
+ * Records the [ArrayOfSizeOption] options that are applied to repeated fields.
  */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.examples.protodata.hello;
+internal class SizeOptionView : View<SizeOptionId,
+        SizeOption,
+        SizeOption.Builder>() {
 
-import com.google.errorprone.annotations.CheckReturnValue;
+    /**
+     * Parameters to filter the `size` option among the other options.
+     */
+    private companion object FilterParams {
+        const val FIELD_NAME = "option.name"
+        const val FIELD_VALUE = "size"
+    }
 
-import javax.annotation.ParametersAreNonnullByDefault;
+    @Subscribe
+    internal fun on(
+        @External @Where(
+            field = FIELD_NAME,
+            equals = FIELD_VALUE
+        )
+        event: FieldOptionDiscovered
+    ) {
+        val option = unpack(event.option.value, ArrayOfSizeOption::class.java)
+        builder().setExpression(option.value)
+    }
+}
