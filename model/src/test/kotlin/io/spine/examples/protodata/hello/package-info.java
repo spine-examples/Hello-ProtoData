@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * Contains tests that checks the code generation for
+ * Contains tests that check the code generation for
  * {@link io.spine.examples.protodata.hello.ArrayOfSizeOption}.
  */
 @CheckReturnValue
