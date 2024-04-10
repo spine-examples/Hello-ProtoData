@@ -28,7 +28,7 @@
  * Provides ProtoData plugin
  * {@link io.spine.examples.protodata.hello.plugin.ApplySizeOptionPlugin}
  * that renders validation code for the
- * {@link io.spine.examples.protodata.hello.option.ArrayOfSizeOption}
+ * {@link io.spine.examples.protodata.hello.ArrayOfSizeOption}
  * which is applied to a repeated field.
  */
 @CheckReturnValue

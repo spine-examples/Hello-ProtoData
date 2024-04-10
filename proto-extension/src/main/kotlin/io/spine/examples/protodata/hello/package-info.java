@@ -24,46 +24,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-syntax = "proto3";
+/**
+ * Provides Protobuf extension that enables
+ * {@link io.spine.examples.protodata.hello.ArrayOfSizeOption}
+ * field option that may be applied to a repeated field
+ * in order to validate its size.
+ */
+@CheckReturnValue
+@ParametersAreNonnullByDefault
+package io.spine.examples.protodata.hello;
 
-import "spine/options.proto";
+import com.google.errorprone.annotations.CheckReturnValue;
 
-option (type_url_prefix) = "type.spine.io";
-option java_package = "io.spine.examples.protodata.hello.option";
-option java_outer_classname = "ArrayOfSizeOptionProto";
-option java_multiple_files = true;
-
-import "google/protobuf/descriptor.proto";
-
-extend google.protobuf.FieldOptions {
-
-    // See `ArrayOfSizeOption` for details.
-    //
-    // The field index is chosen based in `spine/options.proto`,
-    // taking the next available number in Spine's reserved range.
-    //
-    ArrayOfSizeOption size = 73855;
-}
-
-// A field option applicable to `repeated` fields,
-// telling that their size should be equal
-// to some expression, involving the values
-// of other fields of the same message.
-//
-// The `value` field supports basic math operations,
-// such as `+`, `-`, `*`, `/`.
-//
-// Example:
-//
-// message Foo {
-//
-//     int32 count = 1;
-//
-//     // There must be a number of elements
-//     // twice the `count`.
-//     repeated string value = 2 [(size),value = "count * 2"];
-// }
-message ArrayOfSizeOption {
-
-    string value = 1 [(required) = true];
-}
+import javax.annotation.ParametersAreNonnullByDefault;

@@ -37,7 +37,7 @@ option java_outer_classname = "ContactProto";
 option java_package = "io.spine.examples.protodata.hello.test";
 
 import "google/protobuf/descriptor.proto";
-import "spine/examples/protodata/hello/option/options.proto";
+import "spine/examples/protodata/hello/options.proto";
 
 message Contact {
   int32 element_count = 1 [(required) = true, (min).value = "1"];

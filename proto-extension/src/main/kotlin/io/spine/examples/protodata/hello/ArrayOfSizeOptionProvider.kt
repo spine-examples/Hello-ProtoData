@@ -24,16 +24,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.examples.protodata.hello
+
+import com.google.auto.service.AutoService
+import com.google.protobuf.ExtensionRegistry
+import io.spine.option.OptionsProvider
+
 /**
- * Provides Protobuf extension that enables
- * {@link io.spine.examples.protodata.hello.option.ArrayOfSizeOption}
- * field option that may be applied to a repeated field
- * in order to validate its size.
+ * Registers Protobuf extension that enables [ArrayOfSizeOption] field option
+ * that may be applied to a repeated field in order to validate its size.
  */
-@CheckReturnValue
-@ParametersAreNonnullByDefault
-package io.spine.examples.protodata.hello.option;
+@AutoService(OptionsProvider::class)
+public class ArrayOfSizeOptionProvider : OptionsProvider {
 
-import com.google.errorprone.annotations.CheckReturnValue;
-
-import javax.annotation.ParametersAreNonnullByDefault;
+    override fun registerIn(registry: ExtensionRegistry) {
+        ArrayOfSizeOptionProto.registerAllExtensions(registry)
+    }
+}

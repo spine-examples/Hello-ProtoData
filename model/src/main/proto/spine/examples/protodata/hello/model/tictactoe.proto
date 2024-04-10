@@ -36,7 +36,7 @@ option java_outer_classname = "TicTacToeProto";
 option java_package = "io.spine.examples.protodata.hello.model";
 
 import "google/protobuf/descriptor.proto";
-import "spine/examples/protodata/hello/option/options.proto";
+import "spine/examples/protodata/hello/options.proto";
 
 
 // A board for TicTacToe game.

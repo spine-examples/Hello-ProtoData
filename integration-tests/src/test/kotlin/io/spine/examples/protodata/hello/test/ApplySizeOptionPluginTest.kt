@@ -25,7 +25,7 @@
  */
 package io.spine.examples.protodata.hello.test
 
-import io.spine.examples.protodata.hello.option.ArrayOfSizeOption
+import io.spine.examples.protodata.hello.ArrayOfSizeOption
 import io.spine.tools.gradle.testing.GradleProject
 import io.spine.tools.mc.java.gradle.McJavaTaskName
 import org.gradle.testkit.runner.UnexpectedBuildFailure

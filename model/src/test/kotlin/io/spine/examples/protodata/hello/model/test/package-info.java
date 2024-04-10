@@ -25,7 +25,7 @@
  */
 /**
  * Contains tests that check the code generation for
- * {@link io.spine.examples.protodata.hello.option.ArrayOfSizeOption}.
+ * {@link io.spine.examples.protodata.hello.ArrayOfSizeOption}.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault

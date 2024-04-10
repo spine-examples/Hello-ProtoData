@@ -29,7 +29,7 @@ package io.spine.examples.protodata.hello.model.test
 import io.spine.examples.protodata.hello.model.Board
 import io.spine.examples.protodata.hello.model.Cell
 import io.spine.examples.protodata.hello.model.validateCellCount
-import io.spine.examples.protodata.hello.option.ArrayOfSizeOption
+import io.spine.examples.protodata.hello.ArrayOfSizeOption
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 

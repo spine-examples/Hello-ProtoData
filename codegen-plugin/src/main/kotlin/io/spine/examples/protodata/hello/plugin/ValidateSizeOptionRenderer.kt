@@ -25,7 +25,7 @@
  */
 package io.spine.examples.protodata.hello.plugin
 
-import io.spine.examples.protodata.hello.option.ArrayOfSizeOption
+import io.spine.examples.protodata.hello.ArrayOfSizeOption
 import io.spine.protodata.FilePath
 import io.spine.protodata.ProtobufSourceFile
 import io.spine.protodata.renderer.Renderer

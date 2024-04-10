@@ -35,7 +35,7 @@ option java_package = "io.spine.examples.protodata.hello.test";
 option java_outer_classname = "SizeOptionTestMsgProto";
 option java_multiple_files = true;
 
-import "spine/examples/protodata/hello/option/options.proto";
+import "spine/examples/protodata/hello/options.proto";
 
 message SizeOptionTestMsg {
 
