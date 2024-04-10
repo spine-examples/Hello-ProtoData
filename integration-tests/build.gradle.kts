@@ -1,4 +1,4 @@
-/* * Copyright 2023, TeamDev. All rights reserved.
+/* * Copyright 2024, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@
  */
 
 import io.spine.internal.dependency.JUnit
-import io.spine.internal.dependency.Validation
+import io.spine.internal.dependency.Spine
 
 dependencies {
     // Enable field options extension.
@@ -33,10 +33,11 @@ dependencies {
     // Add module with code generation plugin to ProtoData classpath.
     protoData(project(":codegen-plugin"))
 
-    // To allow access to `ValidatingBuilder` from the generated Kotlin code.
-    implementation(Validation.runtime)
-
     testImplementation(JUnit.runner)
+
+    testImplementation(Spine.pluginTestlib)
+    testImplementation(Spine.McJava.pluginLib)
+    testImplementation(gradleTestKit())
 }
 
 apply {
@@ -44,9 +45,9 @@ apply {
 }
 
 protoData {
-    // Deploy the code generation plugin to ProtoData.
+    // Run ProtoData with the `size` option plugin enabled.
     plugins(
-        "io.spine.protodata.hello.ApplySizeOptionPlugin"
+        "io.spine.examples.protodata.hello.plugin.ApplySizeOptionPlugin"
     )
 }
 
@@ -56,4 +57,17 @@ modelCompiler {
             validation { skipValidation() }
         }
     }
+}
+
+/**
+ * Tests use the artifacts published to `mavenLocal`,
+ * so we need to publish them all first.
+ */
+tasks.named("test") {
+    dependsOn(
+        project(":proto-extension")
+            .tasks.named("publishToMavenLocal"),
+        project(":codegen-plugin")
+            .tasks.named("publishToMavenLocal")
+    )
 }

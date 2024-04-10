@@ -1,5 +1,5 @@
 /*
- * Copyright 2023, TeamDev. All rights reserved.
+ * Copyright 2024, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,8 +24,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+@file:Suppress("RemoveRedundantQualifierName")
+
 import Build_gradle.Module
 import io.spine.internal.dependency.ErrorProne
+import io.spine.internal.dependency.HelloProtoData
 import io.spine.internal.dependency.Protobuf
 import io.spine.internal.dependency.Spine
 import io.spine.internal.gradle.javac.configureErrorProne
@@ -62,8 +65,10 @@ object BuildSettings {
     val javaVersion: JavaLanguageVersion = JavaLanguageVersion.of(JAVA_VERSION)
 }
 
-
 allprojects {
+    apply(from = "$rootDir/version.gradle.kts")
+    version = extra["helloProtoDataVersion"]!!
+    group = HelloProtoData.group
 
     // Define the repositories universally for all modules, including the root.
     repositories.standardToSpineSdk()
@@ -129,8 +134,6 @@ fun Module.configureKotlin() {
 
     tasks.withType<KotlinCompile> {
         setFreeCompilerArgs()
-        // https://stackoverflow.com/questions/38298695/gradle-disable-all-incremental-compilation-and-parallel-builds
-        incremental = false
     }
 }
 
@@ -158,8 +161,6 @@ fun Module.configureJava() {
         withType<JavaCompile>().configureEach {
             configureJavac()
             configureErrorProne()
-            // https://stackoverflow.com/questions/38298695/gradle-disable-all-incremental-compilation-and-parallel-builds
-            options.isIncremental = false
         }
         withType<org.gradle.jvm.tasks.Jar>().configureEach {
             duplicatesStrategy = DuplicatesStrategy.INCLUDE
