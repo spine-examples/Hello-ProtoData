@@ -25,8 +25,10 @@
  */
 
 /**
- * Provides Protobuf extension that enables `ArrayOfSizeOption` field option
- * that may be applied to a repeated field in order to validate its size.
+ * Provides Protobuf extension that enables
+ * {@link io.spine.examples.protodata.hello.option.ArrayOfSizeOption}
+ * field option that may be applied to a repeated field
+ * in order to validate its size.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault

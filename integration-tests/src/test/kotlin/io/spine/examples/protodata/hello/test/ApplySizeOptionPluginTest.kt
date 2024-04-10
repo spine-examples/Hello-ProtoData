@@ -25,6 +25,7 @@
  */
 package io.spine.examples.protodata.hello.test
 
+import io.spine.examples.protodata.hello.option.ArrayOfSizeOption
 import io.spine.tools.gradle.testing.GradleProject
 import io.spine.tools.mc.java.gradle.McJavaTaskName
 import org.gradle.testkit.runner.UnexpectedBuildFailure
@@ -39,9 +40,9 @@ import java.io.File
 import java.io.StringWriter
 
 /**
- * Checks for various cases where the `size` option is used.
+ * Checks for various cases where the [ArrayOfSizeOption] is used.
  *
- * Some tests check the cases when `size` option is used incorrectly.
+ * Some tests check the cases when the `size` option is used incorrectly.
  * In such cases the test configures and runs the build of the test project
  * in a separate Gradle process because it should be failed.
  * Such a test is accepted when the specific error message is found in stderr

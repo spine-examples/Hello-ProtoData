@@ -26,7 +26,7 @@
 
 /**
  * Contains integration tests for {@code ApplySizeOptionPlugin} that generates
- * validation code for the {@code size} option applied to a repeated field.
+ * validation code for the {@code ArrayOfSizeOption} applied to a repeated field.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault

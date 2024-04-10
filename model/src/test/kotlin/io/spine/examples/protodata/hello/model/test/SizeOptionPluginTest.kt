@@ -29,11 +29,12 @@ package io.spine.examples.protodata.hello.model.test
 import io.spine.examples.protodata.hello.model.Board
 import io.spine.examples.protodata.hello.model.Cell
 import io.spine.examples.protodata.hello.model.validateCellCount
+import io.spine.examples.protodata.hello.option.ArrayOfSizeOption
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
 /**
- * Checks the generated validation code for the `size` option
+ * Checks the generated validation code for the [ArrayOfSizeOption]
  * that is applied to `Board.cell` field.
  */
 class `SizeOptionPlugin should` {
