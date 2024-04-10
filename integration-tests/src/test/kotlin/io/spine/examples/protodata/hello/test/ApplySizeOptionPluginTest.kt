@@ -45,8 +45,8 @@ import java.io.StringWriter
  * Some tests check the cases when the `size` option is used incorrectly.
  * In such cases the test configures and runs the build of the test project
  * in a separate Gradle process because it should be failed.
- * Such a test is accepted when the specific error message is found in stderr
- * stream of the failed build process.
+ * Such a test is accepted when the specific error message is found
+ * in a standard error output stream of the failed build process.
  */
 class `ApplySizeOptionPlugin should` {
 
