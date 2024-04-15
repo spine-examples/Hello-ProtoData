@@ -46,6 +46,7 @@ buildscript {
     doForceVersions(configurations)
 
     dependencies {
+        classpath(io.spine.internal.dependency.Protobuf.GradlePlugin.lib)
         classpath(io.spine.internal.dependency.Spine.McJava.pluginLib)
     }
 }
@@ -55,7 +56,7 @@ plugins {
     id("net.ltgt.errorprone")
     id("detekt-code-analysis")
     id("com.google.protobuf")
-    id("io.spine.protodata") version "0.14.0"
+    id("io.spine.protodata") version "0.20.7"
     idea
 }
 
@@ -72,6 +73,17 @@ allprojects {
 
     // Define the repositories universally for all modules, including the root.
     repositories.standardToSpineSdk()
+
+    configurations.all {
+        resolutionStrategy {
+            force(
+                io.spine.internal.dependency.Grpc.ProtocPlugin.artifact,
+                Spine.base,
+                Spine.testlib,
+                Spine.server
+            )
+        }
+    }
 }
 
 // It is assumed that every module in the project requires
