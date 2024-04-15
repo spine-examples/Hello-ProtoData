@@ -39,7 +39,7 @@ object HelloProtoData {
 
     const val group = "io.spine.examples"
 
-    private const val version = "0.13.1"
+    private const val version = "0.20.7"
     private const val prefix = "hello-protodata-"
 
     object ProtoExtension {
