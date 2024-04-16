@@ -54,7 +54,7 @@ buildscript {
                     spine.base,
                     spine.toolBase,
                     spine.server,
-                    protoData.pluginLib(protoData.dogfoodingVersion),
+                    protoData.pluginLib,
                     logging.lib,
                     validation.runtime
                 )
@@ -101,7 +101,7 @@ allprojects {
                     spine.base,
                     spine.toolBase,
                     spine.server,
-                    protoData.pluginLib(protoData.dogfoodingVersion),
+                    protoData.pluginLib,
                     logging.lib,
                     validation.runtime
                 )
