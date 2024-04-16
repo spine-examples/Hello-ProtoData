@@ -142,11 +142,17 @@ class `ApplySizeOptionPlugin should` {
 
         val project = GradleProject.setupAt(projectDir)
             .fromResources(TEST_PROJECT_DIR)
-            .copyBuildSrc()
+            .copyBuildSrc(false)
             .create()
 
         val stderr = StringWriter()
         (project.runner as DefaultGradleRunner)
+            .withJvmArguments(
+                "-Xmx2g",
+                "-XX:MaxMetaspaceSize=512m",
+                "-XX:+UseParallelGC",
+                "-XX:+HeapDumpOnOutOfMemoryError"
+            )
             .forwardStdError(stderr)
 
         protoSourceFile.copyTo(File(projectDir, PROTO_MODEL_FILE), true)

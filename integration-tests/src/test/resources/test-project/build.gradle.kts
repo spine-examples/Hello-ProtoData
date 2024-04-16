@@ -31,11 +31,7 @@ import io.spine.internal.gradle.javac.configureJavac
 import io.spine.internal.gradle.kotlin.applyJvmToolchain
 import io.spine.internal.gradle.kotlin.setFreeCompilerArgs
 import io.spine.internal.gradle.standardToSpineSdk
-import org.gradle.api.Project
-import org.gradle.api.file.DuplicatesStrategy
-import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.api.tasks.testing.logging.TestLogEvent
-import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
@@ -87,6 +83,11 @@ allprojects {
 
     // Define the repositories universally for all modules, including the root.
     repositories.standardToSpineSdk()
+
+    val spine = io.spine.internal.dependency.Spine
+    val validation = io.spine.internal.dependency.Validation
+    val protoData = io.spine.internal.dependency.ProtoData
+    val logging = io.spine.internal.dependency.Spine.Logging
 
     doForceVersions(configurations)
     configurations {
