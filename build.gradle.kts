@@ -42,11 +42,31 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 buildscript {
     standardSpineSdkRepositories()
 
-    // Force versions, as both ProtoData and Spine Model Compiler are under active development.
-    doForceVersions(configurations)
+    val spine = io.spine.internal.dependency.Spine
+    val validation = io.spine.internal.dependency.Validation
+    val protoData = io.spine.internal.dependency.ProtoData
+    val logging = io.spine.internal.dependency.Spine.Logging
 
+    doForceVersions(configurations)
+    configurations {
+        all {
+            exclude(group = "io.spine", module = "spine-logging-backend")
+
+            resolutionStrategy {
+                force(
+                    io.spine.internal.dependency.Grpc.api,
+                    spine.reflect,
+                    spine.base,
+                    spine.toolBase,
+                    spine.server,
+                    protoData.pluginLib(protoData.dogfoodingVersion),
+                    logging.lib,
+                    validation.runtime
+                )
+            }
+        }
+    }
     dependencies {
-        classpath(io.spine.internal.dependency.Protobuf.GradlePlugin.lib)
         classpath(io.spine.internal.dependency.Spine.McJava.pluginLib)
     }
 }
@@ -74,14 +94,28 @@ allprojects {
     // Define the repositories universally for all modules, including the root.
     repositories.standardToSpineSdk()
 
-    configurations.all {
-        resolutionStrategy {
-            force(
-                io.spine.internal.dependency.Grpc.ProtocPlugin.artifact,
-                Spine.base,
-                Spine.testlib,
-                Spine.server
-            )
+    val spine = io.spine.internal.dependency.Spine
+    val validation = io.spine.internal.dependency.Validation
+    val protoData = io.spine.internal.dependency.ProtoData
+    val logging = io.spine.internal.dependency.Spine.Logging
+
+    doForceVersions(configurations)
+    configurations {
+        all {
+            exclude(group = "io.spine", module = "spine-logging-backend")
+
+            resolutionStrategy {
+                force(
+                    io.spine.internal.dependency.Grpc.api,
+                    spine.reflect,
+                    spine.base,
+                    spine.toolBase,
+                    spine.server,
+                    protoData.pluginLib(protoData.dogfoodingVersion),
+                    logging.lib,
+                    validation.runtime
+                )
+            }
         }
     }
 }

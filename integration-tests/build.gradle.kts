@@ -54,7 +54,7 @@ protoData {
 modelCompiler {
     java {
         codegen {
-            validation { skipValidation() }
+            validation().enabled.set(false)
         }
     }
 }

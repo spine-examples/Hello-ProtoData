@@ -25,7 +25,6 @@
  */
 package io.spine.examples.protodata.hello.plugin
 
-import io.spine.protodata.renderer.InsertionPoint
 import io.spine.protodata.renderer.InsertionPointPrinter
 import io.spine.tools.code.Java
 
@@ -33,10 +32,7 @@ import io.spine.tools.code.Java
  * [InsertionPointPrinter] that prints the `size` option validation code
  * in the `build` method of the message class builder.
  */
-public class BuilderBeforeReturnPrinter :
-    InsertionPointPrinter<Java>(Java.lang()) {
-
-    override fun supportedInsertionPoints(): Set<InsertionPoint> {
-        return setOf(BuilderBeforeReturnInsertionPoint())
-    }
-}
+public class BuilderBeforeReturnPrinter : InsertionPointPrinter<Java>(
+    Java.lang(),
+    setOf(BuilderBeforeReturnInsertionPoint())
+)

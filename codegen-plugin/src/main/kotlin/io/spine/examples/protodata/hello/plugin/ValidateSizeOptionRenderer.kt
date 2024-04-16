@@ -26,11 +26,10 @@
 package io.spine.examples.protodata.hello.plugin
 
 import io.spine.examples.protodata.hello.ArrayOfSizeOption
-import io.spine.protodata.FilePath
+import io.spine.protodata.File
 import io.spine.protodata.ProtobufSourceFile
 import io.spine.protodata.renderer.Renderer
 import io.spine.protodata.renderer.SourceFileSet
-import io.spine.server.query.select
 import io.spine.tools.code.Kotlin
 
 /**
@@ -78,14 +77,14 @@ public class ValidateSizeOptionRenderer(
     }
 
     /**
-     * Returns the [ProtobufSourceFile] by the [FilePath] provided.
+     * Returns the [ProtobufSourceFile] by the [File] provided.
      */
-    private fun findSourceFile(filePath: FilePath): ProtobufSourceFile {
+    private fun findSourceFile(file: File): ProtobufSourceFile {
         val sourceFile = select<ProtobufSourceFile>().all().find {
-            it.file.path == filePath
+            it.file.path == file.path
         }
         checkNotNull(sourceFile) {
-            "Cannot find 'ProtobufSourceFile' for ${filePath.value}."
+            "Cannot find 'ProtobufSourceFile' for ${file.path}."
         }
         return sourceFile
     }
