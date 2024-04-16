@@ -147,12 +147,6 @@ class `ApplySizeOptionPlugin should` {
 
         val stderr = StringWriter()
         (project.runner as DefaultGradleRunner)
-            .withJvmArguments(
-                "-Xmx2g",
-                "-XX:MaxMetaspaceSize=512m",
-                "-XX:+UseParallelGC",
-                "-XX:+HeapDumpOnOutOfMemoryError"
-            )
             .forwardStdError(stderr)
 
         protoSourceFile.copyTo(File(projectDir, PROTO_MODEL_FILE), true)
