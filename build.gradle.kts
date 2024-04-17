@@ -42,30 +42,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 buildscript {
     standardSpineSdkRepositories()
 
-    val spine = io.spine.internal.dependency.Spine
-    val validation = io.spine.internal.dependency.Validation
-    val protoData = io.spine.internal.dependency.ProtoData
-    val logging = io.spine.internal.dependency.Spine.Logging
-
     doForceVersions(configurations)
-    configurations {
-        all {
-            exclude(group = "io.spine", module = "spine-logging-backend")
 
-            resolutionStrategy {
-                force(
-                    io.spine.internal.dependency.Grpc.api,
-                    spine.reflect,
-                    spine.base,
-                    spine.toolBase,
-                    spine.server,
-                    protoData.pluginLib,
-                    logging.lib,
-                    validation.runtime
-                )
-            }
-        }
-    }
     dependencies {
         classpath(io.spine.internal.dependency.Spine.McJava.pluginLib)
     }
@@ -94,30 +72,7 @@ allprojects {
     // Define the repositories universally for all modules, including the root.
     repositories.standardToSpineSdk()
 
-    val spine = io.spine.internal.dependency.Spine
-    val validation = io.spine.internal.dependency.Validation
-    val protoData = io.spine.internal.dependency.ProtoData
-    val logging = io.spine.internal.dependency.Spine.Logging
-
     doForceVersions(configurations)
-    configurations {
-        all {
-            exclude(group = "io.spine", module = "spine-logging-backend")
-
-            resolutionStrategy {
-                force(
-                    io.spine.internal.dependency.Grpc.api,
-                    spine.reflect,
-                    spine.base,
-                    spine.toolBase,
-                    spine.server,
-                    protoData.pluginLib,
-                    logging.lib,
-                    validation.runtime
-                )
-            }
-        }
-    }
 }
 
 // It is assumed that every module in the project requires
