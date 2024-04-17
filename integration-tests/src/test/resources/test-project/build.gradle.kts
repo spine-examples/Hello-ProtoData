@@ -82,13 +82,6 @@ subprojects {
         api(Spine.base)
 
         Protobuf.libs.forEach { implementation(it) }
-
-        // Force versions for compilation/runtime as well.
-        //
-        // Maybe, not all of them are required in this scope.
-        // This is to investigate later.
-        //
-        doForceVersions(configurations)
     }
 
     protobuf {

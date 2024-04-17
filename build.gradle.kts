@@ -96,13 +96,6 @@ subprojects {
         ErrorProne.apply {
             errorprone(core)
         }
-
-        // Force versions for compilation/runtime as well.
-        //
-        // Maybe, not all of them are required in this scope.
-        // This is to investigate later.
-        //
-        doForceVersions(configurations)
     }
 
     protobuf {
