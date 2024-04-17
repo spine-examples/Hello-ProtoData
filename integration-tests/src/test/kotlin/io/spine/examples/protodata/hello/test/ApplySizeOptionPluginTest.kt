@@ -142,6 +142,7 @@ class `ApplySizeOptionPlugin should` {
 
         val project = GradleProject.setupAt(projectDir)
             .fromResources(TEST_PROJECT_DIR)
+            // `buildSrc` is not copied at all if caching is enabled.
             .copyBuildSrc(false)
             .create()
 
