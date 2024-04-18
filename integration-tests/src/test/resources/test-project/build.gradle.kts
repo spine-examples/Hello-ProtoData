@@ -25,23 +25,21 @@
  */
 
 import Build_gradle.Module
+import io.spine.internal.dependency.ErrorProne
+import io.spine.internal.dependency.HelloProtoData
 import io.spine.internal.dependency.Protobuf
 import io.spine.internal.dependency.Spine
+import io.spine.internal.gradle.javac.configureErrorProne
 import io.spine.internal.gradle.javac.configureJavac
 import io.spine.internal.gradle.kotlin.applyJvmToolchain
 import io.spine.internal.gradle.kotlin.setFreeCompilerArgs
 import io.spine.internal.gradle.standardToSpineSdk
-import org.gradle.api.Project
-import org.gradle.api.file.DuplicatesStrategy
-import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.api.tasks.testing.logging.TestLogEvent
-import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
     standardSpineSdkRepositories()
 
-    // Force versions, as both ProtoData and Spine Model Compiler are under active development.
     doForceVersions(configurations)
 
     dependencies {
@@ -52,7 +50,7 @@ buildscript {
 plugins {
     kotlin("jvm")
     id("com.google.protobuf")
-    id("io.spine.protodata") version "0.14.0"
+    id("io.spine.protodata") version "0.20.7"
 }
 
 object BuildSettings {
@@ -66,6 +64,8 @@ allprojects {
 
     // Define the repositories universally for all modules, including the root.
     repositories.standardToSpineSdk()
+
+    doForceVersions(configurations)
 }
 
 // It is assumed that every module in the project requires
@@ -82,13 +82,6 @@ subprojects {
         api(Spine.base)
 
         Protobuf.libs.forEach { implementation(it) }
-
-        // Force versions for compilation/runtime as well.
-        //
-        // Maybe, not all of them are required in this scope.
-        // This is to investigate later.
-        //
-        doForceVersions(configurations)
     }
 
     protobuf {

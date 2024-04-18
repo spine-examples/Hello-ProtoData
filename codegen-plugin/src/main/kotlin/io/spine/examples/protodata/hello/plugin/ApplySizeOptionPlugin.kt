@@ -57,7 +57,6 @@ public class ApplySizeOptionPlugin : Plugin {
 
         return listOf(
             ValidateSizeOptionRenderer(builderValidationMethods),
-            BuilderBeforeReturnPrinter(),
             BuilderBeforeReturnRenderer(builderValidationMethods)
         )
     }

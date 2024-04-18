@@ -30,10 +30,10 @@ import io.spine.internal.dependency.AutoService
 import io.spine.internal.dependency.AutoValue
 import io.spine.internal.dependency.CheckerFramework
 import io.spine.internal.dependency.CommonsCli
+import io.spine.internal.dependency.CommonsCodec
 import io.spine.internal.dependency.CommonsLogging
 import io.spine.internal.dependency.ErrorProne
 import io.spine.internal.dependency.FindBugs
-import io.spine.internal.dependency.Flogger
 import io.spine.internal.dependency.Gson
 import io.spine.internal.dependency.Guava
 import io.spine.internal.dependency.Hamcrest
@@ -51,6 +51,7 @@ import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ConfigurationContainer
 import org.gradle.api.artifacts.ResolutionStrategy
+import org.gradle.kotlin.dsl.exclude
 import org.gradle.kotlin.dsl.invoke
 
 /**
@@ -61,21 +62,24 @@ fun doForceVersions(configurations: ConfigurationContainer) {
     configurations.forceVersions()
 
     val spine = io.spine.internal.dependency.Spine
+    val validation = io.spine.internal.dependency.Validation
+    val protoData = io.spine.internal.dependency.ProtoData
     val logging = io.spine.internal.dependency.Spine.Logging
 
     configurations {
         all {
+            exclude(group = "io.spine", module = "spine-logging-backend")
+
             resolutionStrategy {
                 force(
+                    io.spine.internal.dependency.Grpc.api,
+                    spine.reflect,
                     spine.base,
-                    logging.lib,
-                    logging.backend,
-                    logging.floggerApi,
                     spine.toolBase,
                     spine.server,
-                    io.spine.internal.dependency.Validation.runtime,
-                    io.spine.internal.dependency.Validation.java,
-                    io.spine.internal.dependency.ProtoData.pluginLib
+                    protoData.pluginLib,
+                    logging.lib,
+                    validation.runtime
                 )
             }
         }
@@ -98,7 +102,7 @@ fun NamedDomainObjectContainer<Configuration>.forceVersions() {
 }
 
 private fun ResolutionStrategy.forceProductionDependencies() {
-    @Suppress("DEPRECATION") // Force SLF4J version.
+    @Suppress("DEPRECATION") // Force versions of SLF4J and Kotlin libs.
     force(
         AutoCommon.lib,
         AutoService.annotations,
@@ -106,12 +110,12 @@ private fun ResolutionStrategy.forceProductionDependencies() {
         ErrorProne.annotations,
         ErrorProne.core,
         FindBugs.annotations,
-        Flogger.Runtime.systemBackend,
-        Flogger.lib,
+        Gson.lib,
         Guava.lib,
         Kotlin.reflect,
         Kotlin.stdLib,
         Kotlin.stdLibCommon,
+        Kotlin.stdLibJdk7,
         Kotlin.stdLibJdk8,
         Protobuf.GradlePlugin.lib,
         Protobuf.libs,
@@ -140,6 +144,7 @@ private fun ResolutionStrategy.forceTransitiveDependencies() {
         Asm.lib,
         AutoValue.annotations,
         CommonsCli.lib,
+        CommonsCodec.lib,
         CommonsLogging.lib,
         Gson.lib,
         Hamcrest.core,
@@ -156,7 +161,7 @@ private fun ResolutionStrategy.forceTransitiveDependencies() {
         Jackson.moduleKotlin,
         JavaDiffUtils.lib,
         Kotlin.jetbrainsAnnotations,
-        OpenTest4J.lib
+        OpenTest4J.lib,
     )
 }
 

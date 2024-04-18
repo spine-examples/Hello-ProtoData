@@ -93,16 +93,6 @@ val errorPronePluginVersion = "3.1.0"
 val protobufPluginVersion = "0.9.4"
 
 /**
- * The version of Dokka Gradle Plugins.
- *
- * Please keep in sync with [io.spine.internal.dependency.Dokka.version].
- *
- * @see <a href="https://github.com/Kotlin/dokka/releases">
- *     Dokka Releases</a>
- */
-val dokkaVersion = "1.8.20"
-
-/**
  * The version of Detekt Gradle Plugin.
  *
  * @see <a href="https://github.com/detekt/detekt/releases">Detekt Releases</a>
@@ -161,12 +151,30 @@ dependencies {
 
     implementation("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:$detektVersion")
     implementation("com.google.protobuf:protobuf-gradle-plugin:$protobufPluginVersion")
-    implementation("org.jetbrains.dokka:dokka-gradle-plugin:${dokkaVersion}")
-    implementation("org.jetbrains.dokka:dokka-base:${dokkaVersion}")
 
     // https://github.com/srikanth-lingala/zip4j
     implementation("net.lingala.zip4j:zip4j:2.10.0")
 
     implementation("io.kotest:kotest-gradle-plugin:$kotestJvmPluginVersion")
     implementation("org.jetbrains.kotlinx:kover-gradle-plugin:$koverVersion")
+}
+
+dependOnBuildSrcJar()
+
+/**
+ * Adds a dependency on a `buildSrc.jar`, iff:
+ *  1) the `src` folder is missing, and
+ *  2) `buildSrc.jar` is present in `buildSrc/` folder instead.
+ *
+ * This approach is used in the scope of integration testing.
+ */
+fun Project.dependOnBuildSrcJar() {
+    val srcFolder = this.rootDir.resolve("src")
+    val buildSrcJar = rootDir.resolve("buildSrc.jar")
+    if (!srcFolder.exists() && buildSrcJar.exists()) {
+        logger.info("Adding the pre-compiled 'buildSrc.jar' to 'implementation' dependencies.")
+        dependencies {
+            implementation(files("buildSrc.jar"))
+        }
+    }
 }

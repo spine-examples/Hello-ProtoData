@@ -29,6 +29,7 @@ syntax = "proto3";
 package spine.examples.protodata.hello.plugin;
 
 import "spine/options.proto";
+import "spine/protodata/file.proto";
 
 option (type_url_prefix) = "type.spine.io";
 option java_package = "io.spine.examples.protodata.hello.plugin";
@@ -52,7 +53,7 @@ message SizeOption {
 // Triplet File+Type+Field unambiguously identifies the option.
 message SizeOptionId {
 
-  spine.protodata.FilePath file_path = 1;
+  spine.protodata.File file_path = 1;
 
   spine.protodata.TypeName type_name = 2;
 

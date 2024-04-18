@@ -30,4 +30,4 @@
  * This version also used by integration tests, so if you chage the version,
  * please also update it in the [io.spine.internal.dependency.HelloProtoData].
  */
-val helloProtoDataVersion: String by extra("0.13.1")
+val helloProtoDataVersion: String by extra("0.20.7")

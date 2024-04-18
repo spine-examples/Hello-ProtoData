@@ -30,12 +30,12 @@ import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
-import io.spine.protobuf.AnyPacker.unpack
 import io.spine.protodata.Field
 import io.spine.protodata.FieldName
 import io.spine.protodata.MessageType
 import io.spine.protodata.ProtobufSourceFile
 import io.spine.protodata.TypeName
+import io.spine.protodata.find
 import io.spine.protodata.isRepeated
 import io.spine.string.Indent
 import io.spine.string.camelCase
@@ -132,7 +132,7 @@ internal class BuilderExtensionGenerator(
     }
 
     private fun checkFieldIsRepeated(field: Field) {
-        check(field.isRepeated()) {
+        check(field.isRepeated) {
             "Field `$simpleTypeName.${field.name.value}` is non-repeated" +
                     " and therefore cannot be validated with `size` option."
         }
@@ -160,17 +160,18 @@ private fun String.propertyName() =
 
 private fun ProtobufSourceFile.javaPackage(): String {
     val optionName = "java_package"
-    val option = file.optionList.find { it.name == optionName }
+    val option = header.optionList
+        .find(optionName, StringValue::class.java)
     checkNotNull(option) {
-        "Cannot find option '$optionName' in file $filePath."
+        "Cannot find option '$optionName' in file ${file.path}."
     }
-    return unpack(option.value, StringValue::class.java).value
+    return option.value
 }
 
 private fun ProtobufSourceFile.type(typeName: TypeName): MessageType {
     val type = typeMap.values.find { it.name == typeName }
     checkNotNull(type) {
-        "Cannot find type '$typeName' in $filePath."
+        "Cannot find type '$typeName' in $file."
     }
     return type
 }

@@ -42,7 +42,7 @@ dependencies {
 modelCompiler {
     java {
         codegen {
-            validation { skipValidation() }
+            validation().enabled.set(false)
         }
     }
 }

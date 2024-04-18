@@ -29,7 +29,7 @@ package io.spine.internal.dependency
 /**
  * Dependencies on Spine modules.
  */
-@Suppress("unused", "ConstPropertyName")
+@Suppress("unused")
 object Spine {
 
     const val group = "io.spine"
@@ -45,21 +45,21 @@ object Spine {
          *
          * @see <a href="https://github.com/SpineEventEngine/base">spine-base</a>
          */
-        const val base = "2.0.0-SNAPSHOT.189"
+        const val base = "2.0.0-SNAPSHOT.199"
 
         /**
          * The version of [Spine.reflect].
          *
          * @see <a href="https://github.com/SpineEventEngine/reflect">spine-reflect</a>
          */
-        const val reflect = "2.0.0-SNAPSHOT.182"
+        const val reflect = "2.0.0-SNAPSHOT.183"
 
         /**
-         * The version of [Spine.logging].
+         * The version of [Spine.Logging].
          *
          * @see <a href="https://github.com/SpineEventEngine/logging">spine-logging</a>
          */
-        const val logging = "2.0.0-SNAPSHOT.227"
+        const val logging = "2.0.0-SNAPSHOT.233"
 
         /**
          * The version of [Spine.testlib].
@@ -75,7 +75,7 @@ object Spine {
          * @see [Spine.CoreJava.server]
          * @see <a href="https://github.com/SpineEventEngine/core-java">core-java</a>
          */
-        const val core = "2.0.0-SNAPSHOT.159"
+        const val core = "2.0.0-SNAPSHOT.176"
 
         /**
          * The version of [Spine.modelCompiler].
@@ -89,21 +89,21 @@ object Spine {
          *
          * @see <a href="https://github.com/SpineEventEngine/mc-java">spine-mc-java</a>
          */
-        const val mcJava = "2.0.0-SNAPSHOT.170"
+        const val mcJava = "2.0.0-SNAPSHOT.205"
 
         /**
          * The version of [Spine.baseTypes].
          *
          * @see <a href="https://github.com/SpineEventEngine/base-types">spine-base-types</a>
          */
-        const val baseTypes = "2.0.0-SNAPSHOT.125"
+        const val baseTypes = "2.0.0-SNAPSHOT.126"
 
         /**
          * The version of [Spine.time].
          *
          * @see <a href="https://github.com/SpineEventEngine/time">spine-time</a>
          */
-        const val time = "2.0.0-SNAPSHOT.134"
+        const val time = "2.0.0-SNAPSHOT.135"
 
         /**
          * The version of [Spine.change].
@@ -117,14 +117,14 @@ object Spine {
          *
          * @see <a href="https://github.com/SpineEventEngine/text">spine-text</a>
          */
-        const val text = "2.0.0-SNAPSHOT.5"
+        const val text = "2.0.0-SNAPSHOT.6"
 
         /**
          * The version of [Spine.toolBase].
          *
          * @see <a href="https://github.com/SpineEventEngine/tool-base">spine-tool-base</a>
          */
-        const val toolBase = "2.0.0-SNAPSHOT.186"
+        const val toolBase = "2.0.0-SNAPSHOT.212"
 
         /**
          * The version of [Spine.javadocTools].
@@ -136,13 +136,6 @@ object Spine {
 
     const val base = "$group:spine-base:${ArtifactVersion.base}"
 
-    @Deprecated("Use `Logging.lib` instead.", ReplaceWith("Logging.lib"))
-    const val logging = "$group:spine-logging:${ArtifactVersion.logging}"
-    @Deprecated("Use `Logging.context` instead.", ReplaceWith("Logging.context"))
-    const val loggingContext = "$group:spine-logging-context:${ArtifactVersion.logging}"
-    @Deprecated("Use `Logging.backend` instead.", ReplaceWith("Logging.backend"))
-    const val loggingBackend = "$group:spine-logging-backend:${ArtifactVersion.logging}"
-
     const val reflect = "$group:spine-reflect:${ArtifactVersion.reflect}"
     const val baseTypes = "$group:spine-base-types:${ArtifactVersion.baseTypes}"
     const val time = "$group:spine-time:${ArtifactVersion.time}"
@@ -151,6 +144,8 @@ object Spine {
 
     const val testlib = "$toolsGroup:spine-testlib:${ArtifactVersion.testlib}"
     const val testUtilTime = "$toolsGroup:spine-testutil-time:${ArtifactVersion.time}"
+    const val psiJava = "$toolsGroup:spine-psi-java:${ArtifactVersion.toolBase}"
+    const val psiJavaBundle = "$toolsGroup:spine-psi-java-bundle:${ArtifactVersion.toolBase}"
     const val toolBase = "$toolsGroup:spine-tool-base:${ArtifactVersion.toolBase}"
     const val pluginBase = "$toolsGroup:spine-plugin-base:${ArtifactVersion.toolBase}"
     const val pluginTestlib = "$toolsGroup:spine-plugin-testlib:${ArtifactVersion.toolBase}"
@@ -164,10 +159,18 @@ object Spine {
     object Logging {
         const val version = ArtifactVersion.logging
         const val lib = "$group:spine-logging:$version"
-        const val backend = "$group:spine-logging-backend:$version"
+
         const val log4j2Backend = "$group:spine-logging-log4j2-backend:$version"
-        const val context = "$group:spine-logging-context:$version"
+        const val stdContext = "$group:spine-logging-std-context:$version"
         const val grpcContext = "$group:spine-logging-grpc-context:$version"
+        const val smokeTest = "$group:spine-logging-smoke-test:$version"
+
+        // Transitive dependencies.
+        // Make `public` and use them to force a version in a particular repository, if needed.
+        internal const val julBackend = "$group:spine-logging-jul-backend:$version"
+        internal const val middleware = "$group:spine-logging-middleware:$version"
+        internal const val platformGenerator = "$group:spine-logging-platform-generator:$version"
+        internal const val jvmDefaultPlatform = "$group:spine-logging-jvm-default-platform:$version"
 
         @Deprecated(
             message = "Please use `Logging.lib` instead.",
@@ -180,7 +183,6 @@ object Spine {
             replaceWith = ReplaceWith("grpcContext")
         )
         const val floggerGrpcContext = "$group:spine-flogger-grpc-context:$version"
-        const val smokeTest = "$group:spine-logging-smoke-test:$version"
     }
 
     /**
@@ -188,10 +190,12 @@ object Spine {
      *
      * See [mc-java](https://github.com/SpineEventEngine/mc-java).
      */
+    @Suppress("MemberVisibilityCanBePrivate") // `pluginLib()` is used by subprojects.
     object McJava {
         const val version = ArtifactVersion.mcJava
         const val pluginId = "io.spine.mc-java"
-        const val pluginLib = "$toolsGroup:spine-mc-java-plugins:${version}:all"
+        val pluginLib = pluginLib(version)
+        fun pluginLib(version: String): String = "$toolsGroup:spine-mc-java-plugins:$version:all"
     }
 
     @Deprecated("Please use `javadocFilter` instead.", ReplaceWith("javadocFilter"))
