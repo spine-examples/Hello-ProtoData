@@ -1,3 +1,38 @@
+# Introduction
+
+### How Proto messages are semantically enriched with options.
+
+### How we want to reflect this semantic meaning in our code.
+
+
+### ProtoData to rescue.
+
+# Domain
+
+### Naked Board code (no options).
+
+### Rules we want to enforce to this domain (restrictions on the size, etc).
+
+### Declaring a Proto option to bring the required semantic rules.
+
+### Using it in Proto code (Board with the options used).
+
+### References to ProtoData plugin codebase which does the trick.
+
+### Summary: usage examples of Board, pointing out the validation rules added upon build-ing the Proto messages.
+
+# Development
+
+### Pre-requisites (JDK, Gradle, etc.).
+
+### Build instructions.
+
+
+
+
+
+
+# The old version below
 # Hello-ProtoData
 An example on code generation with ProtoData.
 
