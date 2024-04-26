@@ -1,78 +1,53 @@
+[![Build Status][ubuntu-build-badge]][gh-actions]
+[![Build Status][windows-build-badge]][gh-actions]
+[![license][license-badge]](http://www.apache.org/licenses/LICENSE-2.0)
+
+[gh-actions]: https://github.com/spine-examples/Hello-ProtoData/actions
+[ubuntu-build-badge]: https://github.com/spine-examples/Hello-ProtoData/actions/workflows/build-on-ubuntu.yml/badge.svg
+[windows-build-badge]: https://github.com/spine-examples/Hello-ProtoData/actions/workflows/build-on-windows.yml/badge.svg
+[license-badge]: https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat
+
 # Introduction
 
-### How Proto messages are semantically enriched with options.
+Declarations in a `.proto` file can be annotated with 
+a number of [options](https://protobuf.dev/programming-guides/proto3/#options). 
+Options do not change the overall meaning of a declaration, 
+but may affect the way it is handled in a particular context.
 
-### How we want to reflect this semantic meaning in our code.
+Protobuf supports different types of options, e.g. file-level options, 
+message-level options, field-level options, etc. The complete list of 
+available options is defined in 
+[/google/protobuf/descriptor.proto](https://github.com/protocolbuffers/protobuf/blob/main/src/google/protobuf/descriptor.proto).
 
-
-### ProtoData to rescue.
+Protobuf also allows to define and use [custom options](https://protobuf.dev/programming-guides/proto2/#customoptions). 
+The authors say "that this is an advanced feature which most people don’t need" 
+and it actually requires a significant amount of work to define a custom option 
+and generate the validation code for this option. However, ProtoData provides 
+a fairly easy way to collect the custom options metadata and extend the 
+generated code with the desired behaviour.
 
 # Domain
 
-### Naked Board code (no options).
+This use-case of applying ProtoData demonstrates how to enrich the model 
+with additional semantic elements and reflect its meaning in the generated code.
 
-### Rules we want to enforce to this domain (restrictions on the size, etc).
-
-### Declaring a Proto option to bring the required semantic rules.
-
-### Using it in Proto code (Board with the options used).
-
-### References to ProtoData plugin codebase which does the trick.
-
-### Summary: usage examples of Board, pointing out the validation rules added upon build-ing the Proto messages.
-
-# Development
-
-### Pre-requisites (JDK, Gradle, etc.).
-
-### Build instructions.
-
-
-
-
-
-
-# The old version below
-# Hello-ProtoData
-An example on code generation with ProtoData.
-
-This example demonstrates how to define a new Protobuf option and
-generate the validation code in response to this option
-using ProtoData API.
-
-### Custom Protobuf Option
-
-Below is example on Protobuf message definition 
-with custom `size` option that is used for validating 
-the size of a repeated field.
+For example, let's define a board for TicTacToe game:
 
 ```protobuf
 // A board for TicTacToe game.
-//
-// A board may have any size but minimum 3-by-3.
-// The field `side_size` defines the size of the board's side and
-// the number of cells is checked with the `size` option so that
-// this number always equals the "side_size * side_size" value.
-//
 message Board {
-
   // The name of the board.
-  BoardName name = 1 [(required) = true, (validate) = true];
-
-  // Board cells.
-  repeated Cell cell = 2 [(required) = true, (size).value = "side_size * side_size"];
+  BoardName name = 1;
 
   // The size of the board.
-  //
-  // The board must have `side_size` number of cell rows,
-  // each having `side_size` number of columns,
-  // effectively making the board "square".
-  //
-  int32 side_size = 3 [(required) = true, (min).value = "3"];
+  int32 side_size = 2;
+  
+  // Board cells. It is expected to have "side_size * side_size" cells. 
+  repeated Cell cell = 3;
 }
 
 message BoardName {
-  string value = 1 [(required) = true];
+  string value = 1;
 }
 
 enum Mark {
@@ -88,11 +63,40 @@ message Cell {
   }
 }
 ```
-See the `model` subproject for details.
+Definitely, we can use this model but it is so easy to make some mistake when 
+the model becomes invalid state. What can we do to avoid this?
 
-### How to Define a Custom Option
+It would be much better if we could add the following:
 
-Below is a definition of Protobuf extension that can be found in `options.proto`:
+1. Mark some fields as `required` to admit that this is important
+to initialize these fields.
+2. Set the minimum acceptable value for the `side_size` field.
+3. Add some validation rules that verify the size of the `cell` collection.
+
+We can easily solve the points 1 and 2 as ProtoData provides options 
+to mark the fields as `required` and validate values of the numeric fields.
+
+Let's add these elements to the `Board` definition:
+
+```protobuf
+// A board for TicTacToe game.
+message Board {
+  // The name of the board.
+  BoardName name = 1 [(required) = true];
+
+  // The size of the board.
+  int32 side_size = 2 [(required) = true, (min).value = "3"];
+
+  // Board cells. It is expected to have "side_size * side_size" cells.
+  repeated Cell cell = 3 [(required) = true];
+}
+...
+```
+
+Also, we can define a custom option to check the size of the `cell` field
+and use ProtoData API to generate the required validation code.
+
+Below is definition of the `size` custom option:
 ```protobuf
 extend google.protobuf.FieldOptions {
 
@@ -112,58 +116,60 @@ extend google.protobuf.FieldOptions {
 // The `value` field supports basic math operations,
 // such as `+`, `-`, `*`, `/`.
 //
-// Example:
-//
-// message Foo {
-//
-//     int32 count = 1;
-//
-//     // There must be a number of elements
-//     // twice the `count`.
-//     repeated string value = 2 [(size),value = "count * 2"];
-// }
 message ArrayOfSizeOption {
 
     string value = 1 [(required) = true];
 }
 ```
-Also, there is `ArrayOfSizeOptionProvider` that registers this extension:
-```kotlin
-/**
- * Registers Protobuf extension that enables `ArrayOfSizeOption` field option
- * that may be applied to a repeated field in order to validate its size.
- */
-@AutoService(OptionsProvider::class)
-public class ArrayOfSizeOptionProvider : OptionsProvider {
 
-    override fun registerIn(registry: ExtensionRegistry) {
-        ArrayOfSizeOptionProto.registerAllExtensions(registry)
+Now let's use this option in the `Board` definition:
+
+```protobuf
+// A board for TicTacToe game.
+message Board {
+  // The name of the board.
+  BoardName name = 1 [(required) = true];
+
+  // The size of the board.
+  //
+  // The board must have `side_size` number of cell rows,
+  // each having `side_size` number of columns,
+  // effectively making the board "square".
+  //
+  int32 side_size = 2 [(required) = true, (min).value = "3"];
+
+  // Board cells. It is expected to have "side_size * side_size" cells.
+  repeated Cell cell = 3 [(required) = true, (size).value = "side_size * side_size"];
+}
+...
+```
+
+The [ApplySizeOptionPlugin](codegen-plugin/src/main/kotlin/io/spine/examples/protodata/hello/plugin/ApplySizeOptionPlugin.kt) 
+is implemented to generate the validation code for the `size` option. 
+It uses ProtoData API to customize the code generation for Protobuf messages.
+
+The plugin generates extensions for the message builder classes
+with validation methods for every field with `size` option applied.
+Below is the generated validation method for the `cell` field.
+
+```kotlin
+internal fun Board.Builder.validateCellCount(): Board.Builder {
+    val expected = sideSize * sideSize
+    check(cellCount == expected) {
+        "Invalid number of 'cell' elements: " +
+            "expected $expected, but actual $cellCount."
     }
+    return this
 }
 ```
-Please note that options provider should be marked with `@AutoService` annotation.
 
-See the `proto-extension` subproject for details.
-
-### Code Generation
-
-There is `ApplySizeOptionPlugin` that implemented in order to generate 
-the validation code for the `size` option.
-The plugin can be deployed during the build process 
-and uses ProtoData API to extend the code generation for Protobuf messages.
-
-The plugin generates extensions for message builder classes 
-with validation methods for every field with `size` option applied.
-
-Also, the `build()` method of a message builder class is extended 
+Also, the `build()` method of a message builder class is updated
 to call these methods.
 
-See the `codegen-plugin` subproject for details.
-
-### Plugin Deployment
+See the [codegen-plugin](codegen-plugin) subproject for details.
 
 The following configuration should be applied in the Gradle configuration 
-of a subproject to use the `size` option:
+of a module to use the `size` option plugin:
 ```kotlin
 protoData {
     // Run ProtoData with the `size` option plugin enabled.
@@ -172,25 +178,24 @@ protoData {
     )
 }
 ```
-Also, the dependencies on `proto-extension` and `codegen-plugin`
-subprojects should be added:
-```kotlin
-dependencies {
-    // Enable field options extension.
-    api(project(":proto-extension"))
-    // Add module with code generation plugin to ProtoData classpath.
-    protoData(project(":codegen-plugin"))
-}
+
+# Development
+
+### Prerequisites
+
+This example is implemented using the following technologies and tools:
+
+1. Java 11
+2. Kotlin 1.9.23
+3. Gradle 7.6
+
+### Build Instruction
+
+1. Clone the repository:
+```bash
+git clone git@github.com:spine-examples/Hello-ProtoData.git
 ```
-### Integration Tests
-
-The negative test-cases are implemented in a specific way.
-
-Such tests configure and run the build of a test project
-in a separate Gradle process because every negative case raises
-the appropriate error and fails the build.
-
-A negative test-case is accepted when the specific error message 
-is found in the stderr stream of the failed build process.
-
-See the `integration-tests` subproject for details.
+2. Run the Gradle build:
+```bash
+./gradlew build
+```
