@@ -47,20 +47,25 @@ public class BuilderBeforeReturnRenderer(
         if (!sources.outputRoot.endsWith("java")) {
             return
         }
+
         sources.filter {
             builderValidationMethods.hasMethods(it.relativePath)
-        }.forEach(::insertValidationMethodsInvocation)
+        }.forEach {
+            insertValidationMethodsInvocation(it)
+        }
     }
 
     /**
      * Inserts validation method calls into the `build` method
      * of the message builder class.
      */
-    private fun insertValidationMethodsInvocation(sourceFile: SourceFile) {
+    private fun insertValidationMethodsInvocation(sourceFile: SourceFile<*>) {
         val builder = sourceFile.at(BuilderBeforeReturnInsertionPoint())
             .withExtraIndentation(2)
 
         builderValidationMethods.methods(sourceFile.relativePath)
-            .forEach(builder::add)
+            .forEach {
+                builder.add(it)
+            }
     }
 }

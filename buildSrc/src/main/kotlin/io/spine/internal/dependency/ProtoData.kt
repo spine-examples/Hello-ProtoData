@@ -62,7 +62,7 @@ object ProtoData {
     /**
      * The version of ProtoData dependencies.
      */
-    const val version: String = "0.20.7"
+    const val version: String = "0.50.0"
 
     const val pluginLib: String =
         "$group:gradle-plugin:$version"

@@ -169,7 +169,9 @@ private fun ProtobufSourceFile.javaPackage(): String {
 }
 
 private fun ProtobufSourceFile.type(typeName: TypeName): MessageType {
-    val type = typeMap.values.find { it.name == typeName }
+    val type = typeMap.values.find {
+        it.name.simpleName == typeName.simpleName
+    }
     checkNotNull(type) {
         "Cannot find type '$typeName' in $file."
     }
@@ -177,7 +179,7 @@ private fun ProtobufSourceFile.type(typeName: TypeName): MessageType {
 }
 
 private fun MessageType.field(fieldName: FieldName): Field {
-    val field = fieldList.find { it.name == fieldName }
+    val field = fieldList.find { it.name.value == fieldName.value }
     checkNotNull(field) {
         "Cannot find field '${fieldName.value}' in type '${typeName.value}'."
     }

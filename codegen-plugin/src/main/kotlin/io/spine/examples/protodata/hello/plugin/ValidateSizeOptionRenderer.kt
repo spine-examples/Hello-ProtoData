@@ -80,7 +80,7 @@ public class ValidateSizeOptionRenderer(
      * Returns the [ProtobufSourceFile] by the [File] provided.
      */
     private fun findSourceFile(file: File): ProtobufSourceFile {
-        val sourceFile = select<ProtobufSourceFile>().all().find {
+        val sourceFile = select(ProtobufSourceFile::class.java).all().find {
             it.file.path == file.path
         }
         checkNotNull(sourceFile) {
