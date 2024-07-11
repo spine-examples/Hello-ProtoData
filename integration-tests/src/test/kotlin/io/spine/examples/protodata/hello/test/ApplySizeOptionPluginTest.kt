@@ -161,7 +161,9 @@ class `ApplySizeOptionPlugin should` {
         val errorFound = sdterrContent.contains(expectedExceptionMessage)
 
         if (!errorFound) {
+            println("=========== StdErr of the separate Gradle build ============================")
             println(sdterrContent)
+            println("============================================================================")
         }
 
         assertTrue(
