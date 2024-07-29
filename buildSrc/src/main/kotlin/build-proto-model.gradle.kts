@@ -1,5 +1,5 @@
 /*
- * Copyright 2024, TeamDev. All rights reserved.
+ * Copyright 2023, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,43 +23,23 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.examples.protodata.hello.plugin
 
-import io.spine.core.External
-import io.spine.core.Subscribe
-import io.spine.core.Where
-import io.spine.examples.protodata.hello.ArrayOfSizeOption
-import io.spine.protobuf.AnyPacker.unpack
-import io.spine.protodata.event.FieldOptionDiscovered
-import io.spine.protodata.plugin.View
+@file:Suppress("RemoveRedundantQualifierName")
+
+import io.spine.internal.dependency.Protobuf
+import io.spine.internal.dependency.Spine.McJava
 
 /**
- * Records the [ArrayOfSizeOption] options that are applied to repeated fields.
+ * The dependency onto Spine Validation causes the circular dependency in this Gradle project.
+ * Therefore, we disable the validation altogether.
  */
-internal class SizeOptionView : View<SizeOptionId,
-        SizeOption,
-        SizeOption.Builder>() {
+System.setProperty("spine.internal.validation.disabled", "true")
 
-    /**
-     * Parameters to filter the `size` option among the other options.
-     */
-    private companion object FilterParams {
-        const val FIELD_NAME = "option.name"
-        const val FIELD_VALUE = "size"
-    }
+apply {
+    plugin(Protobuf.GradlePlugin.id)
+    plugin(McJava.pluginId)
+}
 
-    @Subscribe
-    internal fun on(
-/*        @External @Where(
-            field = FIELD_NAME,
-            equals = FIELD_VALUE
-        )*/
-        event: FieldOptionDiscovered
-    ) {
-        val option = unpack(event.option.value, ArrayOfSizeOption::class.java)
-
-        println("============================== Option Read: ${option.value}")
-
-        builder().setExpression(option.value)
-    }
+dependencies {
+    Protobuf.libs.forEach { "api"(it) }
 }

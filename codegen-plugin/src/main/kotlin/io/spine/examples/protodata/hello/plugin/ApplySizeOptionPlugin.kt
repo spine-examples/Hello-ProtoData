@@ -51,6 +51,9 @@ import io.spine.protodata.renderer.Renderer
 public class ApplySizeOptionPlugin : Plugin {
 
     override fun renderers(): List<Renderer<*>> {
+
+        println("============================== Plugin renderers()")
+
         // A container for collecting generated validation methods, which should
         // later be added to the `build` method of the message builder class.
         val builderValidationMethods = BuilderValidationMethods()
@@ -62,6 +65,9 @@ public class ApplySizeOptionPlugin : Plugin {
     }
 
     override fun viewRepositories(): Set<ViewRepository<*, *, *>> {
+
+        println("============================== Plugin viewRepositories()")
+
         return setOf(SizeOptionViewRepository())
     }
 }

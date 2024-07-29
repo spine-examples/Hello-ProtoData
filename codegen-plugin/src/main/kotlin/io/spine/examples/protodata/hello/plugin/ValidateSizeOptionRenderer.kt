@@ -55,7 +55,15 @@ public class ValidateSizeOptionRenderer(
             return
         }
 
-        select(SizeOption::class.java).all()
+        println("============================== Execute ValidateSizeOptionRenderer")
+
+        val sizeOptions = select(SizeOption::class.java).all()
+
+        sizeOptions.forEach {
+            println("============================== SizeOption: $it")
+        }
+
+        sizeOptions
             // Separate all size options by pair File+Type, so we can
             // generate one builder extension for options within one Type.
             .groupBy { sizeOption ->
@@ -68,6 +76,8 @@ public class ValidateSizeOptionRenderer(
                     mapEntry.value,
                     builderValidationMethods
                 )
+
+                println("============================== Generator Created")
 
                 sources.createFile(
                     generator.filePath(),

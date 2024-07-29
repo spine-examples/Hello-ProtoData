@@ -37,6 +37,7 @@ import io.spine.server.route.EventRouting
 internal class SizeOptionViewRepository : ViewRepository<SizeOptionId,
         SizeOptionView,
         SizeOption>() {
+
     override fun setupEventRouting(routing: EventRouting<SizeOptionId>) {
         super.setupEventRouting(routing)
         routing.route(FieldOptionDiscovered::class.java)

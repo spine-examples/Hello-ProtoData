@@ -33,7 +33,8 @@ plugins {
 
 dependencies {
     // To use @AutoService in options provider
-    implementation(AutoService.annotations)
+    annotationProcessor(AutoService.processor)
+    compileOnly(AutoService.annotations)
 
     // To allow access to `ValidatingBuilder` from the generated Kotlin code.
     implementation(Validation.runtime)

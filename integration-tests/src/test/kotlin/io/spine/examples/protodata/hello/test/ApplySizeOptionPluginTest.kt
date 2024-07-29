@@ -30,7 +30,7 @@ import io.spine.tools.gradle.testing.GradleProject
 import io.spine.tools.mc.java.gradle.McJavaTaskName
 import org.gradle.testkit.runner.UnexpectedBuildFailure
 import org.gradle.testkit.runner.internal.DefaultGradleRunner
-//import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -158,15 +158,15 @@ class `ApplySizeOptionPlugin should` {
         }
 
         val sdterrContent = stderr.toString()
-        val errorFound = sdterrContent.contains("###$expectedExceptionMessage")
+        val errorFound = sdterrContent.contains(expectedExceptionMessage)
 
-        if (!errorFound) {
-            fail<Any>(sdterrContent)
-        }
+        System.err.println(sdterrContent)
 
-/*        assertTrue(
+        //check(errorFound) { sdterrContent }
+
+        assertTrue(
             errorFound,
             "The expected exception was not thrown."
-        )*/
+        )
     }
 }

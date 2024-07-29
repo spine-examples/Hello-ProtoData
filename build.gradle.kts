@@ -46,6 +46,8 @@ buildscript {
 
     dependencies {
         classpath(io.spine.internal.dependency.Spine.McJava.pluginLib)
+        classpath(io.spine.internal.dependency.Protobuf.GradlePlugin.lib)
+        classpath(io.spine.internal.dependency.Kotlin.gradlePluginLib)
     }
 }
 
@@ -54,7 +56,7 @@ plugins {
     id("net.ltgt.errorprone")
     id("detekt-code-analysis")
     id("com.google.protobuf")
-    id("io.spine.protodata") version "0.20.7"
+    id("io.spine.protodata") version "0.50.0"
     idea
 }
 

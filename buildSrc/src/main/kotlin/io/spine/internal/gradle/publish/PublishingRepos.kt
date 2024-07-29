@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -23,43 +23,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.examples.protodata.hello.plugin
 
-import io.spine.core.External
-import io.spine.core.Subscribe
-import io.spine.core.Where
-import io.spine.examples.protodata.hello.ArrayOfSizeOption
-import io.spine.protobuf.AnyPacker.unpack
-import io.spine.protodata.event.FieldOptionDiscovered
-import io.spine.protodata.plugin.View
+package io.spine.internal.gradle.publish
+
+import io.spine.internal.gradle.Repository
 
 /**
- * Records the [ArrayOfSizeOption] options that are applied to repeated fields.
+ * Repositories to which we may publish.
  */
-internal class SizeOptionView : View<SizeOptionId,
-        SizeOption,
-        SizeOption.Builder>() {
+object PublishingRepos {
+
+    val cloudArtifactRegistry = CloudArtifactRegistry.repository
 
     /**
-     * Parameters to filter the `size` option among the other options.
+     * Obtains a GitHub repository by the given name.
      */
-    private companion object FilterParams {
-        const val FIELD_NAME = "option.name"
-        const val FIELD_VALUE = "size"
-    }
-
-    @Subscribe
-    internal fun on(
-/*        @External @Where(
-            field = FIELD_NAME,
-            equals = FIELD_VALUE
-        )*/
-        event: FieldOptionDiscovered
-    ) {
-        val option = unpack(event.option.value, ArrayOfSizeOption::class.java)
-
-        println("============================== Option Read: ${option.value}")
-
-        builder().setExpression(option.value)
-    }
+    fun gitHub(repoName: String): Repository = GitHubPackages.repository(repoName)
 }
