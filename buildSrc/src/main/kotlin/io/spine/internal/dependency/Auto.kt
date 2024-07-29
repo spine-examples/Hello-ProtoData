@@ -47,3 +47,15 @@ object AutoValue {
     private const val version = "1.10.2"
     const val annotations = "com.google.auto.value:auto-value-annotations:${version}"
 }
+
+
+// https://github.com/ZacSweers/auto-service-ksp
+object AutoServiceKsp {
+    /**
+     * The latest version compatible with Kotlin 1.8.22.
+     *
+     * @see Ksp.version
+     */
+    private const val version = "1.1.0"
+    const val processor = "dev.zacsweers.autoservice:auto-service-ksp:$version"
+}

@@ -49,7 +49,7 @@ internal class SizeOptionView : View<SizeOptionId,
     }
 
     @Subscribe
-    internal fun on(
+    internal fun on(@External
 /*        @External @Where(
             field = FIELD_NAME,
             equals = FIELD_VALUE

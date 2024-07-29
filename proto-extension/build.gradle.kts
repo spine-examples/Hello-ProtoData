@@ -24,17 +24,20 @@
  */
 
 import io.spine.internal.dependency.AutoService
+import io.spine.internal.dependency.AutoServiceKsp
 import io.spine.internal.dependency.HelloProtoData
 import io.spine.internal.dependency.Validation
 
 plugins {
     `maven-publish`
+    ksp
 }
 
 dependencies {
     // To use @AutoService in options provider
     annotationProcessor(AutoService.processor)
     compileOnly(AutoService.annotations)
+    ksp(AutoServiceKsp.processor)
 
     // To allow access to `ValidatingBuilder` from the generated Kotlin code.
     implementation(Validation.runtime)

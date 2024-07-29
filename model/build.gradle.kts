@@ -27,36 +27,13 @@ import io.spine.internal.dependency.JUnit
 import io.spine.internal.dependency.Validation
 import io.spine.protodata.gradle.CodegenSettings
 
-//buildscript {
-    //standardSpineSdkRepositories()
-    //apply(from = "$rootDir/../version.gradle.kts")
-    //val protoDataVersion: String by extra
-//    dependencies {
-//        classpath("io.spine.protodata:io.spine.protodata.gradle.plugin:0.50.0")
-//    }
-//}
-
-buildscript {
-    standardSpineSdkRepositories()
-    dependencies {
-        classpath(io.spine.internal.dependency.Spine.McJava.pluginLib)
-    }
-}
 
 dependencies {
     // Enable field options extension.
-    //api(project(":proto-extension"))
+    api(project(":proto-extension"))
 
     // Add module with code generation plugin to ProtoData classpath.
-    //protoData(project(":codegen-plugin"))
-
-    val extensionSubproject = project(":proto-extension")
-    "protoData"(extensionSubproject)
-    implementation(extensionSubproject)
-
-    val pluginsSubproject = project(":codegen-plugin")
-    "protoData"(pluginsSubproject)
-    implementation(pluginsSubproject)
+    protoData(project(":codegen-plugin"))
 
     // To allow access to `ValidatingBuilder` from the generated Kotlin code.
     implementation(Validation.runtime)
@@ -66,18 +43,18 @@ dependencies {
 
 apply(plugin = "io.spine.protodata")
 
-/*protoData {
+protoData {
     // Run ProtoData with the `size` option plugin enabled.
     plugins(
         "io.spine.examples.protodata.hello.plugin.ApplySizeOptionPlugin"
     )
-}*/
-
-extensions.getByType<CodegenSettings>().apply {
-    plugins(
-        "io.spine.examples.protodata.hello.plugin.ApplySizeOptionPlugin"
-    )
 }
+
+//extensions.getByType<CodegenSettings>().apply {
+//    plugins(
+//        "io.spine.examples.protodata.hello.plugin.ApplySizeOptionPlugin"
+//    )
+//}
 
 modelCompiler {
     java {
