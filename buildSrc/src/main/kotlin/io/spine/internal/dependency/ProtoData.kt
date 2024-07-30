@@ -65,7 +65,7 @@ object ProtoData {
     const val version: String = "0.50.0"
 
     const val lib: String =
-        "io.spine:protodata:0.50.0"
+        "io.spine:protodata:$version"
 
     const val pluginLib: String =
         "$group:gradle-plugin:$version"
