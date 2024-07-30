@@ -205,7 +205,7 @@ git clone git@github.com:spine-examples/Hello-ProtoData.git
 [ubuntu-build-badge]: https://github.com/spine-examples/Hello-ProtoData/actions/workflows/build-on-ubuntu.yml/badge.svg
 [windows-build-badge]: https://github.com/spine-examples/Hello-ProtoData/actions/workflows/build-on-windows.yml/badge.svg
 [license-badge]: https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat
-[apache-license]: http://www.apache.org/licenses/LICENSE-2.0
+[apache-license]: https://www.apache.org/licenses/LICENSE-2.0
 
 [proto3-options]: https://protobuf.dev/programming-guides/proto3/#options
 [descriptor-proto]: https://github.com/protocolbuffers/protobuf/blob/main/src/google/protobuf/descriptor.proto

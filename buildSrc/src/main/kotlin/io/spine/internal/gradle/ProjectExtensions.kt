@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -26,7 +26,6 @@
 
 package io.spine.internal.gradle
 
-import io.spine.internal.gradle.publish.SpinePublishing
 import java.io.File
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -73,25 +72,6 @@ fun <T : Task> Project.findTask(name: String): T {
         ?: error("Unable to find a task named `$name` in the project `${this.name}`.")
     return task as T
 }
-
-/**
- * Obtains Maven artifact ID of this [Project].
- *
- * The method checks if [SpinePublishing] extension is configured upon this project. If yes,
- * returns [SpinePublishing.artifactId] for the project. Otherwise, a project's name is returned.
- */
-val Project.artifactId: String
-    get() {
-
-        // Publishing of a project can be configured either from the project itself or
-        // from its root project. This is why it is required to check both places.
-
-        val spinePublishing = extensions.findByType<SpinePublishing>()
-            ?: rootProject.extensions.findByType()
-
-        val artifactId = spinePublishing?.artifactId(this)
-        return artifactId ?: name
-    }
 
 /**
  * Returns project's build directory as [File].
