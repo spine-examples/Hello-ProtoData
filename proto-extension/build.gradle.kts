@@ -58,3 +58,12 @@ publishing {
         }
     }
 }
+
+// To avoid warning on implicit tasks dependency.
+// See https://discuss.gradle.org/t/implicit-dependency-among-tasks-but-the-tasks-do-not-exist/46127
+// for details.
+tasks.configureEach {
+    if (name == "kspKotlin") {
+        mustRunAfter(tasks.named("launchProtoData"))
+    }
+}
