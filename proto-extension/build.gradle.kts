@@ -34,8 +34,7 @@ plugins {
 }
 
 dependencies {
-    // To use @AutoService in options provider
-    annotationProcessor(AutoService.processor)
+    // To use @AutoService in options provider.
     compileOnly(AutoService.annotations)
     ksp(AutoServiceKsp.processor)
 

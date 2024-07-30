@@ -49,7 +49,7 @@ public class BuilderBeforeReturnRenderer(
         }
 
         sources.filter {
-            builderValidationMethods.hasMethods(it.relativePath)
+            builderValidationMethods.methods(it.relativePath).isNotEmpty()
         }.forEach {
             insertValidationMethodsInvocation(it)
         }

@@ -49,17 +49,15 @@ internal class SizeOptionView : View<SizeOptionId,
     }
 
     @Subscribe
-    internal fun on(@External
-/*        @External @Where(
+    internal fun on(
+        @External
+        @Where(
             field = FIELD_NAME,
             equals = FIELD_VALUE
-        )*/
+        )
         event: FieldOptionDiscovered
     ) {
         val option = unpack(event.option.value, ArrayOfSizeOption::class.java)
-
-        println("============================== Option Read: ${option.value}")
-
         builder().setExpression(option.value)
     }
 }

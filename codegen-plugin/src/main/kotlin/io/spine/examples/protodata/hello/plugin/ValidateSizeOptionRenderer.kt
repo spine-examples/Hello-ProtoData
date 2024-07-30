@@ -55,15 +55,7 @@ public class ValidateSizeOptionRenderer(
             return
         }
 
-        println("============================== Execute ValidateSizeOptionRenderer")
-
-        val sizeOptions = select(SizeOption::class.java).all()
-
-        sizeOptions.forEach {
-            println("============================== SizeOption: $it")
-        }
-
-        sizeOptions
+        select(SizeOption::class.java).all()
             // Separate all size options by pair File+Type, so we can
             // generate one builder extension for options within one Type.
             .groupBy { sizeOption ->
@@ -76,9 +68,6 @@ public class ValidateSizeOptionRenderer(
                     mapEntry.value,
                     builderValidationMethods
                 )
-
-                println("============================== Generator Created")
-
                 sources.createFile(
                     generator.filePath(),
                     generator.fileContent()
@@ -94,7 +83,7 @@ public class ValidateSizeOptionRenderer(
             it.file.path == file.path
         }
         checkNotNull(sourceFile) {
-            "Cannot find 'ProtobufSourceFile' for ${file.path}."
+            "Cannot find `ProtobufSourceFile` for ${file.path}."
         }
         return sourceFile
     }

@@ -25,8 +25,6 @@
 
 import io.spine.internal.dependency.JUnit
 import io.spine.internal.dependency.Validation
-import io.spine.protodata.gradle.CodegenSettings
-
 
 dependencies {
     // Enable field options extension.
@@ -41,7 +39,9 @@ dependencies {
     testImplementation(JUnit.runner)
 }
 
-apply(plugin = "io.spine.protodata")
+apply {
+    plugin("io.spine.protodata")
+}
 
 protoData {
     // Run ProtoData with the `size` option plugin enabled.
@@ -49,12 +49,6 @@ protoData {
         "io.spine.examples.protodata.hello.plugin.ApplySizeOptionPlugin"
     )
 }
-
-//extensions.getByType<CodegenSettings>().apply {
-//    plugins(
-//        "io.spine.examples.protodata.hello.plugin.ApplySizeOptionPlugin"
-//    )
-//}
 
 modelCompiler {
     java {

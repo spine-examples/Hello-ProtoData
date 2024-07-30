@@ -59,9 +59,7 @@ object BuildSettings {
     val javaVersion: JavaLanguageVersion = JavaLanguageVersion.of(JAVA_VERSION)
 }
 
-
 allprojects {
-
     // Define the repositories universally for all modules, including the root.
     repositories.standardToSpineSdk()
 
