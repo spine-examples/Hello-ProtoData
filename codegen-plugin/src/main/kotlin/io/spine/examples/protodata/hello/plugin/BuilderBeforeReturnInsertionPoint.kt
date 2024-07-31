@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -56,18 +56,26 @@ public class BuilderBeforeReturnInsertionPoint : InsertionPoint {
      * taking into account the following:
      *
      *  - The builder class is the nested within class of some `Message`.
-     *  - The class of `Message` is the only top-level class in the passed
+     *  - The class of `Message` is the only top-level class in the given
      *  [text].
      *
      * This implementation assumes that Proto file has its `java_multiple_files`
      * option set to `true`.
      */
-    public override fun locate(text: Text): Set<TextCoordinates> {
+    override fun locate(text: String): Set<TextCoordinates> {
         val messageClass = parseMessageClass(text)
         val builderClass = loadBuilderClass(messageClass)
         val builderMethod = builderClass.getMethod("build")
         val lineBeforeReturn = lineBeforeReturn(builderMethod, text)
         return setOf(lineBeforeReturn)
+    }
+
+    @Deprecated(
+        message = "Use `locate(String)` instead.",
+        replaceWith = ReplaceWith("locate(text.value)")
+    )
+    override fun locate(text: Text): Set<TextCoordinates> {
+        return locate(text.value)
     }
 
     /**
@@ -76,9 +84,9 @@ public class BuilderBeforeReturnInsertionPoint : InsertionPoint {
      */
     private fun lineBeforeReturn(
         method: MethodSource<*>,
-        sourceCode: Text
+        sourceCode: String
     ): TextCoordinates {
-        val methodCode = sourceCode.value.substring(
+        val methodCode = sourceCode.substring(
             method.startPosition, method.endPosition
         )
         val returnIndex = findReturnLine(methodCode)
@@ -102,8 +110,8 @@ public class BuilderBeforeReturnInsertionPoint : InsertionPoint {
     /**
      * Parses a message class from the text provided.
      */
-    private fun parseMessageClass(code: Text): JavaClassSource {
-        val result = Roaster.parse(JavaSource::class.java, code.value)
+    private fun parseMessageClass(code: String): JavaClassSource {
+        val result = Roaster.parse(JavaSource::class.java, code)
         check(result.isClass) { "No message class found." }
         return result as JavaClassSource
     }

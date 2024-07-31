@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -49,24 +49,13 @@ public class BuilderValidationMethods {
     }
 
     /**
-     * Checks that some builder validation methods are associated
-     * with the given Java source file.
-     *
-     * @param javaSourceFilePath
-     *          a [Path] to the generated java file.
-     */
-    public fun hasMethods(javaSourceFilePath: Path): Boolean {
-        return methodMap.containsKey(javaSourceFilePath)
-    }
-
-    /**
      * Returns the list of validation methods that are associated
      * with the given Java source file.
      *
      * @param javaSourceFilePath
      *          a [Path] to the generated java file.
      */
-    public fun methods(javaSourceFilePath: Path): Iterable<String> {
+    public fun methods(javaSourceFilePath: Path): Collection<String> {
         return methodMap.get(javaSourceFilePath)
     }
 }

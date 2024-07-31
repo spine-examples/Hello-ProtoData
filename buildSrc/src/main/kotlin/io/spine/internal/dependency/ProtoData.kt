@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -62,7 +62,10 @@ object ProtoData {
     /**
      * The version of ProtoData dependencies.
      */
-    const val version: String = "0.20.7"
+    const val version: String = "0.50.0"
+
+    const val lib: String =
+        "io.spine:protodata:$version"
 
     const val pluginLib: String =
         "$group:gradle-plugin:$version"

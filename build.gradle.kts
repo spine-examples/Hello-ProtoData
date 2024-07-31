@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -54,7 +54,7 @@ plugins {
     id("net.ltgt.errorprone")
     id("detekt-code-analysis")
     id("com.google.protobuf")
-    id("io.spine.protodata") version "0.20.7"
+    id("io.spine.protodata") version "0.50.0"
     idea
 }
 
@@ -85,7 +85,13 @@ subprojects {
         plugin("detekt-code-analysis")
         plugin("com.google.protobuf")
         plugin("idea")
-        plugin("io.spine.mc-java")
+    }
+
+    // Apply ModelCompiler to every subproject except "proto-extension".
+    if (!name.contains("proto-extension")) {
+        apply {
+            plugin("io.spine.mc-java")
+        }
     }
 
     dependencies {

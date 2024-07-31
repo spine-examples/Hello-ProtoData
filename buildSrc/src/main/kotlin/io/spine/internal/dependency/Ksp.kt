@@ -26,9 +26,15 @@
 
 package io.spine.internal.dependency
 
-// https://github.com/square/javapoet
-@Suppress("unused", "ConstPropertyName")
-object JavaPoet {
-    private const val version = "1.13.0"
-    const val lib = "com.squareup:javapoet:${version}"
+/**
+ * Kotlin Symbol Processing API.
+ *
+ * @see <a href="https://github.com/google/ksp">KSP GitHub repository</a>
+ */
+object Ksp {
+    /**
+     * The latest version compatible with Kotlin v1.8.22, which is bundled with Gradle 7.6.4.
+     */
+    const val version = "1.8.22-1.0.11"
+    const val id = "com.google.devtools.ksp"
 }

@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -26,11 +26,13 @@
 
 package io.spine.internal.gradle
 
+import java.io.File
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.tasks.SourceSetContainer
+import org.gradle.kotlin.dsl.findByType
 import org.gradle.kotlin.dsl.getByType
 
 /**
@@ -70,3 +72,9 @@ fun <T : Task> Project.findTask(name: String): T {
         ?: error("Unable to find a task named `$name` in the project `${this.name}`.")
     return task as T
 }
+
+/**
+ * Returns project's build directory as [File].
+ */
+val Project.buildDirectory: File
+    get() = layout.buildDirectory.get().asFile

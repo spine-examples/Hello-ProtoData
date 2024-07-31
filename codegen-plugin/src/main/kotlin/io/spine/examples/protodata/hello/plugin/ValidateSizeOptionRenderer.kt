@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -68,7 +68,6 @@ public class ValidateSizeOptionRenderer(
                     mapEntry.value,
                     builderValidationMethods
                 )
-
                 sources.createFile(
                     generator.filePath(),
                     generator.fileContent()
@@ -80,11 +79,11 @@ public class ValidateSizeOptionRenderer(
      * Returns the [ProtobufSourceFile] by the [File] provided.
      */
     private fun findSourceFile(file: File): ProtobufSourceFile {
-        val sourceFile = select<ProtobufSourceFile>().all().find {
+        val sourceFile = select(ProtobufSourceFile::class.java).all().find {
             it.file.path == file.path
         }
         checkNotNull(sourceFile) {
-            "Cannot find 'ProtobufSourceFile' for ${file.path}."
+            "Cannot find `ProtobufSourceFile` for ${file.path}."
         }
         return sourceFile
     }

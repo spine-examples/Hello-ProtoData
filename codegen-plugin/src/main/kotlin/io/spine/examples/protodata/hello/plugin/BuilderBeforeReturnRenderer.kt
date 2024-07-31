@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -47,20 +47,25 @@ public class BuilderBeforeReturnRenderer(
         if (!sources.outputRoot.endsWith("java")) {
             return
         }
+
         sources.filter {
-            builderValidationMethods.hasMethods(it.relativePath)
-        }.forEach(::insertValidationMethodsInvocation)
+            builderValidationMethods.methods(it.relativePath).isNotEmpty()
+        }.forEach {
+            insertValidationMethodsInvocation(it)
+        }
     }
 
     /**
      * Inserts validation method calls into the `build` method
      * of the message builder class.
      */
-    private fun insertValidationMethodsInvocation(sourceFile: SourceFile) {
+    private fun insertValidationMethodsInvocation(sourceFile: SourceFile<*>) {
         val builder = sourceFile.at(BuilderBeforeReturnInsertionPoint())
             .withExtraIndentation(2)
 
         builderValidationMethods.methods(sourceFile.relativePath)
-            .forEach(builder::add)
+            .forEach {
+                builder.add(it)
+            }
     }
 }

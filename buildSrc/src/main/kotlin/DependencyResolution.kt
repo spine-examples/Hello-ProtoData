@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -43,6 +43,7 @@ import io.spine.internal.dependency.Jackson
 import io.spine.internal.dependency.JavaDiffUtils
 import io.spine.internal.dependency.Kotest
 import io.spine.internal.dependency.Kotlin
+import io.spine.internal.dependency.KotlinX
 import io.spine.internal.dependency.OpenTest4J
 import io.spine.internal.dependency.Protobuf
 import io.spine.internal.dependency.Slf4J
@@ -78,6 +79,7 @@ fun doForceVersions(configurations: ConfigurationContainer) {
                     spine.toolBase,
                     spine.server,
                     protoData.pluginLib,
+                    protoData.lib,
                     logging.lib,
                     validation.runtime
                 )
@@ -117,6 +119,9 @@ private fun ResolutionStrategy.forceProductionDependencies() {
         Kotlin.stdLibCommon,
         Kotlin.stdLibJdk7,
         Kotlin.stdLibJdk8,
+        KotlinX.Coroutines.core,
+        KotlinX.Coroutines.jvm,
+        KotlinX.Coroutines.jdk8,
         Protobuf.GradlePlugin.lib,
         Protobuf.libs,
         Slf4J.lib

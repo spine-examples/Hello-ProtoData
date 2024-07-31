@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -169,7 +169,9 @@ private fun ProtobufSourceFile.javaPackage(): String {
 }
 
 private fun ProtobufSourceFile.type(typeName: TypeName): MessageType {
-    val type = typeMap.values.find { it.name == typeName }
+    val type = typeMap.values.find {
+        it.name.simpleName == typeName.simpleName
+    }
     checkNotNull(type) {
         "Cannot find type '$typeName' in $file."
     }
@@ -177,7 +179,7 @@ private fun ProtobufSourceFile.type(typeName: TypeName): MessageType {
 }
 
 private fun MessageType.field(fieldName: FieldName): Field {
-    val field = fieldList.find { it.name == fieldName }
+    val field = fieldList.find { it.name.value == fieldName.value }
     checkNotNull(field) {
         "Cannot find field '${fieldName.value}' in type '${typeName.value}'."
     }

@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -24,27 +24,18 @@
  */
 
 import io.spine.internal.dependency.AutoService
+import io.spine.internal.dependency.AutoServiceKsp
 import io.spine.internal.dependency.HelloProtoData
-import io.spine.internal.dependency.Validation
 
 plugins {
     `maven-publish`
+    ksp
 }
 
 dependencies {
-    // To use @AutoService in options provider
-    implementation(AutoService.annotations)
-
-    // To allow access to `ValidatingBuilder` from the generated Kotlin code.
-    implementation(Validation.runtime)
-}
-
-modelCompiler {
-    java {
-        codegen {
-            validation().enabled.set(false)
-        }
-    }
+    // To use @AutoService in options provider.
+    api(AutoService.annotations)
+    ksp(AutoServiceKsp.processor)
 }
 
 publishing {

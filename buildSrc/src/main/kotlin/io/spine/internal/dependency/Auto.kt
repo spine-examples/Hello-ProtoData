@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -46,4 +46,16 @@ object AutoService {
 object AutoValue {
     private const val version = "1.10.2"
     const val annotations = "com.google.auto.value:auto-value-annotations:${version}"
+}
+
+
+// https://github.com/ZacSweers/auto-service-ksp
+object AutoServiceKsp {
+    /**
+     * The latest version compatible with Kotlin 1.8.22.
+     *
+     * @see Ksp.version
+     */
+    private const val version = "1.1.0"
+    const val processor = "dev.zacsweers.autoservice:auto-service-ksp:$version"
 }
