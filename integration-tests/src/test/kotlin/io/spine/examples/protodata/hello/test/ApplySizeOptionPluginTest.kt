@@ -157,15 +157,8 @@ class `ApplySizeOptionPlugin should` {
         } catch (_: UnexpectedBuildFailure) {
         }
 
-        val sdterrContent = stderr.toString()
-        val errorFound = sdterrContent.contains(expectedExceptionMessage)
-
-        System.err.println(sdterrContent)
-
-        //check(errorFound) { sdterrContent }
-
         assertTrue(
-            errorFound,
+            stderr.toString().contains(expectedExceptionMessage),
             "The expected exception was not thrown."
         )
     }

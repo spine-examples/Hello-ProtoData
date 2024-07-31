@@ -26,7 +26,6 @@
 import io.spine.internal.dependency.AutoService
 import io.spine.internal.dependency.AutoServiceKsp
 import io.spine.internal.dependency.HelloProtoData
-import io.spine.internal.dependency.Validation
 
 plugins {
     `maven-publish`
@@ -35,19 +34,8 @@ plugins {
 
 dependencies {
     // To use @AutoService in options provider.
-    compileOnly(AutoService.annotations)
+    api(AutoService.annotations)
     ksp(AutoServiceKsp.processor)
-
-    // To allow access to `ValidatingBuilder` from the generated Kotlin code.
-    implementation(Validation.runtime)
-}
-
-modelCompiler {
-    java {
-        codegen {
-            validation().enabled.set(false)
-        }
-    }
 }
 
 publishing {
@@ -56,14 +44,5 @@ publishing {
             from(components["java"])
             artifactId = HelloProtoData.ProtoExtension.artifactId
         }
-    }
-}
-
-// To avoid warning on implicit tasks dependency.
-// See https://discuss.gradle.org/t/implicit-dependency-among-tasks-but-the-tasks-do-not-exist/46127
-// for details.
-tasks.configureEach {
-    if (name == "kspKotlin") {
-        mustRunAfter(tasks.named("launchProtoData"))
     }
 }

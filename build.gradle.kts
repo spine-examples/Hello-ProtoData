@@ -85,7 +85,13 @@ subprojects {
         plugin("detekt-code-analysis")
         plugin("com.google.protobuf")
         plugin("idea")
-        plugin("io.spine.mc-java")
+    }
+
+    // Apply ModelCompiler to every subproject except "proto-extension".
+    if (!name.contains("proto-extension")) {
+        apply {
+            plugin("io.spine.mc-java")
+        }
     }
 
     dependencies {
