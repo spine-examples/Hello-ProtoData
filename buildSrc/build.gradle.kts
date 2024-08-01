@@ -24,18 +24,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * This script uses two declarations of the constant [licenseReportVersion] because
- * currently there is no way to define a constant _before_ a build script of `buildSrc`.
- * We cannot use imports or do something else before the `buildscript` or `plugin` clauses.
- */
-
 plugins {
     java
-    groovy
     `kotlin-dsl`
-    val licenseReportVersion = "2.1"
-    id("com.github.jk1.dependency-license-report").version(licenseReportVersion)
 }
 
 repositories {
@@ -51,10 +42,6 @@ repositories {
  * It's not a requirement, but would be good in terms of consistency.
  */
 val jacksonVersion = "2.13.4"
-
-val googleAuthToolVersion = "2.1.2"
-val licenseReportVersion = "2.1"
-val grGitVersion = "4.1.1"
 
 /**
  * The version of the Kotlin Gradle plugin.
@@ -137,12 +124,8 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 dependencies {
     implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:$jacksonVersion")
-    implementation("com.google.cloud.artifactregistry:artifactregistry-auth-common:$googleAuthToolVersion") {
-        exclude(group = "com.google.guava")
-    }
+
     implementation("com.google.guava:guava:$guavaVersion")
-    api("com.github.jk1:gradle-license-report:$licenseReportVersion")
-    implementation("org.ajoberstar.grgit:grgit-core:${grGitVersion}")
     implementation("net.ltgt.gradle:gradle-errorprone-plugin:${errorPronePluginVersion}")
 
     // Add explicit dependency to avoid warning on different Kotlin runtime versions.
