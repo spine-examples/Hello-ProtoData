@@ -26,12 +26,12 @@
 
 package io.spine.examples.protodata.hello.model.test
 
+import io.kotest.assertions.throwables.shouldThrow
+import io.spine.examples.protodata.hello.ArrayOfSizeOption
 import io.spine.examples.protodata.hello.model.Board
 import io.spine.examples.protodata.hello.model.Cell
 import io.spine.examples.protodata.hello.model.validateCellCount
-import io.spine.examples.protodata.hello.ArrayOfSizeOption
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 
 /**
  * Checks the generated validation code for the [ArrayOfSizeOption]
@@ -41,23 +41,19 @@ class `SizeOptionPlugin should` {
 
     @Test
     fun `generate custom validation method for the field`() {
-        createBoardBuilder(true)
-            .validateCellCount()
+        createBoardBuilder(true).validateCellCount()
 
-        assertThrows<IllegalStateException> {
-            createBoardBuilder(false)
-                .validateCellCount()
+        shouldThrow<IllegalStateException> {
+            createBoardBuilder(false).validateCellCount()
         }
     }
 
     @Test
     fun `integrate validation code into 'build()' method`() {
-        createBoardBuilder(true)
-            .build()
+        createBoardBuilder(true).build()
 
-        assertThrows<IllegalStateException> {
-            createBoardBuilder(false)
-                .build()
+        shouldThrow<IllegalStateException> {
+            createBoardBuilder(false).build()
         }
     }
 }

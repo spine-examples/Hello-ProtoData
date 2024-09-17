@@ -25,16 +25,17 @@
  */
 package io.spine.examples.protodata.hello.test
 
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.assertions.withClue
+import io.kotest.matchers.shouldBe
 import io.spine.examples.protodata.hello.ArrayOfSizeOption
 import io.spine.tools.gradle.testing.GradleProject
 import io.spine.tools.mc.java.gradle.McJavaTaskName
 import org.gradle.testkit.runner.UnexpectedBuildFailure
 import org.gradle.testkit.runner.internal.DefaultGradleRunner
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
 import java.io.StringWriter
@@ -77,28 +78,23 @@ class `ApplySizeOptionPlugin should` {
                 .validatePhoneCount()
 
             val invalidContactBuilder = createInvalidContactBuilder()
-            assertThrows<IllegalStateException> {
-                invalidContactBuilder
-                    .validatePhoneCount()
+            shouldThrow<IllegalStateException> {
+                invalidContactBuilder.validatePhoneCount()
             }
-            assertThrows<IllegalStateException> {
-                invalidContactBuilder
-                    .validateAddressCount()
+            shouldThrow<IllegalStateException> {
+                invalidContactBuilder.validateAddressCount()
             }
-            assertThrows<IllegalStateException> {
-                invalidContactBuilder
-                    .validateEmailCount()
+            shouldThrow<IllegalStateException> {
+                invalidContactBuilder.validateEmailCount()
             }
         }
 
         @Test
         fun `by calling field validation methods inside 'build()' method`() {
-            createValidContactBuilder()
-                .build()
+            createValidContactBuilder().build()
 
-            assertThrows<IllegalStateException> {
-                createInvalidContactBuilder()
-                    .build()
+            shouldThrow<IllegalStateException> {
+                createInvalidContactBuilder().build()
             }
         }
     }
@@ -107,7 +103,6 @@ class `ApplySizeOptionPlugin should` {
     fun `fail the build if 'size' option value is not set`(
         @TempDir projectDir: File
     ) {
-
         val expectedExceptionMessage = "Value of `size` option for " +
                 "field `SizeOptionTestMsg.empty_expression_field` is not set."
 
@@ -122,7 +117,6 @@ class `ApplySizeOptionPlugin should` {
     fun `fail the build if 'size' option is applied to non-repeated field`(
         @TempDir projectDir: File
     ) {
-
         val expectedExceptionMessage = "Field " +
                 "`SizeOptionTestMsg.non_repeated_field` is non-repeated " +
                 "and therefore cannot be validated with `size` option."
@@ -139,7 +133,6 @@ class `ApplySizeOptionPlugin should` {
         protoSourceFile: File,
         expectedExceptionMessage: String
     ) {
-
         val project = GradleProject.setupAt(projectDir)
             .fromResources(TEST_PROJECT_DIR)
             .copyBuildSrc()
@@ -157,9 +150,9 @@ class `ApplySizeOptionPlugin should` {
         } catch (_: UnexpectedBuildFailure) {
         }
 
-        assertTrue(
-            stderr.toString().contains(expectedExceptionMessage),
-            "The expected exception was not thrown."
-        )
+        withClue("The expected exception was not thrown.") {
+            stderr.toString()
+                .contains(expectedExceptionMessage) shouldBe true
+        }
     }
 }

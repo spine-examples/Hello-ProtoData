@@ -24,6 +24,7 @@
  */
 
 import io.spine.internal.dependency.JUnit
+import io.spine.internal.dependency.Kotest
 import io.spine.internal.dependency.Validation
 
 dependencies {
@@ -37,6 +38,7 @@ dependencies {
     implementation(Validation.runtime)
 
     testImplementation(JUnit.runner)
+    testImplementation(Kotest.assertions)
 }
 
 apply {

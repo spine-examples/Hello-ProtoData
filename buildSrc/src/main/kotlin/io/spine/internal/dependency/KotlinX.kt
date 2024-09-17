@@ -38,5 +38,9 @@ object KotlinX {
         const val core = "$group:kotlinx-coroutines-core:$version"
         const val jvm = "$group:kotlinx-coroutines-core-jvm:$version"
         const val jdk8 = "$group:kotlinx-coroutines-jdk8:$version"
+        const val bom = "$group:kotlinx-coroutines-bom:$version"
+        const val debug = "$group:kotlinx-coroutines-debug:$version"
+        const val test = "$group:kotlinx-coroutines-test:$version"
+        const val testJvm = "$group:kotlinx-coroutines-test-jvm:$version"
     }
 }
