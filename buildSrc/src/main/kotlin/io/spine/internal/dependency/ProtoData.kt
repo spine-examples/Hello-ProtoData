@@ -53,7 +53,8 @@ package io.spine.internal.dependency
  */
 @Suppress(
     "unused" /* Some subprojects do not use ProtoData directly. */,
-    "MemberVisibilityCanBePrivate" /* The properties are used directly by other subprojects. */
+    "MemberVisibilityCanBePrivate" /* The properties are used directly by other subprojects. */,
+    "ConstPropertyName" /* Suppress warnings on lover-case property names. */
 )
 object ProtoData {
     const val group = "io.spine.protodata"
@@ -62,7 +63,7 @@ object ProtoData {
     /**
      * The version of ProtoData dependencies.
      */
-    const val version: String = "0.50.0"
+    const val version: String = "0.60.3"
 
     const val lib: String =
         "io.spine:protodata:$version"

@@ -122,6 +122,10 @@ private fun ResolutionStrategy.forceProductionDependencies() {
         KotlinX.Coroutines.core,
         KotlinX.Coroutines.jvm,
         KotlinX.Coroutines.jdk8,
+        KotlinX.Coroutines.bom,
+        KotlinX.Coroutines.debug,
+        KotlinX.Coroutines.test,
+        KotlinX.Coroutines.testJvm,
         Protobuf.GradlePlugin.lib,
         Protobuf.libs,
         Slf4J.lib

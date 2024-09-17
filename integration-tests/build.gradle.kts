@@ -34,7 +34,6 @@ dependencies {
     protoData(project(":codegen-plugin"))
 
     testImplementation(JUnit.runner)
-
     testImplementation(Spine.pluginTestlib)
     testImplementation(Spine.McJava.pluginLib)
     testImplementation(gradleTestKit())
