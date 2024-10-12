@@ -29,6 +29,7 @@
 import Build_gradle.Module
 import io.spine.internal.dependency.ErrorProne
 import io.spine.internal.dependency.HelloProtoData
+import io.spine.internal.dependency.McJava
 import io.spine.internal.dependency.Protobuf
 import io.spine.internal.dependency.Spine
 import io.spine.internal.gradle.javac.configureErrorProne
@@ -45,7 +46,7 @@ buildscript {
     doForceVersions(configurations)
 
     dependencies {
-        classpath(io.spine.internal.dependency.Spine.McJava.pluginLib)
+        classpath(io.spine.internal.dependency.McJava.pluginLib)
     }
 }
 
@@ -54,7 +55,7 @@ plugins {
     id("net.ltgt.errorprone")
     id("detekt-code-analysis")
     id("com.google.protobuf")
-    id("io.spine.protodata") version "0.60.3"
+    id("io.spine.protodata") version "0.61.6"
     idea
 }
 
@@ -90,7 +91,7 @@ subprojects {
     // Apply ModelCompiler to every subproject except "proto-extension".
     if (!name.contains("proto-extension")) {
         apply {
-            plugin("io.spine.mc-java")
+            plugin(McJava.pluginId)
         }
     }
 

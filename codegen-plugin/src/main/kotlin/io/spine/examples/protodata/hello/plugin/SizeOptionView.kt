@@ -30,7 +30,7 @@ import io.spine.core.Subscribe
 import io.spine.core.Where
 import io.spine.examples.protodata.hello.ArrayOfSizeOption
 import io.spine.protobuf.AnyPacker.unpack
-import io.spine.protodata.event.FieldOptionDiscovered
+import io.spine.protodata.ast.event.FieldOptionDiscovered
 import io.spine.protodata.plugin.View
 
 /**

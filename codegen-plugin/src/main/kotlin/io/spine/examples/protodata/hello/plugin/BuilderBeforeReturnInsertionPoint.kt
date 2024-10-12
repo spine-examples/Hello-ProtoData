@@ -25,7 +25,7 @@
  */
 package io.spine.examples.protodata.hello.plugin
 
-import io.spine.protodata.renderer.InsertionPoint
+import io.spine.protodata.render.InsertionPoint
 import io.spine.text.Text
 import io.spine.text.TextCoordinates
 import io.spine.text.TextFactory

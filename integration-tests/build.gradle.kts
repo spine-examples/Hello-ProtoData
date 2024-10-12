@@ -24,6 +24,7 @@
  */
 
 import io.spine.internal.dependency.JUnit
+import io.spine.internal.dependency.McJava
 import io.spine.internal.dependency.Spine
 
 dependencies {
@@ -35,7 +36,7 @@ dependencies {
 
     testImplementation(JUnit.runner)
     testImplementation(Spine.pluginTestlib)
-    testImplementation(Spine.McJava.pluginLib)
+    testImplementation(McJava.pluginLib)
     testImplementation(gradleTestKit())
 }
 
@@ -48,14 +49,6 @@ protoData {
     plugins(
         "io.spine.examples.protodata.hello.plugin.ApplySizeOptionPlugin"
     )
-}
-
-modelCompiler {
-    java {
-        codegen {
-            validation().enabled.set(false)
-        }
-    }
 }
 
 /**

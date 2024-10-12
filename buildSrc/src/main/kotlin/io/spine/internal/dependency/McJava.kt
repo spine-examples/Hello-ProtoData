@@ -23,32 +23,33 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package io.spine.examples.protodata.hello.plugin
 
-import io.spine.core.EventContext
-import io.spine.protodata.ast.event.FieldOptionDiscovered
-import io.spine.protodata.plugin.ViewRepository
-import io.spine.server.route.EventRoute
-import io.spine.server.route.EventRouting
+package io.spine.internal.dependency
 
 /**
- * The repository for [SizeOptionView].
+ * Dependencies on Spine Model Compiler for Java.
+ *
+ * See [mc-java](https://github.com/SpineEventEngine/mc-java).
  */
-internal class SizeOptionViewRepository : ViewRepository<SizeOptionId,
-        SizeOptionView,
-        SizeOption>() {
+@Suppress(
+    "MemberVisibilityCanBePrivate" /* `pluginLib()` is used by subprojects. */,
+    "ConstPropertyName"
+)
+object McJava {
+    const val group = Spine.toolsGroup
 
-    override fun setupEventRouting(routing: EventRouting<SizeOptionId>) {
-        super.setupEventRouting(routing)
-        routing.route(FieldOptionDiscovered::class.java)
-        { message: FieldOptionDiscovered, _: EventContext? ->
-            EventRoute.withId(
-                sizeOptionId {
-                    filePath = message.file
-                    typeName = message.type
-                    fieldName = message.field
-                }
-            )
-        }
-    }
+    /** The version to be used for integration tests. */
+    const val version = "2.0.0-SNAPSHOT.243"
+
+    const val pluginId = "io.spine.mc-java"
+
+    val pluginLib = pluginLib(version)
+    fun pluginLib(version: String): String = "$group:spine-mc-java-plugins:$version:all"
+
+    /** The artifact reference for forcing in configurations. */
+    @Suppress("unused")
+    const val pluginsArtifact: String = "$group:spine-mc-java-plugins:$version"
+
+    val base = base(version)
+    fun base(version: String): String = "$group:spine-mc-java-base:$version"
 }

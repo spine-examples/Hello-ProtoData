@@ -28,7 +28,7 @@ package io.spine.examples.protodata.hello.plugin
 import io.spine.examples.protodata.hello.ArrayOfSizeOption
 import io.spine.protodata.plugin.Plugin
 import io.spine.protodata.plugin.ViewRepository
-import io.spine.protodata.renderer.Renderer
+import io.spine.protodata.render.Renderer
 
 /**
  * ProtoData [Plugin] that renders validation code for the [ArrayOfSizeOption]
