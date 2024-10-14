@@ -78,7 +78,7 @@ fun doForceVersions(configurations: ConfigurationContainer) {
                     spine.base,
                     spine.toolBase,
                     spine.server,
-                    protoData.pluginLib,
+                    protoData.api,
                     protoData.lib,
                     logging.lib,
                     validation.runtime

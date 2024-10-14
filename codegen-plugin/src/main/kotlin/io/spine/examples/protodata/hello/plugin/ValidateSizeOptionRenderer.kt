@@ -26,10 +26,10 @@
 package io.spine.examples.protodata.hello.plugin
 
 import io.spine.examples.protodata.hello.ArrayOfSizeOption
-import io.spine.protodata.File
-import io.spine.protodata.ProtobufSourceFile
-import io.spine.protodata.renderer.Renderer
-import io.spine.protodata.renderer.SourceFileSet
+import io.spine.protodata.ast.File
+import io.spine.protodata.ast.ProtobufSourceFile
+import io.spine.protodata.render.Renderer
+import io.spine.protodata.render.SourceFileSet
 import io.spine.tools.code.Kotlin
 
 /**

@@ -31,7 +31,6 @@ import io.kotest.matchers.shouldBe
 import io.spine.examples.protodata.hello.ArrayOfSizeOption
 import io.spine.tools.gradle.testing.GradleProject
 import io.spine.tools.mc.java.gradle.McJavaTaskName
-import org.gradle.testkit.runner.UnexpectedBuildFailure
 import org.gradle.testkit.runner.internal.DefaultGradleRunner
 import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.Nested
@@ -147,7 +146,7 @@ class `ApplySizeOptionPlugin should` {
         try {
             project.executeTask(McJavaTaskName.launchProtoData)
             fail("The build is unexpectedly successful.")
-        } catch (_: UnexpectedBuildFailure) {
+        } catch (_: IllegalStateException) {
         }
 
         withClue("The expected exception was not thrown.") {

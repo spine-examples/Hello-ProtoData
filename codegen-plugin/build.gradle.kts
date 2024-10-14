@@ -36,18 +36,10 @@ dependencies {
     api(project(":proto-extension"))
 
     // To use ProtoData API in code generation plugin.
-    api(ProtoData.backend)
+    api(ProtoData.api)
 
     // To generate Kotlin sources.
-    api(KotlinPoet.lib)
-}
-
-modelCompiler {
-    java {
-        codegen {
-            validation().enabled.set(false)
-        }
-    }
+    implementation(KotlinPoet.lib)
 }
 
 publishing {

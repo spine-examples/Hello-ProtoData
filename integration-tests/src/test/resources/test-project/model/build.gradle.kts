@@ -52,11 +52,3 @@ protoData {
         "io.spine.examples.protodata.hello.plugin.ApplySizeOptionPlugin"
     )
 }
-
-modelCompiler {
-    java {
-        codegen {
-            validation().enabled.set(false)
-        }
-    }
-}
